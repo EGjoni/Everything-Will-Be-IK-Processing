@@ -1,16 +1,40 @@
 # Everything-Will-Be-IK-Processing
-Processing extension of EWBIK, A robust Inverse Kinematics library java.
+
+This project serves as both a Processing extension of the robust java Inverse Kinematics library <a href="Everything Will Be IK, and an official reference for anyone looking to port or extend EWBIK for their own purposes. 
+
+
+See here for a demo: https://youtu.be/y_o34kOx_FA
+</br></br>
+<b>Features:</b>
+<ul>
+<li>Orientation AND position based targets (6-DOF).</li>
+<li>Highly stable.</li>
+<li>Multiple end-effector support</li>
+<li>Intermediary effector support.</li>
+<li>Dampening (stiffness control).</li>
+<li>Highly versatile 3-DOF constraints with arbitrarily shaped orientation regions.</li>
+</ul>
+</br>
 
 
 <b>Installation Instructions:</b></br>
--Download a .zip from this repository. 
--Locate your processing sketchbook folder. (You can find this from within the Processing IDE by clicking File -> Preferences). </br>
--Navigate to that sketchbook directory.<br>
--Extract the ewbIK folder into the 'libraries' folder within your sketchbook.<br>
--The final directory layout should look something like<br>
-..sketchbook/<br>
-&nbsp;&nbsp;&nbsp;&nbsp;┣ libraries/<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;┣ ewbIK</br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;┣ examples/<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;┣ library/</br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;┣ reference/</br>
+<ol>
+<li>Download a .zip from this repository.</li>
+<li>Locate your processing sketchbook folder. (You can find this from within the Processing IDE by clicking File -> Preferences).</li>
+<li>Navigate to that sketchbook directory.</li>
+<li>Extract the ewbIK folder into the 'libraries' folder within your sketchbook.</li>
+</ol>
+The final directory layout should look something like
+
+```
+..sketchbook/
+  ┣ libraries/
+    ┣ ewbIK/
+      ┣ doc/
+      ┣ examples/
+      ┣ library/
+      ┣ src/
+```
+
+
+<b>DISCLAIMER: This code was intended primarily for graphics applications and has not been thoroughly tested for use in robotics. Until this disclaimer disappears (or you have independently verified it is suitable for your purposes) please do not use this code to command any servos that can put out enough torque to cause damage to people, property, or other components in your build.</b>

@@ -1,6 +1,6 @@
 # Everything-Will-Be-IK-Processing
 
-This project serves as both a Processing extension of the robust java Inverse Kinematics library <a href="https://github.com/EGjoni/Everything-WIll-Be-IK">Everything Will Be IK</a>, and an official reference for anyone looking to port or extend EWBIK for their own purposes. 
+This project serves as both a Processing extension of the robust java Inverse Kinematics library <a href="https://github.com/EGjoni/Everything-Will-Be-IK">Everything Will Be IK</a>, and an official reference for anyone looking to port or extend EWBIK for their own purposes. 
 
 
 See here for a demo: https://youtu.be/y_o34kOx_FA

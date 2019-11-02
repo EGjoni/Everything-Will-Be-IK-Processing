@@ -20,13 +20,14 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 package ewbik.processing.singlePrecision;
 import IK.floatIK.AbstractArmature;
 import IK.floatIK.AbstractBone.frameType;
-import data.SaveManager;
 import ewbik.processing.singlePrecision.*;
 import ewbik.processing.singlePrecision.sceneGraph.*;
+import math.floatV.SGVec_3f;
+import math.floatV.Vec3f;
 import processing.core.PApplet;
+import processing.core.PGraphics;
 import processing.core.PMatrix;
 import processing.core.PVector;
-import sceneGraph.math.floatV.SGVec_3f;
 
 /**
  * Note, this class is a concrete implementation of the abstract class AbstractArmature. Please refer to the {@link AbstractArmature AbstractArmature docs.} 
@@ -39,34 +40,37 @@ public class Armature extends AbstractArmature{
 	
 	public Armature(String name) {		
 		super(new Axes(
-				new PVector(0,0,0), new PVector(1,0,0), new PVector(0,1,0), new PVector(0,0,1), 
-				true, null), name);
+				new PVector(0,0,0), new PVector(1,0,0), new PVector(0,1,0), new PVector(0,0,1), null), name);
 	}
 
 
 	@Override
 	protected  void initializeRootBone(
 			AbstractArmature armature,
-			SGVec_3f tipHeading,
-			SGVec_3f rollHeading,
+			Vec3f tipHeading,
+			Vec3f rollHeading,
 			String inputTag,
 			float boneHeight, 
 			frameType coordinateType) {
-		this.rootBone = new Bone(this, 
-												Axes.toPVector(tipHeading), 
-												Axes.toPVector(rollHeading), 
-												inputTag, 
-												boneHeight, 
-												coordinateType);	
+		this.rootBone = new Bone(armature, 
+				new PVector(tipHeading.x, tipHeading.y, tipHeading.z), 
+				new PVector(rollHeading.x, rollHeading.y, rollHeading.z), 
+				inputTag, 
+				boneHeight, 
+				coordinateType);	
 	}
 
 	
-	public void drawMe(PApplet p, int color, float pinSize) {
+	public void drawMe(PApplet p, int color,  float pinSize) {
+		drawMe(p.g, color, pinSize);
+	}
+	
+	public void drawMe(PGraphics pg, int color,  float pinSize) {
 		PMatrix localMat = localAxes().getGlobalPMatrix();
-		p.applyMatrix(localMat);
-		p.pushMatrix(); 
-			getRootBone().drawMeAndChildren(p, color, pinSize);
-		p.popMatrix();
+		pg.applyMatrix(localMat);
+		pg.pushMatrix(); 
+			getRootBone().drawMeAndChildren(pg, color,  pinSize);
+			pg.popMatrix();
 	}
 	
 	@Override 
@@ -76,7 +80,7 @@ public class Armature extends AbstractArmature{
 	
 	@Override
 	public Bone getBoneTagged(String tag) {
-		return (Bone)boneMap.get(tag);	
+		return (Bone)tagBoneMap.get(tag);	
 	}
 	
 	@Override 

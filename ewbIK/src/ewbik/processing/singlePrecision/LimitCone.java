@@ -21,7 +21,7 @@ package ewbik.processing.singlePrecision;
 
 import IK.floatIK.AbstractKusudama;
 import IK.floatIK.AbstractLimitCone;
-import data.SaveManager;
+import asj.SaveManager;
 import ewbik.processing.singlePrecision.*;
 import ewbik.processing.singlePrecision.sceneGraph.Axes;
 import processing.core.PVector;
@@ -35,28 +35,5 @@ public class LimitCone extends AbstractLimitCone {
 		super(Axes.toSGVec(location), rad, attachedTo);
 	}
 
-	@Override
-	public void notifyOfSaveIntent(SaveManager saveManager) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void notifyOfSaveCompletion(SaveManager saveManager) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public boolean isLoading() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void setLoading(boolean loading) {
-		// TODO Auto-generated method stub
-		
-	}
 
 }

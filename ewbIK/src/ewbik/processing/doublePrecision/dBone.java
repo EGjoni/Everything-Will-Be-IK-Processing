@@ -15,7 +15,7 @@ PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS 
 DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION 
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
 
-*/
+ */
 
 package ewbik.processing.doublePrecision;
 
@@ -23,27 +23,29 @@ package ewbik.processing.doublePrecision;
 import java.util.ArrayList;
 
 import IK.IKExceptions.NullParentForBoneException;
+import IK.doubleIK.AbstractArmature;
 import IK.doubleIK.AbstractBone;
-import data.SaveManager;
 import ewbik.processing.doublePrecision.*;
 import ewbik.processing.doublePrecision.sceneGraph.*;
 import ewbik.processing.singlePrecision.sceneGraph.Axes;
+import math.doubleV.AbstractAxes;
+import math.doubleV.Vec3d;
 import processing.core.PApplet;
 import processing.core.PConstants;
+import processing.core.PGraphics;
 import processing.core.PMatrix;
-import sceneGraph.math.doubleV.AbstractAxes;
-import sceneGraph.math.doubleV.Rot;
-import sceneGraph.math.doubleV.SGVec_3d;
-import sceneGraph.math.doubleV.Vec3d;
 
 
 /**
  * Note, this class is a concrete implementation of the abstract class AbstractBone. Please refer to the {@link AbstractBone AbstractBone docs.} 
  */	
 public class dBone extends AbstractBone {
-	
+
+	public static int renderMode = 1; 
+	public static boolean drawKusudamas = false;
+
 	public dBone() {}
-	
+
 	/**
 	 * 
 	 * @param par the parent bone for this bone
@@ -55,16 +57,16 @@ public class dBone extends AbstractBone {
 	 * @throws NullParentForBoneException
 	 */
 	public dBone (dBone par, //parent bone
-			DVector tipHeading, //the orienational heading of this bone (global vs relative coords specified in coordinateType)
-			DVector  rollHeading, //axial rotation heading of the bone (it's z-axis) 
+			Vec3d<?> tipHeading, //the orienational heading of this bone (global vs relative coords specified in coordinateType)
+			Vec3d<?>  rollHeading, //axial rotation heading of the bone (it's z-axis) 
 			String inputTag,	 //some user specified name for the bone, if desired 
 			double inputBoneHeight, //bone length 
 			frameType coordinateType							
 			) throws NullParentForBoneException {
 		super(
 				par, 
-				dAxes.toSGVec(tipHeading), 
-				dAxes.toSGVec(rollHeading),
+				tipHeading, 
+				rollHeading,
 				inputTag, 
 				inputBoneHeight, 
 				coordinateType);
@@ -82,23 +84,23 @@ public class dBone extends AbstractBone {
 	 * @throws NullParentForBoneException
 	 */
 	public dBone(
-			dArmature armature, 
-			DVector  tipHeading, 
-			DVector  rollHeading, 
+			AbstractArmature armature, 
+			Vec3d<?>  tipHeading, 
+			Vec3d<?>  rollHeading, 
 			String inputTag, 
 			double boneHeight,
 			frameType coordinateType) {
 		super(
 				armature, 
-				dAxes.toSGVec(tipHeading), 
-				dAxes.toSGVec(rollHeading),
+				tipHeading, 
+				rollHeading,
 				inputTag, 
 				boneHeight, 
 				coordinateType);
 	}
-	
 
-	
+
+
 	/** 
 	 * Creates a new bone of specified length emerging from the parentBone. 
 	 * The new bone extends in the same exact direction as the parentBone. 
@@ -110,15 +112,15 @@ public class dBone extends AbstractBone {
 	 * @param inputTag some user specified name for the bone, if desired
 	 * @param inputBoneHeight bone length 
 	 */ 	
-	
+
 	public dBone (AbstractBone par, //parent bone
 			String inputTag, //some user specified name for the bone, if desired
 			double inputBoneHeight //bone length 
 			) {
 		super(par, 0,0,0, inputTag, inputBoneHeight);		
 	}
-	
-	
+
+
 	/**
 	 * 
 	 * @param par the parent bone to which this bone is attached. 
@@ -137,112 +139,117 @@ public class dBone extends AbstractBone {
 			) {
 		super(par, xAngle, yAngle, zAngle,inputTag, inputBoneHeight);		
 	}
-	
+
 
 	@Override
-	protected void generateAxes(SGVec_3d origin, SGVec_3d x, SGVec_3d y, SGVec_3d z) {
+	protected void generateAxes( Vec3d<?> origin,  Vec3d<?> x,  Vec3d<?> y,  Vec3d<?> z) {
 		this.localAxes = new dAxes(origin, x, y, z);
 	}
-	
+
 	public DVector getBase() {
-		return dAxes.toDVector(super.getBase_());
+		return (DVector) super.getBase_();
 	}
 
 	public DVector getTip() { 		
-		return dAxes.toDVector(super.getTip_());
+		return (DVector) super.getTip_();
 	}
 
 	@Override
-	protected dIKPin createAndReturnPinAtOrigin(SGVec_3d origin) {
-		// TODO Auto-generated method stub
-		dAxes thisBoneAxes = localAxes().getGlobalCopy(); 
-		thisBoneAxes.setOrthoNormalityConstraint(true);
-		thisBoneAxes.translateTo(origin);
-		return new dIKPin(
-						thisBoneAxes, 
+	protected dIKPin createAndReturnPinOnAxes(AbstractAxes on) {
+				return new dIKPin(
+						(dAxes) on, 
 						true, 
 						this
-				);
-	}
-	
-	public SGVec_3d getBase_() {
-		return localAxes.origin_().copy();
+					);		
 	}
 
-	public SGVec_3d getTip_() { 		
-		return localAxes.y_().getScaledTo(boneHeight);
-	}
 
-	
-	
-	
 	public void enablePin(DVector pin) {
-		super.enablePin_(dAxes.toSGVec(pin));
-	}
-	
-	
-	public void setPin(DVector pin) {
-		super.setPin_(dAxes.toSGVec(pin));
+		super.enablePin_(pin);
 	}
 
-	 
+
+	public void setPin(DVector pin) {
+		super.setPin_(pin);
+	}
+
+
 	/**
 	 * @return In the case of this out-of-the-box class, getPin() returns a IKVector indicating
 	 * the spatial target of the pin. 
 	 */
 	public DVector getPinLocation() {
 		if(pin == null) return null;
-		else return dAxes.toDVector(pin.getLocation_());
+		else return (DVector) pin.getLocation_();
 	}
 
 
-	public void drawMeAndChildren(PApplet p, int boneCol, float pinSize) {
-		PMatrix localMat = localAxes().getLocalPMatrix();
-		p.applyMatrix(localMat);
+	public void drawMeAndChildren(PGraphics pg, int boneCol, float pinSize) {
 		
-		p.beginShape(PConstants.TRIANGLE_FAN);
-		p.fill(p.color(0, 255-boneCol, boneCol));
-		//p.stroke(lineColor);
-		float circumference = (float) (boneHeight/8f); 
-		p.noStroke();
-		p.vertex(0, (float)boneHeight, 0);
-		p.vertex(circumference,	circumference,	0);
-		p.vertex(0, circumference,	circumference);
-		p.vertex(-circumference,	circumference,	0);
-		p.vertex(0, circumference,	-circumference);
-		p.vertex(circumference,	circumference,	0);
-	p.endShape();
-	p.beginShape();
-		p.vertex(0, 0, 0);
-		p.vertex(0, circumference,	-circumference);
-		p.vertex(circumference,	circumference,	0);
-		p.vertex(0, circumference,	circumference);
-		p.vertex(-circumference,	circumference,	0);		
-		p.vertex(0, circumference,	-circumference);			
-	p.endShape();
-	p.emissive(0,0,0);
-			
-		
-		for(dBone b : getChildren()) {			
-			p.pushMatrix();
-			b.drawMeAndChildren(p, boneCol+10, pinSize);
-			p.popMatrix();
-		}		
-		
-		p.strokeWeight(4f);
-		if(this.isPinned()) {
-			((dAxes)this.getIKPin().getAxes()).drawMe(p, pinSize);
+		if(this.constraints != null && drawKusudamas) {
+			pg.pushMatrix();
+			((dKusudama)constraints).drawMe(pg, boneCol, pinSize);
+			pg.popMatrix();
 		}
 		
+
+		PMatrix localMat = localAxes().getLocalPMatrix();
+		pg.applyMatrix(localMat);
+
+		
+			pg.beginShape(PConstants.TRIANGLE_FAN);
+			if(renderMode == 1) {
+				pg.fill(pg.color(0, 255-boneCol, boneCol));
+			} else {
+				pg.fill(pg.color(0, 0, 0));
+			}
+			//pg.stroke(lineColor);
+			float circumference = (float) (boneHeight/8f); 
+			pg.noStroke();
+			pg.vertex(0, (float)boneHeight, 0);
+			pg.vertex(circumference,		circumference,	0);
+			pg.vertex(0, circumference,	circumference);
+			pg.vertex(-circumference,		circumference,	0);
+			pg.vertex(0, circumference,	-circumference);
+			pg.vertex(circumference,		circumference,	0);
+			pg.endShape();
+			pg.beginShape(PConstants.TRIANGLE_FAN);
+			pg.vertex(0, 0, 0);
+			pg.vertex(0,								circumference,	-circumference);
+			pg.vertex(circumference,	circumference,	0);
+			pg.vertex(0, 							circumference,	circumference);
+			pg.vertex(-circumference,	circumference,	0);		
+			pg.vertex(0, 							circumference,	-circumference);			
+			pg.endShape();
+			pg.emissive(0,0,0);
+			
+
+		for(dBone b : getChildren()) {			
+			pg.pushMatrix();
+			b.drawMeAndChildren(pg, boneCol+10, pinSize);
+			pg.popMatrix();
+		}		
+
+
+
+		pg.strokeWeight(4f);
+		if(this.isPinned()) {
+			((dAxes)this.getIKPin().getAxes()).drawMe(pg, pinSize);
+		}
+
+		if(this.isPinned()) {
+			pg.strokeWeight(2f);
+			localAxes().drawMe(pg, pinSize);
+		}
 	}
-	
+
 	/**
 	 * Get the Axes associated with this bone. 
 	 */
 	public dAxes localAxes() {
 		return (dAxes) this.localAxes;
 	}	
-	
+
 	/**
 	 * Get the Axes relative to which this bone's rotations are defined. (If the bone has constraints, this will be the 
 	 * constraint Axes)
@@ -251,9 +258,17 @@ public class dBone extends AbstractBone {
 	public dAxes getMajorRotationAxes() {
 		return (dAxes)this.majorRotationAxes;
 	}
-	
+
 	public ArrayList<dBone> getChildren() {
 		return (ArrayList<dBone>)super.getChildren();
 	}
 	
+	public dIKPin getIKPin() {
+		return (dIKPin) super.getIKPin();
+	}
+	
+	public static void setDrawKusudamas(boolean draw) {
+		drawKusudamas = draw;
+	}
+
 }

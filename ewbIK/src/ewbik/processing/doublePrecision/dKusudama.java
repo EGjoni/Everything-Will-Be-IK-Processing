@@ -15,25 +15,44 @@ PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS 
 DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION 
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
 
-*/
+ */
 
 package ewbik.processing.doublePrecision;
 
+import java.util.ArrayList;
+
+
 import IK.doubleIK.AbstractKusudama;
 import IK.doubleIK.AbstractLimitCone;
-import IK.floatIK.AbstractBone;
-import data.SaveManager;
 import ewbik.processing.doublePrecision.sceneGraph.*;
+import math.doubleV.MRotation;
+import math.doubleV.Rot;
+import math.doubleV.SGVec_3d;
+import math.doubleV.Vec3d;
+import processing.core.PApplet;
+import processing.core.PConstants;
+import processing.core.PGraphics;
+import processing.core.PImage;
+import processing.core.PMatrix;
 import processing.core.PVector;
-import sceneGraph.math.doubleV.SGVec_3d;
-import sceneGraph.math.floatV.MathUtils;
+import processing.opengl.PGraphicsOpenGL;
+import processing.opengl.PShader;
+import sun.text.resources.cldr.bo.FormatData_bo;
 
 
 /**
  * Note, this class is a concrete implementation of the abstract class AbstractKusudama. Please refer to the {@link AbstractKusudama AbstractKusudama docs.} 
  */	
 public class dKusudama extends AbstractKusudama {
-	
+	public static PShader kusudamaShader; 
+	public static PShader kusudamaStencil;
+	public static int renderMode = 1; 
+	protected static boolean multiPass = false;
+	public static PShader currentShader; 
+
+	float[] coneSequence; 
+	int coneCount; 
+
 	public dKusudama() {}
 
 	/**
@@ -50,7 +69,7 @@ public class dKusudama extends AbstractKusudama {
 	 * @param forBone the bone this kusudama will be attached to.
 	 */
 	public dKusudama(dBone forBone) {
-		super(forBone);
+		super(forBone); 
 	}
 
 
@@ -58,27 +77,133 @@ public class dKusudama extends AbstractKusudama {
 	 * {@inheritDoc}
 	 **/
 	@Override
-	public AbstractLimitCone createLimitConeForIndex(int insertAt, SGVec_3d newPoint, double radius) {
-		return new dLimitCone(dAxes.toDVector(newPoint), radius, this);		
-	}
-	
-	
-	/**
-	 * Adds a LimitCone to the Kusudama. LimitCones are reach cones which can be arranged sequentially. The Kusudama will infer
-	 * a smooth path leading from one LimitCone to the next. 
-	 * 
-	 * Using a single LimitCone is functionally equivalent to a classic reachCone constraint. 
-	 * 
-	 * @param insertAt the intended index for this LimitCone in the sequence of LimitCones from which the Kusudama will infer a path. @see IK.AbstractKusudama.limitCones limitCones array. 
-	 * @param newPoint where on the Kusudama to add the LimitCone (in Kusudama's local coordinate frame defined by its bone's majorRotationAxes))
-	 * @param radius the radius of the limitCone
-	 */
-	public void addLimitConeAtIndex(int insertAt, DVector newPoint, double radius) {
-		super.addLimitConeAtIndex(insertAt, dAxes.toSGVec(newPoint), radius);
+	public AbstractLimitCone  createLimitConeForIndex(int insertAt, Vec3d<?> newPoint, double radius) {
+		return new dLimitCone(newPoint, radius, this);		
 	}
 
-	public boolean isInLimits(DVector inPoint) {
-		return super.isInLimits_(
-				dAxes.toSGVec(inPoint));
+
+	/**
+	 * @return the limitingAxes of this KusudamaExample (these are just its parentBone's majorRotationAxes)
+	 */
+	@Override
+	public dAxes limitingAxes() {
+		//if(inverted) return inverseLimitingAxes; 
+		return (dAxes) limitingAxes;
 	}
+
+	public void drawMe(PGraphics p, int boneCol, float pinSize) {		
+		
+		updateShaderTexture();
+		
+		PMatrix localMat = limitingAxes().getLocalPMatrix();
+		p.applyMatrix(localMat);
+		float circumference = (float) (attachedTo().getBoneHeight()/2.5f); 
+		DVector min = new DVector(0d,0d,circumference);
+		DVector current = new DVector(0d, 0d, circumference); 
+		Rot minRot = new Rot(new DVector(0,1,0), minAxialAngle()); 
+		double absAngle =minAxialAngle+range;
+		Rot maxRot = new Rot(new DVector(0,1,0), absAngle); 
+
+		double pieces = 20d; 
+		double granularity =1d/pieces;  
+		p.beginShape(PConstants.TRIANGLE_FAN);
+		p.noStroke();	
+		p.fill(0, 150, 0, 120);
+		p.vertex(0,0,0);
+		for(double i=0; i<=pieces+(3*granularity); i++) {
+			MRotation interp = Rot.slerp(i*granularity, minRot.rotation, maxRot.rotation);
+			current = interp.applyTo(min);
+			p.vertex((float)current.x, (float)current.y, (float)(current.z));
+		}		
+		p.endShape();
+		float r = p.red(System.identityHashCode(this));
+		float g = p.green(System.identityHashCode(this));
+		float b = p.blue(System.identityHashCode(this));
+		p.fill(p.color(r,g,b));//p.color(255, 0, 255, 100));
+		p.textureMode(p.NORMAL);
+		p.shader(currentShader);
+		if(renderMode == 0) 
+			p.fill(p.color(r,g,b)); 
+		else 
+			p.fill(p.color(200, 0, 200, 255));
+
+		currentShader.set("modelViewInv", ((PGraphicsOpenGL)p).modelviewInv);
+		currentShader.set("coneSequence", coneSequence, 4);
+		currentShader.set("coneCount", coneCount);
+		p.sphereDetail(30);
+		p.sphere((float)attachedTo().getBoneHeight()/3.5f);
+		p.resetShader();
+		Rot alignRot = limitingAxes.getGlobalMBasis().getInverseRotation().applyTo(attachedTo().localAxes().getGlobalMBasis().rotation);
+
+
+		Rot[] decomposition = alignRot.getSwingTwist(new SGVec_3d(0,1,0));
+		double angle = decomposition[1].getAngle() * decomposition[1].getAxis().y;
+		Rot zRot = new Rot(new DVector(0,1,0), angle);
+		DVector yaw = new DVector(0, 0, circumference); 
+		yaw = zRot.applyToCopy(yaw);
+		p.stroke(25, 25,195); 
+		p.strokeWeight(4);
+		p.line(0f,  0f,  0f,  (float)yaw.x, (float)yaw.y, (float)yaw.z);
+
+	}
+
+
+	int lastRenderMode = -1; 
+	protected void updateShaderTexture() {
+		
+		if(coneSequence == null || coneSequence.length != getLimitCones().size()*12 || coneCount != getLimitCones().size()) {
+			coneSequence = new float[getLimitCones().size()*12];
+			coneCount = getLimitCones().size();
+		}
+		
+			int idx =0;
+			for(dLimitCone lc : getLimitCones()) {
+				PVector controlPoint = new DVector(lc.getControlPoint()).toPVec(); 
+				PVector leftTangent = new DVector(lc.tangentCircleCenterNext1).toPVec();				
+				PVector rightTangent = new DVector(lc.tangentCircleCenterNext2).toPVec();
+				leftTangent = leftTangent.normalize(); controlPoint = controlPoint.normalize(); rightTangent = rightTangent.normalize(); 
+				float tanRan = (float) lc.tangentCircleRadiusNext; 
+				float controlRan = (float) lc.getRadius();				 
+				coneSequence[idx] = controlPoint.x; 
+				coneSequence[idx+1]=controlPoint.y; 
+				coneSequence[idx+2] =controlPoint.z; 
+				coneSequence[idx+3] = controlRan;
+				idx+= 4; 
+				coneSequence[idx] = leftTangent.x; 
+				coneSequence[idx+1]=leftTangent.y; 
+				coneSequence[idx+2] =leftTangent.z; 
+				coneSequence[idx+3] = tanRan;
+				idx += 4;
+				coneSequence[idx] = rightTangent.x; 
+				coneSequence[idx+1]=rightTangent.y; 
+				coneSequence[idx+2] =rightTangent.z; 
+				coneSequence[idx+3] = tanRan;
+				idx += 4; 
+			}
+		
+			if(renderMode == 0) 
+				currentShader = kusudamaStencil;				
+			else
+				currentShader = kusudamaShader;			
+				
+	}
+
+	@Override
+	public void updateTangentRadii() {
+		super.updateTangentRadii();
+		updateShaderTexture();
+	}
+
+	@Override
+	public ArrayList<dLimitCone> getLimitCones() {
+		return (ArrayList<dLimitCone>)super.getLimitCones();
+	}
+
+	public static void enableMultiPass(boolean multipass) {
+		if(multipass != multiPass) {
+			multiPass = multipass;
+			kusudamaShader.set("multiPass", multiPass);
+		}
+	}
+
 }

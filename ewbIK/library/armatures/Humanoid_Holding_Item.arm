@@ -1,0 +1,3155 @@
+{
+  "armatures": [{
+    "localAxes": "1776900385-dAxes",
+    "rootBone": "39460173-dBone",
+    "identityHash": "1232661264-dArmature",
+    "defaultIterations": 15,
+    "tag": "example",
+    "dampening": 0.05
+  }],
+  "kusudamas": [
+    {
+      "limitAxes": "549115539-dAxes",
+      "painfulness": 0,
+      "identityHash": "1707386078-dKusudama",
+      "limitCones": ["1697899364-dLimitCone"],
+      "minAxialAngle": -0.17453292519943295,
+      "attachedTo": "1755714835-dBone",
+      "axialRange": 0.3490658503988659,
+      "axiallyConstrained": true,
+      "orientationallyConstrained": true
+    },
+    {
+      "limitAxes": "525443737-dAxes",
+      "painfulness": 0.1,
+      "identityHash": "56250132-dKusudama",
+      "limitCones": ["2011998365-dLimitCone"],
+      "minAxialAngle": -0.3,
+      "attachedTo": "2011832440-dBone",
+      "axialRange": 1,
+      "axiallyConstrained": true,
+      "orientationallyConstrained": true
+    },
+    {
+      "limitAxes": "1732297837-dAxes",
+      "painfulness": 0,
+      "identityHash": "524285115-dKusudama",
+      "limitCones": ["599313328-dLimitCone"],
+      "minAxialAngle": -0.17453292519943295,
+      "attachedTo": "492889448-dBone",
+      "axialRange": 0.3490658503988659,
+      "axiallyConstrained": true,
+      "orientationallyConstrained": true
+    },
+    {
+      "limitAxes": "228212540-dAxes",
+      "painfulness": 0,
+      "identityHash": "1302819278-dKusudama",
+      "limitCones": ["67417462-dLimitCone"],
+      "minAxialAngle": -0.17453292519943295,
+      "attachedTo": "2053282363-dBone",
+      "axialRange": 0.3490658503988659,
+      "axiallyConstrained": true,
+      "orientationallyConstrained": true
+    },
+    {
+      "limitAxes": "893900186-dAxes",
+      "painfulness": 0,
+      "identityHash": "478565887-dKusudama",
+      "limitCones": ["348648077-dLimitCone"],
+      "minAxialAngle": -0.17453292519943295,
+      "attachedTo": "383757870-dBone",
+      "axialRange": 0.3490658503988659,
+      "axiallyConstrained": true,
+      "orientationallyConstrained": true
+    },
+    {
+      "limitAxes": "773155237-dAxes",
+      "painfulness": 0,
+      "identityHash": "226871028-dKusudama",
+      "limitCones": ["1877416549-dLimitCone"],
+      "minAxialAngle": 0.001,
+      "attachedTo": "1494873913-dBone",
+      "axialRange": 0.002,
+      "axiallyConstrained": true,
+      "orientationallyConstrained": true
+    },
+    {
+      "limitAxes": "1920826138-dAxes",
+      "painfulness": 0,
+      "identityHash": "1444198203-dKusudama",
+      "limitCones": [
+        "1389899038-dLimitCone",
+        "820160438-dLimitCone"
+      ],
+      "minAxialAngle": -2.7,
+      "attachedTo": "1652914198-dBone",
+      "axialRange": 2.7,
+      "axiallyConstrained": true,
+      "orientationallyConstrained": true
+    },
+    {
+      "limitAxes": "1081076715-dAxes",
+      "painfulness": 0,
+      "identityHash": "1272098483-dKusudama",
+      "limitCones": ["635672874-dLimitCone"],
+      "minAxialAngle": -0.17453292519943295,
+      "attachedTo": "922314580-dBone",
+      "axialRange": 0.3490658503988659,
+      "axiallyConstrained": true,
+      "orientationallyConstrained": true
+    },
+    {
+      "limitAxes": "2012160658-dAxes",
+      "painfulness": 0,
+      "identityHash": "761126637-dKusudama",
+      "limitCones": ["389529261-dLimitCone"],
+      "minAxialAngle": -0.17453292519943295,
+      "attachedTo": "871240088-dBone",
+      "axialRange": 0.3490658503988659,
+      "axiallyConstrained": true,
+      "orientationallyConstrained": true
+    },
+    {
+      "limitAxes": "1743002405-dAxes",
+      "painfulness": 0.05,
+      "identityHash": "954601849-dKusudama",
+      "limitCones": [
+        "97932230-dLimitCone",
+        "2110218578-dLimitCone"
+      ],
+      "minAxialAngle": -0.3,
+      "attachedTo": "1249376407-dBone",
+      "axialRange": 1.7,
+      "axiallyConstrained": true,
+      "orientationallyConstrained": true
+    },
+    {
+      "limitAxes": "130834196-dAxes",
+      "painfulness": 0,
+      "identityHash": "867208277-dKusudama",
+      "limitCones": [
+        "1441634814-dLimitCone",
+        "1341580261-dLimitCone"
+      ],
+      "minAxialAngle": 0.01,
+      "attachedTo": "1757452533-dBone",
+      "axialRange": 0.02,
+      "axiallyConstrained": true,
+      "orientationallyConstrained": true
+    },
+    {
+      "limitAxes": "2072328717-dAxes",
+      "painfulness": 0,
+      "identityHash": "1270400049-dKusudama",
+      "limitCones": [
+        "1565262534-dLimitCone",
+        "1020071880-dLimitCone"
+      ],
+      "minAxialAngle": -0,
+      "attachedTo": "1415310832-dBone",
+      "axialRange": 2.7,
+      "axiallyConstrained": true,
+      "orientationallyConstrained": true
+    },
+    {
+      "limitAxes": "1259281785-dAxes",
+      "painfulness": 0,
+      "identityHash": "1642226240-dKusudama",
+      "limitCones": ["236668033-dLimitCone"],
+      "minAxialAngle": -0.17453292519943295,
+      "attachedTo": "1564213627-dBone",
+      "axialRange": 0.3490658503988659,
+      "axiallyConstrained": true,
+      "orientationallyConstrained": true
+    },
+    {
+      "limitAxes": "1339194081-dAxes",
+      "painfulness": 0,
+      "identityHash": "368943522-dKusudama",
+      "limitCones": [
+        "615875851-dLimitCone",
+        "87763950-dLimitCone"
+      ],
+      "minAxialAngle": -0.01,
+      "attachedTo": "523988834-dBone",
+      "axialRange": 0.02,
+      "axiallyConstrained": true,
+      "orientationallyConstrained": true
+    },
+    {
+      "limitAxes": "1352012899-dAxes",
+      "painfulness": 0.1,
+      "identityHash": "1150185190-dKusudama",
+      "limitCones": ["1084229150-dLimitCone"],
+      "minAxialAngle": -0.7,
+      "attachedTo": "2050266797-dBone",
+      "axialRange": 1,
+      "axiallyConstrained": true,
+      "orientationallyConstrained": true
+    },
+    {
+      "limitAxes": "1856278370-dAxes",
+      "painfulness": 0.05,
+      "identityHash": "550210541-dKusudama",
+      "limitCones": [
+        "955769212-dLimitCone",
+        "1682950615-dLimitCone"
+      ],
+      "minAxialAngle": -1.7,
+      "attachedTo": "1603242724-dBone",
+      "axialRange": 1.7,
+      "axiallyConstrained": true,
+      "orientationallyConstrained": true
+    }
+  ],
+  "bones": [
+    {
+      "localAxes": "2113374204-dAxes",
+      "identityHash": "492889448-dBone",
+      "majorRotationAxes": "1732297837-dAxes",
+      "children": ["383757870-dBone"],
+      "parentArmature": "1232661264-dArmature",
+      "boneHeight": 10,
+      "tag": "c4",
+      "stiffness": 0,
+      "constraints": "524285115-dKusudama"
+    },
+    {
+      "localAxes": "1363136220-dAxes",
+      "identityHash": "871240088-dBone",
+      "majorRotationAxes": "2012160658-dAxes",
+      "children": [],
+      "parentArmature": "1232661264-dArmature",
+      "boneHeight": 15,
+      "IKPin": "79477998-dIKPin",
+      "tag": "head",
+      "stiffness": 0,
+      "constraints": "761126637-dKusudama"
+    },
+    {
+      "localAxes": "1449454619-dAxes",
+      "identityHash": "523988834-dBone",
+      "majorRotationAxes": "1339194081-dAxes",
+      "children": [],
+      "parentArmature": "1232661264-dArmature",
+      "boneHeight": 10,
+      "IKPin": "241012923-dIKPin",
+      "tag": "right hand",
+      "stiffness": 0,
+      "constraints": "368943522-dKusudama"
+    },
+    {
+      "localAxes": "900326607-dAxes",
+      "identityHash": "1494873913-dBone",
+      "majorRotationAxes": "773155237-dAxes",
+      "children": ["2053282363-dBone"],
+      "parentArmature": "1232661264-dArmature",
+      "boneHeight": 12,
+      "tag": "neck 1",
+      "stiffness": 0,
+      "constraints": "226871028-dKusudama"
+    },
+    {
+      "localAxes": "352850808-dAxes",
+      "identityHash": "1564213627-dBone",
+      "majorRotationAxes": "1259281785-dAxes",
+      "children": ["922314580-dBone"],
+      "parentArmature": "1232661264-dArmature",
+      "boneHeight": 10,
+      "tag": "c1",
+      "stiffness": 0,
+      "constraints": "1642226240-dKusudama"
+    },
+    {
+      "localAxes": "1404698504-dAxes",
+      "identityHash": "1652914198-dBone",
+      "majorRotationAxes": "1920826138-dAxes",
+      "children": ["523988834-dBone"],
+      "parentArmature": "1232661264-dArmature",
+      "boneHeight": 40,
+      "tag": "right lower arm",
+      "stiffness": 0,
+      "constraints": "1444198203-dKusudama"
+    },
+    {
+      "localAxes": "24316821-dAxes",
+      "identityHash": "2011832440-dBone",
+      "majorRotationAxes": "525443737-dAxes",
+      "children": ["1603242724-dBone"],
+      "parentArmature": "1232661264-dArmature",
+      "boneHeight": 15,
+      "tag": "right collar bone",
+      "stiffness": 0,
+      "constraints": "56250132-dKusudama"
+    },
+    {
+      "localAxes": "279022475-dAxes",
+      "identityHash": "1415310832-dBone",
+      "majorRotationAxes": "2072328717-dAxes",
+      "children": ["1757452533-dBone"],
+      "parentArmature": "1232661264-dArmature",
+      "boneHeight": 40,
+      "tag": "right lower arm",
+      "stiffness": 0,
+      "constraints": "1270400049-dKusudama"
+    },
+    {
+      "localAxes": "271999809-dAxes",
+      "identityHash": "2053282363-dBone",
+      "majorRotationAxes": "228212540-dAxes",
+      "children": ["871240088-dBone"],
+      "parentArmature": "1232661264-dArmature",
+      "boneHeight": 12,
+      "tag": "neck 2",
+      "stiffness": 0,
+      "constraints": "1302819278-dKusudama"
+    },
+    {
+      "localAxes": "260457115-dAxes",
+      "identityHash": "1603242724-dBone",
+      "majorRotationAxes": "1856278370-dAxes",
+      "children": ["1652914198-dBone"],
+      "parentArmature": "1232661264-dArmature",
+      "boneHeight": 40,
+      "tag": "right upper arm",
+      "stiffness": 0,
+      "constraints": "550210541-dKusudama"
+    },
+    {
+      "localAxes": "41334380-dAxes",
+      "identityHash": "1757452533-dBone",
+      "majorRotationAxes": "130834196-dAxes",
+      "children": [],
+      "parentArmature": "1232661264-dArmature",
+      "boneHeight": 10,
+      "IKPin": "1377201857-dIKPin",
+      "tag": "left hand",
+      "stiffness": 0,
+      "constraints": "867208277-dKusudama"
+    },
+    {
+      "localAxes": "342240144-dAxes",
+      "identityHash": "1755714835-dBone",
+      "majorRotationAxes": "549115539-dAxes",
+      "children": ["492889448-dBone"],
+      "parentArmature": "1232661264-dArmature",
+      "boneHeight": 10,
+      "tag": "c3",
+      "stiffness": 0,
+      "constraints": "1707386078-dKusudama"
+    },
+    {
+      "localAxes": "1521795104-dAxes",
+      "identityHash": "1249376407-dBone",
+      "majorRotationAxes": "1743002405-dAxes",
+      "children": ["1415310832-dBone"],
+      "parentArmature": "1232661264-dArmature",
+      "boneHeight": 40,
+      "tag": "left upper arm",
+      "stiffness": 0,
+      "constraints": "954601849-dKusudama"
+    },
+    {
+      "localAxes": "650769958-dAxes",
+      "identityHash": "39460173-dBone",
+      "majorRotationAxes": "713939929-dAxes",
+      "children": ["1564213627-dBone"],
+      "parentArmature": "1232661264-dArmature",
+      "boneHeight": 1,
+      "IKPin": "1664157492-dIKPin",
+      "tag": "example : rootBone",
+      "stiffness": 0
+    },
+    {
+      "localAxes": "674351337-dAxes",
+      "identityHash": "383757870-dBone",
+      "majorRotationAxes": "893900186-dAxes",
+      "children": [
+        "1494873913-dBone",
+        "2011832440-dBone",
+        "2050266797-dBone"
+      ],
+      "parentArmature": "1232661264-dArmature",
+      "boneHeight": 10,
+      "tag": "c5",
+      "stiffness": 0,
+      "constraints": "478565887-dKusudama"
+    },
+    {
+      "localAxes": "1133041376-dAxes",
+      "identityHash": "2050266797-dBone",
+      "majorRotationAxes": "1352012899-dAxes",
+      "children": ["1249376407-dBone"],
+      "parentArmature": "1232661264-dArmature",
+      "boneHeight": 15,
+      "tag": "left collar bone",
+      "stiffness": 0,
+      "constraints": "1150185190-dKusudama"
+    },
+    {
+      "localAxes": "929385484-dAxes",
+      "identityHash": "922314580-dBone",
+      "majorRotationAxes": "1081076715-dAxes",
+      "children": ["1755714835-dBone"],
+      "parentArmature": "1232661264-dArmature",
+      "boneHeight": 10,
+      "tag": "c2",
+      "stiffness": 0,
+      "constraints": "1272098483-dKusudama"
+    }
+  ],
+  "limitCones": [
+    {
+      "identityHash": "389529261-dLimitCone",
+      "parentKusudama": "761126637-dKusudama",
+      "radius": 0.6981317007977318,
+      "controlPoint": {"vec": [
+        -9.860761315262639E-32,
+        1,
+        -3.8857805861880444E-16
+      ]}
+    },
+    {
+      "identityHash": "1389899038-dLimitCone",
+      "parentKusudama": "1444198203-dKusudama",
+      "radius": 0.025,
+      "controlPoint": {"vec": [
+        -3.6386705028785315E-16,
+        0.09950371902099961,
+        0.9950371902099892
+      ]}
+    },
+    {
+      "identityHash": "1441634814-dLimitCone",
+      "parentKusudama": "867208277-dKusudama",
+      "radius": 0.7853981633974483,
+      "controlPoint": {"vec": [
+        7.610449107566285E-16,
+        0.7071067811865479,
+        -0.7071067811865472
+      ]}
+    },
+    {
+      "identityHash": "1682950615-dLimitCone",
+      "parentKusudama": "550210541-dKusudama",
+      "radius": 1,
+      "controlPoint": {"vec": [
+        -0.02323227222649205,
+        0.9996626065373221,
+        -0.011616136113248078
+      ]}
+    },
+    {
+      "identityHash": "599313328-dLimitCone",
+      "parentKusudama": "524285115-dKusudama",
+      "radius": 0.17453292519943295,
+      "controlPoint": {"vec": [
+        -3.204747427460358E-31,
+        1,
+        -3.8857805861880444E-16
+      ]}
+    },
+    {
+      "identityHash": "1341580261-dLimitCone",
+      "parentKusudama": "867208277-dKusudama",
+      "radius": 0.7853981633974483,
+      "controlPoint": {"vec": [
+        7.703962123969555E-16,
+        0.7071067811865501,
+        0.707106781186545
+      ]}
+    },
+    {
+      "identityHash": "236668033-dLimitCone",
+      "parentKusudama": "1642226240-dKusudama",
+      "radius": 0.17453292519943295,
+      "controlPoint": {"vec": [
+        3.2047474274603688E-31,
+        1,
+        4.163336342344348E-16
+      ]}
+    },
+    {
+      "identityHash": "67417462-dLimitCone",
+      "parentKusudama": "1302819278-dKusudama",
+      "radius": 0.17453292519943295,
+      "controlPoint": {"vec": [
+        7.395570986446992E-32,
+        1,
+        -8.326672684688681E-17
+      ]}
+    },
+    {
+      "identityHash": "2011998365-dLimitCone",
+      "parentKusudama": "56250132-dKusudama",
+      "radius": 0.7,
+      "controlPoint": {"vec": [
+        0,
+        1,
+        -2.498001805406602E-16
+      ]}
+    },
+    {
+      "identityHash": "635672874-dLimitCone",
+      "parentKusudama": "1272098483-dKusudama",
+      "radius": 0.17453292519943295,
+      "controlPoint": {"vec": [
+        3.2047474274603688E-31,
+        1,
+        6.106226635438377E-16
+      ]}
+    },
+    {
+      "identityHash": "955769212-dLimitCone",
+      "parentKusudama": "550210541-dKusudama",
+      "radius": 1,
+      "controlPoint": {"vec": [
+        0.023232272226494596,
+        0.999662606537322,
+        0.01161613611324641
+      ]}
+    },
+    {
+      "identityHash": "1084229150-dLimitCone",
+      "parentKusudama": "1150185190-dKusudama",
+      "radius": 0.7,
+      "controlPoint": {"vec": [
+        1.1102230246251565E-16,
+        1,
+        -2.7755575615628914E-16
+      ]}
+    },
+    {
+      "identityHash": "87763950-dLimitCone",
+      "parentKusudama": "368943522-dKusudama",
+      "radius": 0.7853981633974483,
+      "controlPoint": {"vec": [
+        -6.805940427860802E-16,
+        0.7071067811865501,
+        0.707106781186545
+      ]}
+    },
+    {
+      "identityHash": "820160438-dLimitCone",
+      "parentKusudama": "1444198203-dKusudama",
+      "radius": 0.025,
+      "controlPoint": {"vec": [
+        2.27883927640672E-16,
+        0.09950371902099872,
+        -0.9950371902099893
+      ]}
+    },
+    {
+      "identityHash": "1020071880-dLimitCone",
+      "parentKusudama": "1270400049-dKusudama",
+      "radius": 0.025,
+      "controlPoint": {"vec": [
+        -2.570142526189457E-16,
+        0.09950371902099872,
+        -0.9950371902099893
+      ]}
+    },
+    {
+      "identityHash": "1565262534-dLimitCone",
+      "parentKusudama": "1270400049-dKusudama",
+      "radius": 0.025,
+      "controlPoint": {"vec": [
+        3.705057752367159E-16,
+        0.09950371902099961,
+        0.9950371902099892
+      ]}
+    },
+    {
+      "identityHash": "615875851-dLimitCone",
+      "parentKusudama": "368943522-dKusudama",
+      "radius": 0.7853981633974483,
+      "controlPoint": {"vec": [
+        -6.966614289605233E-16,
+        0.7071067811865479,
+        -0.7071067811865472
+      ]}
+    },
+    {
+      "identityHash": "348648077-dLimitCone",
+      "parentKusudama": "478565887-dKusudama",
+      "radius": 0.17453292519943295,
+      "controlPoint": {"vec": [
+        7.395570986446992E-32,
+        1,
+        -8.326672684688681E-17
+      ]}
+    },
+    {
+      "identityHash": "2110218578-dLimitCone",
+      "parentKusudama": "954601849-dKusudama",
+      "radius": 1,
+      "controlPoint": {"vec": [
+        0.02323227222649237,
+        0.9996626065373221,
+        -0.011616136113246519
+      ]}
+    },
+    {
+      "identityHash": "97932230-dLimitCone",
+      "parentKusudama": "954601849-dKusudama",
+      "radius": 1,
+      "controlPoint": {"vec": [
+        -0.02323227222649328,
+        0.9996626065373221,
+        0.011616136113245919
+      ]}
+    },
+    {
+      "identityHash": "1697899364-dLimitCone",
+      "parentKusudama": "1707386078-dKusudama",
+      "radius": 0.17453292519943295,
+      "controlPoint": {"vec": [
+        7.395570986446979E-32,
+        1,
+        0
+      ]}
+    },
+    {
+      "identityHash": "1877416549-dLimitCone",
+      "parentKusudama": "226871028-dKusudama",
+      "radius": 0.01,
+      "controlPoint": {"vec": [
+        0,
+        1,
+        -2.220446049250313E-16
+      ]}
+    }
+  ],
+  "axes": [
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "650769958-dAxes",
+      "identityHash": "1259281785-dAxes",
+      "rotation": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0,
+        1,
+        0
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "1133041376-dAxes",
+      "identityHash": "1521795104-dAxes",
+      "rotation": [
+        -0.6796696327329125,
+        0.04473574096779429,
+        -0.21553623487598816,
+        0.6997085359463991
+      ],
+      "translation": [
+        -3.552713678800501E-15,
+        15,
+        0
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "900326607-dAxes",
+      "identityHash": "271999809-dAxes",
+      "rotation": [
+        -0.9965147414773756,
+        -9.355609474972343E-5,
+        -0.08341676028746486,
+        7.327127790570861E-5
+      ],
+      "translation": [
+        -7.888609052210118E-31,
+        12,
+        0
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "900326607-dAxes",
+      "identityHash": "228212540-dAxes",
+      "rotation": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        -7.888609052210118E-31,
+        12,
+        0
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "1133041376-dAxes",
+      "identityHash": "1743002405-dAxes",
+      "rotation": [
+        0.907491463000104,
+        -0.18786124910791588,
+        -2.3592239273284576E-16,
+        -0.37572249821583037
+      ],
+      "translation": [
+        -3.552713678800501E-15,
+        15,
+        0
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "1682788987-dAxes",
+      "identityHash": "788886565-dAxes",
+      "rotation": [
+        1,
+        -1.3769367590565903E-17,
+        1.0842021724855042E-19,
+        2.60208521396521E-18
+      ],
+      "translation": [
+        3.469446951953614E-16,
+        10,
+        6.8833827526759706E-15
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "260457115-dAxes",
+      "identityHash": "1920826138-dAxes",
+      "rotation": [
+        0.7071067811865475,
+        -0.7071067811865477,
+        -4.831708244813565E-16,
+        8.03370544323055E-18
+      ],
+      "translation": [
+        -3.108624468950438E-14,
+        40,
+        0
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "1404698504-dAxes",
+      "identityHash": "1449454619-dAxes",
+      "rotation": [
+        -0.9959236223967767,
+        0.026341409964858016,
+        0.004979659609216661,
+        0.08612474361832603
+      ],
+      "translation": [
+        0,
+        40,
+        0
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "1747924262-dAxes",
+      "identityHash": "2010344120-dAxes",
+      "rotation": [
+        -0.5069501724690944,
+        0.7812935983666331,
+        -0.18680277596098532,
+        -0.3125484901229628
+      ],
+      "translation": [
+        3.552713678800501E-15,
+        40.000000000000355,
+        3.552713678800501E-14
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "1682788987-dAxes",
+      "identityHash": "1471192687-dAxes",
+      "rotation": [
+        0.9999258699683283,
+        -0.005106854119570748,
+        -0.010515584791900685,
+        0.0034054493929001357
+      ],
+      "translation": [
+        9.159339953157541E-16,
+        10,
+        1.4876988529977098E-14
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "1471192687-dAxes",
+      "identityHash": "1533744639-dAxes",
+      "rotation": [
+        0.8280672304692729,
+        -1.5612511283791264E-16,
+        -1.3183898417423734E-16,
+        -0.5606288093051839
+      ],
+      "translation": [
+        3.7470027081099033E-16,
+        10,
+        7.993605777301127E-15
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "24316821-dAxes",
+      "identityHash": "260457115-dAxes",
+      "rotation": [
+        0.8424507306891859,
+        -0.060700467270859246,
+        -0.08429438624999284,
+        0.5286649941892249
+      ],
+      "translation": [
+        -1.7763568394002505E-15,
+        15,
+        -0
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "279022475-dAxes",
+      "identityHash": "130834196-dAxes",
+      "rotation": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        -2.6469779601696886E-23,
+        39.99999999999999,
+        0
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "1696992278-dAxes",
+      "identityHash": "1699649608-dAxes",
+      "rotation": [
+        0.9074914630001041,
+        -0.18786124910791585,
+        -2.498001805406602E-16,
+        -0.3757224982158303
+      ],
+      "translation": [
+        1.9539925233402755E-14,
+        15.000000000000014,
+        -5.773159728050814E-15
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "352850808-dAxes",
+      "identityHash": "929385484-dAxes",
+      "rotation": [
+        0.9998754304483968,
+        -1.0956750756941321E-6,
+        0.01578364467640718,
+        -1.2048310155282276E-5
+      ],
+      "translation": [
+        0,
+        10,
+        0
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "347763103-dAxes",
+      "identityHash": "1682788987-dAxes",
+      "rotation": [
+        0.9962007053770017,
+        -2.9600830948680267E-5,
+        -0.08708703864590614,
+        3.781589026092755E-5
+      ],
+      "translation": [
+        1.8041124150158794E-15,
+        10.000000000000007,
+        1.3100631690576847E-14
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "674351337-dAxes",
+      "identityHash": "525443737-dAxes",
+      "rotation": [
+        0.828067230469273,
+        -1.8041124150158794E-16,
+        1.3877787807814457E-16,
+        0.5606288093051839
+      ],
+      "translation": [
+        0,
+        10,
+        0
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "1749349751-dAxes",
+      "identityHash": "1335732807-dAxes",
+      "rotation": [
+        0.7071067811865477,
+        -0.7071067811865475,
+        1.5612565962275227E-9,
+        1.5612528492248146E-9
+      ],
+      "translation": [
+        -20.359097491403496,
+        -2.7778058177093703,
+        -8.65586335392165
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "260457115-dAxes",
+      "identityHash": "1404698504-dAxes",
+      "rotation": [
+        -0.5069501724690944,
+        0.7812935983666331,
+        -0.18680277596098532,
+        -0.3125484901229628
+      ],
+      "translation": [
+        -3.108624468950438E-14,
+        40,
+        0
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "674351337-dAxes",
+      "identityHash": "1352012899-dAxes",
+      "rotation": [
+        0.828067230469273,
+        -1.5265566588595902E-16,
+        -1.249000902703301E-16,
+        -0.5606288093051839
+      ],
+      "translation": [
+        0,
+        10,
+        0
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "-1",
+      "identityHash": "708862917-dAxes",
+      "rotation": [
+        0.7110234997445816,
+        0.06220649572817743,
+        -0.6977459848089927,
+        0.06104486369152165
+      ],
+      "translation": [
+        0,
+        50,
+        0
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "1690105082-dAxes",
+      "identityHash": "660298482-dAxes",
+      "rotation": [
+        0.9074914630001039,
+        -0.18786124910791596,
+        2.289834988289386E-16,
+        0.3757224982158306
+      ],
+      "translation": [
+        8.881784197001252E-15,
+        15.000000000000021,
+        1.021405182655144E-14
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "708862917-dAxes",
+      "identityHash": "1776900385-dAxes",
+      "rotation": [
+        6.123233995736766E-17,
+        0,
+        0,
+        -1
+      ],
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "2010344120-dAxes",
+      "identityHash": "1497289496-dAxes",
+      "rotation": [
+        -0.9959236223967767,
+        0.026341409964858016,
+        0.004979659609216661,
+        0.08612474361832603
+      ],
+      "translation": [
+        2.0605739337042905E-13,
+        40.00000000000051,
+        1.8474111129762605E-13
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "1853773922-dAxes",
+      "identityHash": "1760489914-dAxes",
+      "rotation": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        5.689893001203927E-16,
+        12,
+        1.1546319456101628E-14
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "1521795104-dAxes",
+      "identityHash": "2072328717-dAxes",
+      "rotation": [
+        0.7071067811865475,
+        -0.7071067811865477,
+        4.0325440390164095E-16,
+        4.6756374818778E-18
+      ],
+      "translation": [
+        2.220446046603335E-14,
+        40,
+        0
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "1345137488-dAxes",
+      "identityHash": "347763103-dAxes",
+      "rotation": [
+        0.9995581275908106,
+        -1.1244868932327663E-5,
+        -0.029724545752548397,
+        2.8644550613713883E-5
+      ],
+      "translation": [
+        2.6645352591003757E-15,
+        10,
+        1.887379141862766E-14
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "2010344120-dAxes",
+      "identityHash": "1512499169-dAxes",
+      "rotation": [
+        1,
+        -6.938893903907227E-18,
+        2.7755575615628907E-17,
+        2.7755575615628907E-17
+      ],
+      "translation": [
+        9.947598300641403E-14,
+        40.0000000000003,
+        1.0658141036401503E-13
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "1471192687-dAxes",
+      "identityHash": "1054999598-dAxes",
+      "rotation": [
+        1,
+        -5.421010862427521E-20,
+        -1.0842021724855042E-19,
+        -8.673617379884034E-19
+      ],
+      "translation": [
+        3.7470027081099033E-16,
+        10,
+        7.993605777301127E-15
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "674351337-dAxes",
+      "identityHash": "773155237-dAxes",
+      "rotation": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0,
+        10,
+        0
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "929385484-dAxes",
+      "identityHash": "342240144-dAxes",
+      "rotation": [
+        0.9995581275908106,
+        -1.1244868932327663E-5,
+        -0.029724545752548397,
+        2.8644550613713883E-5
+      ],
+      "translation": [
+        1.9721522630525295E-31,
+        10,
+        0
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "674351337-dAxes",
+      "identityHash": "900326607-dAxes",
+      "rotation": [
+        0.9999871981982843,
+        0.004103257040058261,
+        -7.76947796188421E-4,
+        -0.0028571092612275466
+      ],
+      "translation": [
+        0,
+        10,
+        0
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "1776900385-dAxes",
+      "identityHash": "1551208021-dAxes",
+      "rotation": [
+        1,
+        1.734723475976807E-17,
+        1.951563910473908E-18,
+        0
+      ],
+      "translation": [
+        -0.19034311514467817,
+        -0.43769442175178375,
+        -0.8716934175587369
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "2113374204-dAxes",
+      "identityHash": "893900186-dAxes",
+      "rotation": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0,
+        10,
+        0
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "1482313974-dAxes",
+      "identityHash": "316463319-dAxes",
+      "rotation": [
+        1,
+        1.734723475976807E-18,
+        2.7755575615628914E-17,
+        -1.3877787807814457E-17
+      ],
+      "translation": [
+        -4.973799150320701E-14,
+        40.00000000000025,
+        -1.4210854715202004E-14
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "1471192687-dAxes",
+      "identityHash": "1690105082-dAxes",
+      "rotation": [
+        -0.8238423081549469,
+        0.0563478160127782,
+        0.08261378923653265,
+        -0.5579280748918279
+      ],
+      "translation": [
+        2.3592239273284576E-16,
+        10,
+        1.1546319456101628E-14
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "623575659-dAxes",
+      "identityHash": "1863952573-dAxes",
+      "rotation": [
+        0.7071067811865475,
+        -0.7071067811865478,
+        4.0939474033052647E-16,
+        2.7755575615628914E-17
+      ],
+      "translation": [
+        5.3290705182007514E-14,
+        40.00000000000034,
+        1.7763568394002505E-14
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "1551208021-dAxes",
+      "identityHash": "1677330051-dAxes",
+      "rotation": [
+        0.9999808135790605,
+        -0.004980483297717656,
+        -0.0036608197535983747,
+        4.0701180951872515E-4
+      ],
+      "translation": [
+        2.7755575615628914E-17,
+        0.9999999999999977,
+        3.608224830031759E-16
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "1521795104-dAxes",
+      "identityHash": "279022475-dAxes",
+      "rotation": [
+        0.4271651771009742,
+        -0.9003741115187024,
+        -0.02375184565126196,
+        -0.07932351862694628
+      ],
+      "translation": [
+        2.220446046603335E-14,
+        40,
+        0
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "1471192687-dAxes",
+      "identityHash": "139651858-dAxes",
+      "rotation": [
+        0.8280672304692729,
+        -1.700029006457271E-16,
+        1.3183898417423734E-16,
+        0.5606288093051838
+      ],
+      "translation": [
+        3.7470027081099033E-16,
+        10,
+        7.993605777301127E-15
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "1471192687-dAxes",
+      "identityHash": "1853773922-dAxes",
+      "rotation": [
+        0.9999871981982843,
+        0.004103257040058261,
+        -7.76947796188421E-4,
+        -0.0028571092612275466
+      ],
+      "translation": [
+        2.3592239273284576E-16,
+        10,
+        1.1546319456101628E-14
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "708862917-dAxes",
+      "identityHash": "1615751886-dAxes",
+      "rotation": [
+        -6.123233995736759E-17,
+        0,
+        0,
+        1
+      ],
+      "translation": [
+        -9.184850993605146E-15,
+        -75,
+        -1.7763568394002505E-15
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "623575659-dAxes",
+      "identityHash": "1482313974-dAxes",
+      "rotation": [
+        0.4271651771009742,
+        -0.9003741115187024,
+        -0.02375184565126196,
+        -0.07932351862694628
+      ],
+      "translation": [
+        7.105427357601002E-14,
+        40.000000000000654,
+        1.7763568394002505E-14
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "929385484-dAxes",
+      "identityHash": "549115539-dAxes",
+      "rotation": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        1.9721522630525295E-31,
+        10,
+        0
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "2113374204-dAxes",
+      "identityHash": "674351337-dAxes",
+      "rotation": [
+        0.9999258699683283,
+        -0.005106854119570748,
+        -0.010515584791900685,
+        0.0034054493929001357
+      ],
+      "translation": [
+        0,
+        10,
+        0
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "1749349751-dAxes",
+      "identityHash": "1718264580-dAxes",
+      "rotation": [
+        -0.7048690597423345,
+        0.704869059494115,
+        0.0562103991080088,
+        -0.05621039599538079
+      ],
+      "translation": [
+        20.949192806494892,
+        -2.880480916961303,
+        -10.043308633698919
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "1776900385-dAxes",
+      "identityHash": "650769958-dAxes",
+      "rotation": [
+        -1,
+        -1.431146867680866E-17,
+        -4.3368086899420177E-19,
+        -1.734723475976807E-18
+      ],
+      "translation": [
+        -0.1903431151446781,
+        -0.43769442175178375,
+        -0.8716934175587366
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "708862917-dAxes",
+      "identityHash": "2003605892-dAxes",
+      "rotation": [
+        -6.123233995736767E-17,
+        0,
+        0,
+        1
+      ],
+      "translation": [
+        0.19034311514467828,
+        0.43769442175178264,
+        -0.8716934175587373
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "1776900385-dAxes",
+      "identityHash": "713939929-dAxes",
+      "rotation": [
+        -1,
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "352850808-dAxes",
+      "identityHash": "1081076715-dAxes",
+      "rotation": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0,
+        10,
+        0
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "674351337-dAxes",
+      "identityHash": "24316821-dAxes",
+      "rotation": [
+        -0.8238423081549469,
+        0.0563478160127782,
+        0.08261378923653265,
+        -0.5579280748918279
+      ],
+      "translation": [
+        0,
+        10,
+        0
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "1776900385-dAxes",
+      "identityHash": "1296389601-dAxes",
+      "rotation": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        -3.5915327443603795E-16,
+        -5.398069740840723E-16,
+        -3.110690516659518E-15
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "24316821-dAxes",
+      "identityHash": "1856278370-dAxes",
+      "rotation": [
+        0.907491463000104,
+        -0.1878612491079159,
+        1.942890293094024E-16,
+        0.3757224982158304
+      ],
+      "translation": [
+        -1.7763568394002505E-15,
+        15,
+        -0
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "1677330051-dAxes",
+      "identityHash": "530649753-dAxes",
+      "rotation": [
+        1,
+        2.7755575615628914E-17,
+        2.1684043449710089E-19,
+        -5.204170427930421E-18
+      ],
+      "translation": [
+        6.106226635438361E-16,
+        9.999999999999996,
+        4.218847493575595E-15
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "1853773922-dAxes",
+      "identityHash": "697297595-dAxes",
+      "rotation": [
+        -0.9965147414773756,
+        -9.355609474972343E-5,
+        -0.08341676028746486,
+        7.327127790570861E-5
+      ],
+      "translation": [
+        4.996003610813204E-16,
+        12,
+        1.509903313490213E-14
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "347763103-dAxes",
+      "identityHash": "234585400-dAxes",
+      "rotation": [
+        1,
+        0,
+        -5.572799166575492E-17,
+        0
+      ],
+      "translation": [
+        1.6653345369377348E-15,
+        10.000000000000002,
+        7.993605777301127E-15
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "697297595-dAxes",
+      "identityHash": "1959725577-dAxes",
+      "rotation": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        1.609823385706477E-15,
+        12.000000000000005,
+        1.1102230246251565E-14
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "708862917-dAxes",
+      "identityHash": "1749349751-dAxes",
+      "rotation": [
+        -1,
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        -13.020305899795389,
+        -24.729616491557266,
+        30.99349710918543
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "674351337-dAxes",
+      "identityHash": "1133041376-dAxes",
+      "rotation": [
+        -0.8239303434471652,
+        0.055969489503578614,
+        -0.08266878083102493,
+        0.557828000433518
+      ],
+      "translation": [
+        0,
+        10,
+        0
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "1690105082-dAxes",
+      "identityHash": "1747924262-dAxes",
+      "rotation": [
+        0.8424507306891859,
+        -0.060700467270859246,
+        -0.08429438624999284,
+        0.5286649941892249
+      ],
+      "translation": [
+        1.7763568394002505E-15,
+        15.000000000000036,
+        2.1316282072803006E-14
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "697297595-dAxes",
+      "identityHash": "668969851-dAxes",
+      "rotation": [
+        0.9994513121700126,
+        0.005872204152600798,
+        0.032584376511883784,
+        -9.220777418565591E-4
+      ],
+      "translation": [
+        2.7200464103316335E-15,
+        12.000000000000007,
+        2.1760371282653068E-14
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "271999809-dAxes",
+      "identityHash": "2012160658-dAxes",
+      "rotation": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0,
+        12,
+        0
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "342240144-dAxes",
+      "identityHash": "1732297837-dAxes",
+      "rotation": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        -1.9721522630525295E-30,
+        10,
+        0
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "1551208021-dAxes",
+      "identityHash": "461498644-dAxes",
+      "rotation": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        4.163336342344337E-17,
+        0.9999999999999977,
+        3.608224830031759E-16
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "1471192687-dAxes",
+      "identityHash": "1696992278-dAxes",
+      "rotation": [
+        -0.8239303434471652,
+        0.055969489503578614,
+        -0.08266878083102493,
+        0.557828000433518
+      ],
+      "translation": [
+        2.3592239273284576E-16,
+        10,
+        1.1546319456101628E-14
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "1677330051-dAxes",
+      "identityHash": "1345137488-dAxes",
+      "rotation": [
+        0.9998754304483968,
+        -1.0956750756941321E-6,
+        0.01578364467640718,
+        -1.2048310155282276E-5
+      ],
+      "translation": [
+        1.7208456881689926E-15,
+        9.999999999999998,
+        1.0880185641326534E-14
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "1747924262-dAxes",
+      "identityHash": "1261531014-dAxes",
+      "rotation": [
+        0.7071067811865475,
+        -0.7071067811865477,
+        -6.10622663543836E-16,
+        -1.1102230246251563E-16
+      ],
+      "translation": [
+        -3.552713678800501E-15,
+        40.00000000000023,
+        3.907985046680551E-14
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "279022475-dAxes",
+      "identityHash": "41334380-dAxes",
+      "rotation": [
+        0.9213656794385262,
+        0.0598941602859653,
+        -0.004606866787812968,
+        0.3840270187041808
+      ],
+      "translation": [
+        -2.6469779601696886E-23,
+        39.99999999999999,
+        0
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "342240144-dAxes",
+      "identityHash": "2113374204-dAxes",
+      "rotation": [
+        0.9962007053770017,
+        -2.9600830948680267E-5,
+        -0.08708703864590614,
+        3.781589026092755E-5
+      ],
+      "translation": [
+        -1.9721522630525295E-30,
+        10,
+        0
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "1345137488-dAxes",
+      "identityHash": "484845591-dAxes",
+      "rotation": [
+        1,
+        4.336808689942016E-19,
+        2.168404344971008E-19,
+        1.7347234759768063E-18
+      ],
+      "translation": [
+        1.5543122344752192E-15,
+        9.999999999999998,
+        9.547918011776346E-15
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "1404698504-dAxes",
+      "identityHash": "1339194081-dAxes",
+      "rotation": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0,
+        40,
+        0
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "1482313974-dAxes",
+      "identityHash": "1196370580-dAxes",
+      "rotation": [
+        0.9213656794385262,
+        0.0598941602859653,
+        -0.004606866787812968,
+        0.3840270187041808
+      ],
+      "translation": [
+        -3.730349362740526E-14,
+        40.000000000000504,
+        -2.1316282072803006E-14
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "650769958-dAxes",
+      "identityHash": "352850808-dAxes",
+      "rotation": [
+        0.9999808135790605,
+        -0.004980483297717656,
+        -0.0036608197535983747,
+        4.0701180951872515E-4
+      ],
+      "translation": [
+        0,
+        1,
+        0
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "1696992278-dAxes",
+      "identityHash": "623575659-dAxes",
+      "rotation": [
+        -0.6796696327329125,
+        0.04473574096779429,
+        -0.21553623487598816,
+        0.6997085359463991
+      ],
+      "translation": [
+        4.618527782440651E-14,
+        15.000000000000043,
+        0
+      ],
+      "slipType": 0
+    },
+    {
+      "bases": {
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ]
+      },
+      "parent": "271999809-dAxes",
+      "identityHash": "1363136220-dAxes",
+      "rotation": [
+        0.9994513121700126,
+        0.005872204152600798,
+        0.032584376511883784,
+        -9.220777418565591E-4
+      ],
+      "translation": [
+        0,
+        12,
+        0
+      ],
+      "slipType": 0
+    }
+  ],
+  "IKPins": [
+    {
+      "pinWeight": 5,
+      "priorities": {
+        "x": 5,
+        "y": 5,
+        "z": 5
+      },
+      "identityHash": "79477998-dIKPin",
+      "forBone": "871240088-dBone",
+      "isEnabled": true,
+      "axes": "1615751886-dAxes",
+      "depthFalloff": 0
+    },
+    {
+      "pinWeight": 1,
+      "priorities": {
+        "x": 0.5,
+        "y": 0,
+        "z": 0.5
+      },
+      "identityHash": "1377201857-dIKPin",
+      "forBone": "1757452533-dBone",
+      "isEnabled": true,
+      "axes": "1718264580-dAxes",
+      "depthFalloff": 0
+    },
+    {
+      "pinWeight": 1,
+      "priorities": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "identityHash": "1664157492-dIKPin",
+      "forBone": "39460173-dBone",
+      "isEnabled": true,
+      "axes": "2003605892-dAxes",
+      "depthFalloff": 0
+    },
+    {
+      "pinWeight": 1,
+      "priorities": {
+        "x": 0.5,
+        "y": 0,
+        "z": 0.5
+      },
+      "identityHash": "241012923-dIKPin",
+      "forBone": "523988834-dBone",
+      "isEnabled": true,
+      "axes": "1335732807-dAxes",
+      "depthFalloff": 0
+    }
+  ]
+}

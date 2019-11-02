@@ -18,18 +18,17 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
 package ewbik.processing.singlePrecision.sceneGraph;
-import data.JSONObject;
-import data.LoadManager;
-import data.SaveManager;
+import math.floatV.*;
+import math.floatV.AbstractAxes;
+import math.floatV.CartesianAxes;
+import math.floatV.SGVec_3f;
+import math.floatV.Vec3f;
+import math.floatV.sgRayf;
 import processing.core.PApplet;
+import processing.core.PGraphics;
 import processing.core.PMatrix;
 import processing.core.PMatrix3D;
 import processing.core.PVector;
-import sceneGraph.math.floatV.AbstractAxes;
-import sceneGraph.math.floatV.Matrix4f;
-import sceneGraph.math.floatV.SGVec_3f;
-import sceneGraph.math.floatV.Vec3f;
-import sceneGraph.math.floatV.sgRayf;
 
 /*
  * This class is a reference implementation showing how to extend AbstractAxes. 
@@ -49,8 +48,13 @@ import sceneGraph.math.floatV.sgRayf;
  * Note, this class is a concrete implementation of the abstract class AbstractArmature. Please refer to the {@link AbstractAxes AbstractAxes docs.} 
  * @param name A label for this armature.  
  */	
-public class Axes extends AbstractAxes {
-
+public class Axes extends CartesianAxes {
+	public static int renderMode = 1; 
+	
+	
+	public Axes(AbstractBasis b, AbstractAxes parent) {
+		super(b, parent);
+	}
 	
 	
 	/**
@@ -65,7 +69,6 @@ public class Axes extends AbstractAxes {
 			PVector inX, 
 			PVector inY, 
 			PVector inZ, 
-			boolean forceOrthoNormality,
 			AbstractAxes parent) {
 		
 		super(
@@ -73,16 +76,15 @@ public class Axes extends AbstractAxes {
 				toSGVec(inX), 
 				toSGVec(inY),
 				toSGVec(inZ),
-				forceOrthoNormality,
 				parent
 				);
 	}
 	
-	public Axes(SGVec_3f origin, 
-			SGVec_3f inX, 
-			SGVec_3f inY, 
-			SGVec_3f inZ) {
-		this(origin, inX, inY, inZ, true, null);
+	public Axes(Vec3f<?> origin, 
+			Vec3f<?> x, 
+			Vec3f<?> y, 
+			Vec3f<?> z) {
+		this(origin, x, y, z, true, null);
 	}
 	
 	
@@ -92,54 +94,29 @@ public class Axes extends AbstractAxes {
 				new SGVec_3f(1,0,0), 
 				new SGVec_3f(0,1,0),
 				new SGVec_3f(0,0,1),
-				true,
 				(AbstractAxes)null
 				);
 	}
 	
-	public Axes(SGVec_3f origin, SGVec_3f inX, SGVec_3f inY, SGVec_3f inZ, boolean forceOrthoNormality, AbstractAxes parent) {
-		super(origin, inX, inY, inZ, forceOrthoNormality, parent);
-	}
-	@Override
-	protected AbstractAxes instantiate(
-			SGVec_3f origin, 
-			SGVec_3f gXHeading,
-			SGVec_3f gYHeading, 
-			SGVec_3f gZHeading, 
-			boolean forceOrthoNormality,
-			AbstractAxes parent) {
-		return new Axes(origin, gXHeading, gYHeading, gZHeading, forceOrthoNormality, parent);
+	public Axes(Vec3f<?> origin, Vec3f<?> x, Vec3f<?> y, Vec3f<?> z, boolean forceOrthoNormality, AbstractAxes parent) {
+		super(origin, x, y, z, parent);
 	}
 
 	/**conversion functions. Replace these with functions that convert to and from your 
 	* framework's native vector and ray representations.
 	*/
 	//////////////////////////////////////////////////////////////////////////////////////////////
-	public static PVector toPVector(SGVec_3f sv) {
+	public static PVector toPVector(Vec3f sv) {
 		return new PVector(sv.x, sv.y, sv.z);
 	}
 	
-	public static void toDVector(SGVec_3f sv, PVector storeIn) {
+	public static void toDVector(Vec3f sv, PVector storeIn) {
 		storeIn.x = sv.x;
 		storeIn.y = sv.y;
 		storeIn.z = sv.z;
 	}
 
-	public static Ray toRay(sgRayf sr) {
-		return new Ray(
-					toPVector(sr.p1()),
-					toPVector(sr.p2())
-				);
-	}
-	
-	public static void toRay(sgRayf sr, Ray storeIn) {
-		if(storeIn.p1 == null) storeIn.p1 = new PVector();
-		if(storeIn.p2 == null) storeIn.p2 = new PVector();
 		
-		storeIn.p1.set( sr.p1().y, sr.p1().y, sr.p1().z);
-		storeIn.p2.set( sr.p2().y, sr.p2().y, sr.p2().z);
-	}
-	
 	public static SGVec_3f toSGVec(PVector ev) {
 		return new SGVec_3f(ev.x, ev.y, ev.z);
 	}
@@ -153,84 +130,26 @@ public class Axes extends AbstractAxes {
 	
 	//////////////////// END OF CONVERSION FUNCTIONS
 	
+	public PVector origin() {
+		return toPVector(this.origin_());
+	}
 	
 	
-	///WRAPPER FUNCTIONS. Basically just find + replace these with the appropriate class names and conversion functions above and you should be good to go. 
+	///WRAPPER FUNCTIONS. Basically just find + replace these with the appropriate class names and conversion functions above if you need them
+	//and you should be good to go. 
 
 	
-	/**
-	 * Make a GlobalCopy of these Axes. 
-	 * @return
-	 */
+	@Override
 	public Axes getGlobalCopy() {
-		return (Axes) super.getGlobalCopy();
+		this.updateGlobal();
+		return new Axes(getGlobalMBasis(), this.getParentAxes());
 	}
 
-	public Ray x(){
-		return toRay(
-				super.x_()
-			);
-	}
-	public Ray y(){ 
-		return toRay(
-				super.y_()
-			);
-	}
-	public Ray z(){ 
-		return toRay(
-				super.z_()
-				);
-	}
-	public Ray x_norm(){ 
-		return toRay(
-				super.x_norm_()
-				);
-	}
-	
-	public Ray y_norm(){
-		return toRay(
-				super.y_norm_()
-				);
-	}
-	public Ray z_norm(){ 
-		return toRay(
-				super.z_norm_()
-				);
-	}
-	
-	public Ray x_raw(){ 
-		return toRay(
-				super.x_raw_()
-			);
-	}
-	public Ray y_raw(){ 
-		return toRay(
-				super.y_raw_()
-				);
-	}
-	public Ray z_raw(){ 
-		return toRay(
-				super.z_raw_()
-				);
-	}		
-	
-	public PVector orthonormal_Z(){
-		return toPVector(
-				super.orthonormal_Z_()
-			);
-	}
 	
 	public PVector getGlobalOf(PVector local_input){
 		return toPVector(
 				super.getGlobalOf(
 						toSGVec(local_input))
-			);
-	}
-	public PVector getOrthoNormalizedGlobalOf(PVector local_input){
-		return toPVector(
-				super.getOrthoNormalizedGlobalOf(
-						toSGVec(local_input)
-						)
 			);
 	}
 	
@@ -251,117 +170,6 @@ public class Axes extends AbstractAxes {
 			);		
 	}
 	
-	public void setToRawGlobalOf(PVector local_input, PVector global_output) {
-		SGVec_3f tempVec = new SGVec_3f(); 
-		super.setToRawGlobalOf(
-				toSGVec(local_input), 
-				tempVec
-				);
-		toDVector(
-				tempVec,
-				global_output
-			);
-	}
-	public void setToOrthoNormalizedGlobalOf(PVector local_input, PVector global_output){
-		SGVec_3f tempVec = new SGVec_3f(); 
-		super.setToOrthoNormalizedGlobalOf(
-				toSGVec(local_input), 
-				tempVec
-				);
-		toDVector(
-				tempVec,
-				global_output
-			);		
-	}
-	public void setToOrthoNormalizedGlobalOf(Ray local_input, Ray global_output){
-		sgRayf tempRay = new sgRayf(); 
-		super.setToOrthoNormalizedGlobalOf(
-				toSgRay(local_input), 
-				tempRay
-				);
-		toRay(
-				tempRay,
-				global_output
-			);		
-	}
-	public void setToRawGlobalOf(Ray local_input, Ray global_output){
-		sgRayf tempRay = new sgRayf(); 
-		super.setToRawGlobalOf(
-				toSgRay(local_input), 
-				tempRay
-				);
-		toRay(
-				tempRay,
-				global_output
-			);				
-	}
-	public void setToGlobalOf(Ray local_input, Ray global_output){
-		sgRayf tempRay = new sgRayf(); 
-		super.setToGlobalOf(
-				toSgRay(local_input), 
-				tempRay
-				);
-		toRay(
-				tempRay,
-				global_output
-			);			
-	}	
-	
-	public Ray getGlobalOf(Ray local_input){ 
-		return toRay(
-				super.getGlobalOf(
-						toSgRay(local_input)
-					)
-			);
-	}
-	
-	public Ray getLocalOf(Ray global_input){ 
-		return toRay(
-				super.getLocalOf(
-						toSgRay(global_input)
-					)
-			);
-	}	
-	
-	public Ray getRawGlobalOf(Ray local_input){ 
-		return toRay(
-				super.getRawGlobalOf(
-						toSgRay(local_input)
-					)
-			);
-	}
-	public Ray getRawLocalOf(Ray global_input){ 
-		return toRay(
-				super.getRawLocalOf(
-						toSgRay(global_input)
-					)
-			);
-	}
-	public Ray getOrthoNormalizedLocalOf(Ray global_input){ 
-		return toRay(
-				super.getOrthoNormalizedLocalOf(
-						toSgRay(global_input)
-					)
-			);
-		}
-	public PVector getRawLocalOf(PVector global_input){
-		return toPVector(getRawLocalOf(
-				super.getOrthoNormalizedGlobalOf(
-						toSGVec(global_input)
-						)
-				)
-			);
-		
-	}
-	
-	public PVector getRawGlobalOf(PVector local_input){
-		return toPVector(getRawLocalOf(
-				super.getRawGlobalOf(
-						toSGVec(local_input)
-						)
-				)
-			);		
-	}
 	public void translateByGlobal(PVector translate){
 		super.translateByGlobal(
 				toSGVec(translate)
@@ -411,166 +219,87 @@ public class Axes extends AbstractAxes {
 				local_output
 			);				
 	}
-	public void setToLocalOf(Ray global_input, Ray local_output){
-		sgRayf tempRay = new sgRayf(); 
-		super.setToLocalOf(
-				toSgRay(global_input), 
-				tempRay
-				);
-			toRay(
-				tempRay,
-				local_output
-			);		
-	}
-	
-	public void setToRawLocalOf(Ray global_input, Ray local_output){
-		sgRayf tempRay = new sgRayf(); 
-		super.setToRawLocalOf(
-				toSgRay(global_input), 
-				tempRay
-				);
-		toRay(
-				tempRay,
-				local_output
-			);	
-	}
-	
-	public void setToOrthonormalLocalOf(Ray global_input, Ray local_output){
-		sgRayf tempRay = new sgRayf(); 
-		super.setToOrthonormalLocalOf(
-				toSgRay(global_input), 
-				tempRay
-				);
-			toRay(
-				tempRay,
-				local_output
-			);	
-	}	
-	
-	
-	public PVector  getOrthoNormalizedLocalOf(PVector global_input){
-		return toPVector(
-				super.getOrthoNormalizedLocalOf(
-						toSGVec(global_input)
-						)
-			);
-	}
-	
-	
-	public PVector  getOrientationalLocalOf(PVector input_global){
-		return toPVector(
-				super.getOrientationalLocalOf(
-						toSGVec(input_global)
-						)
-			);
-		
-	}
-	public PVector getOrientationalGlobalOf(PVector input_local){
-		return toPVector(
-				super.getOrientationalGlobalOf(
-						toSGVec(input_local)
-						)
-			);
-		
-	}
-	
-	public void setToRawLocalOf(PVector in, PVector out){
-		SGVec_3f tempVec = new SGVec_3f(); 
-		super.setToRawLocalOf(
-				toSGVec(in), 
-				tempVec
-				);
-		toDVector(
-				tempVec,
-				out
-			);
-	}
-	
-		
-	public void setToOrthoNormalLocalOf(PVector input_global, PVector output_local_normalized){
-		SGVec_3f tempVec = new SGVec_3f(); 
-		super.setToOrthoNormalLocalOf(
-				toSGVec(input_global), 
-				tempVec
-				);
-		toDVector(
-				tempVec,
-				output_local_normalized
-			);
-		
-	}
-	public void setToOrientationalLocalOf(PVector input_global, PVector output_local_orthonormal_chiral){
-		SGVec_3f tempVec = new SGVec_3f(); 
-		super.setToOrientationalLocalOf(
-				toSGVec(input_global), 
-				tempVec
-				);
-		toDVector(
-				tempVec,
-				output_local_orthonormal_chiral
-			);
-		
-	}
-	public void setToOrientationalGlobalOf(PVector input_local, PVector output_global_orthonormal_chiral){
-		SGVec_3f tempVec = new SGVec_3f(); 
-		super.setToOrientationalGlobalOf(
-				toSGVec(input_local), 
-				tempVec
-				);
-		toDVector(
-				tempVec,
-				output_global_orthonormal_chiral
-			);
-		
-	}
-
 	
 	////////////////////////?End of wrapper functions 
 
+	float[][] outMatLocal = new float[4][4]; 
+	float[][] outMatGlobal = new float[4][4];
+	
+	private void updateMatrix(AbstractBasis b, float[][] outputMatrix) {
+		Rot rotation = b.rotation;
+		b.refreshPrecomputed();
 
+		Vec3f x = b.getXHeading();
+		Vec3f y = b.getYHeading();
+		Vec3f z = b.getZHeading();
+		
+		Vec3f origin = b.getOrigin();
+		
+		outputMatrix[0][0] = x.x;
+		outputMatrix[0][1] = x.y;
+		outputMatrix[0][2] = x.z;
+
+		outputMatrix[1][0] = y.x;
+		outputMatrix[1][1] = y.y;
+		outputMatrix[1][2] = y.z;
+
+		outputMatrix[2][0] = z.x;
+		outputMatrix[2][1] = z.y;
+		outputMatrix[2][2] = z.z;
+
+		outputMatrix[3][3] = 1;
+
+		outputMatrix[3][0] = origin.x; 
+		outputMatrix[3][1] = origin.y; 
+		outputMatrix[3][2] = origin.z; 
+
+	}
+	
 	
 	public PMatrix getLocalPMatrix() {
-		float[] m = localMBasis.getComposedMatrix().val;
-		SGVec_3f trans = localMBasis.translate;
+		updateMatrix(getLocalMBasis(), outMatLocal);
+		float[][] m = outMatLocal;
 		PMatrix result = new PMatrix3D(
-				m[Matrix4f.M00], m[Matrix4f.M01], m[Matrix4f.M02], trans.x, 
-				m[Matrix4f.M10], m[Matrix4f.M11], m[Matrix4f.M12], trans.y, 
-				m[Matrix4f.M20], m[Matrix4f.M21], m[Matrix4f.M22], trans.z, 
-				m[Matrix4f.M30], m[Matrix4f.M31], m[Matrix4f.M32], m[Matrix4f.M33]);
+				m[0][0], m[1][0], m[2][0], m[3][0], 
+				m[0][1], m[1][1], m[2][1], m[3][1], 
+				m[0][2], m[1][2], m[2][2], m[3][2], 
+				m[0][3], m[1][3], m[2][3], m[3][3]);
 		return result;
 	}
 	
 	public PMatrix getGlobalPMatrix() {
-		this.updateGlobal();
-		float[] m = globalMBasis.getComposedMatrix().val;
-		SGVec_3f trans = globalMBasis.translate;
+		updateMatrix(getGlobalMBasis(), outMatGlobal);
+		float[][] m = outMatGlobal;
 		PMatrix result = new PMatrix3D(
-				m[Matrix4f.M00], m[Matrix4f.M01], m[Matrix4f.M02], trans.x, 
-				m[Matrix4f.M10], m[Matrix4f.M11], m[Matrix4f.M12], trans.y, 
-				m[Matrix4f.M20], m[Matrix4f.M21], m[Matrix4f.M22], trans.z, 
-				m[Matrix4f.M30], m[Matrix4f.M31], m[Matrix4f.M32], m[Matrix4f.M33]);
+				m[0][0], m[1][0], m[2][0], m[3][0], 
+				m[0][1], m[1][1], m[2][1], m[3][1], 
+				m[0][2], m[1][2], m[2][2], m[3][2], 
+				m[0][3], m[1][3], m[2][3], m[3][3]);
 		return result;
 	}
 	
 	
-	public void drawMe(PApplet p, float size) {
-		PMatrix previous = p.getMatrix();
+	public void drawMe(PGraphics pg, float size) {
+		PMatrix previous = pg.getMatrix();
 		updateGlobal();
-		p.resetMatrix();
-		p.stroke(p.color(0,255,0));
-		drawRay(p, x_().getRayScaledTo(size));
-		p.stroke(p.color(255,0, 0));
-		drawRay(p, y_().getRayScaledTo(size));
-		p.stroke(p.color(0, 0, 255));
-		drawRay(p, z_().getRayScaledTo(size));
-		p.applyMatrix(previous);
+		pg.resetMatrix();
+		if(renderMode == 1) pg.stroke(pg.color(0,255,0));
+		else pg.stroke(pg.color(0,0,0,0)); 
+		drawRay(pg, x_().getRayScaledTo(size));
+		if(renderMode == 1) pg.stroke(pg.color(255,0, 0));
+		else pg.stroke(pg.color(0,0,0,0)); 
+		drawRay(pg, y_().getRayScaledTo(size));
+		if(renderMode == 1) pg.stroke(pg.color(0, 0, 255));
+		else pg.stroke(pg.color(0,0,0,0)); 
+		drawRay(pg, z_().getRayScaledTo(size));
+		pg.applyMatrix(previous);
 	}
 	
-	public static void drawRay(PApplet p, sgRayf r) {
+	public static void drawRay(PGraphics p, sgRayf r) {
 		p.line(r.p1().x, r.p1().y, r.p1().z, r.p2().x, r.p2().y, r.p2().z);
 	}
 	
-	public static void drawPoint(PApplet p, SGVec_3f pt) {
+	public static void drawPoint(PGraphics p, SGVec_3f pt) {
 		p.point(pt.x, pt.y, pt.z);
 	}
 

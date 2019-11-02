@@ -21,41 +21,17 @@ package ewbik.processing.doublePrecision;
 
 import IK.doubleIK.AbstractKusudama;
 import IK.doubleIK.AbstractLimitCone;
-import data.SaveManager;
+import asj.SaveManager;
 import ewbik.processing.doublePrecision.sceneGraph.*;
+import math.doubleV.Vec3d;
 
 public class dLimitCone extends AbstractLimitCone {
 
 	public dLimitCone() {}
 	
-	public dLimitCone(DVector location, double rad, AbstractKusudama attachedTo) {
-		super(
-				dAxes.toSGVec(location), rad, attachedTo);
+	public dLimitCone(Vec3d<?> location, double rad, AbstractKusudama attachedTo) {
+		super(location, rad, attachedTo);
 		// TODO Auto-generated constructor stub
-	}
-
-	@Override
-	public void notifyOfSaveIntent(SaveManager saveManager) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void notifyOfSaveCompletion(SaveManager saveManager) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public boolean isLoading() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void setLoading(boolean loading) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

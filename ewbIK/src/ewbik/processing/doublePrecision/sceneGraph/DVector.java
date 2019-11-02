@@ -1,51 +1,28 @@
 package ewbik.processing.doublePrecision.sceneGraph;
 
+
 /**
  * 
  *double precision port of the processing.org PVector library.
  *
  */
 
-import processing.core.*;
-import processing.data.JSONArray;
+import IK.doubleIK.AbstractArmature;
+import asj.data.JSONArray;
+import math.doubleV.AbstractAxes;
+import math.doubleV.AbstractBasis;
+import math.doubleV.CartesianAxes;
+import math.doubleV.Rot;
+import math.doubleV.SGVec_3d;
+import math.doubleV.Vec3d;
+import math.doubleV.sgRayd;
+import processing.core.PGraphics;
+import processing.core.PMatrix;
+import processing.core.PVector;
 
 
-public class DVector {
-	/**
-	 * ( begin auto-generated from DVector_x.xml )
-	 *
-	 * The x component of the vector. This field (variable) can be used to both
-	 * get and set the value (see above example.)
-	 *
-	 * ( end auto-generated )
-	 *
-	 * 
-	 */
-	public double x;
-
-	/**
-	 * ( begin auto-generated from DVector_y.xml )
-	 *
-	 * The y component of the vector. This field (variable) can be used to both
-	 * get and set the value (see above example.)
-	 *
-	 * ( end auto-generated )
-	 *
-	 * 
-	 */
-	public double y;
-
-	/**
-	 * ( begin auto-generated from DVector_z.xml )
-	 *
-	 * The z component of the vector. This field (variable) can be used to both
-	 * get and set the value (see above example.)
-	 *
-	 * ( end auto-generated )
-	 *
-	 * 
-	 */
-	public double z;
+public class DVector extends SGVec_3d{
+	
 
 	/** Array so that this can be temporarily used in an array context */
 	transient public double[] array;
@@ -56,6 +33,11 @@ public class DVector {
 	 */
 	public DVector() {
 	}
+	
+	public DVector(Vec3d<?> vec) {
+		super(vec);
+	}
+
 
 
 	/**
@@ -759,7 +741,7 @@ public class DVector {
 	/**
 	 * Takes a vector representing the normal of a plane, and returns 
 	 * the value of this vector projected onto that plane
-	 * @param norm
+	 * @param rawNorm
 	 * @return
 	 */
 	public DVector projectOntoPlane(DVector rawNorm) {

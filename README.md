@@ -12,7 +12,6 @@ See here for a demo: https://youtu.be/y_o34kOx_FA
 <li>Multiple end-effector support</li>
 <li>Intermediary effector support.</li>
 <li>Dampening (stiffness control).</li>
-<li>Target weight/priority (per target, per degree of freedom).</li>
 <li>Highly versatile 3-DOF constraints with arbitrarily shaped orientation regions.</li>
 </ul>
 </br>

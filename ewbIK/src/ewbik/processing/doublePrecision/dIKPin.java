@@ -1,8 +1,8 @@
 package ewbik.processing.doublePrecision;
 
 import IK.doubleIK.AbstractIKPin;
-import IK.floatIK.AbstractBone;
-import data.SaveManager;
+import asj.SaveManager;
+import IK.doubleIK.AbstractBone;
 import  ewbik.processing.doublePrecision.sceneGraph.*;
 
 
@@ -19,47 +19,22 @@ public class dIKPin extends AbstractIKPin{
 	
 	public dIKPin(dAxes inAxes, dBone bone) {
 		super(inAxes, bone);
-	}
-	
-	
+	}	
 	
 	///WRAPPER FUNCTIONS. Basically just ctrl+f and replace these with the appropriate class names and 
 	//any conversion functions you modified in AxesExample and you should be good to go. 
 	public DVector getLocation() {
-		return dAxes.toDVector(super.getLocation_());
+		return (DVector) super.getLocation_();
 	}
 	
 
 	public void translateTo(DVector v) {
-		 super.translateTo_(dAxes.toSGVec(v));
+		 super.translateTo_(v);
 	}
 	
 	public void translateBy(DVector v) {
-		 super.translateBy_(dAxes.toSGVec(v));
+		 super.translateBy_(v);
 	}
 
-	@Override
-	public void notifyOfSaveIntent(SaveManager saveManager) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void notifyOfSaveCompletion(SaveManager saveManager) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public boolean isLoading() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void setLoading(boolean loading) {
-		// TODO Auto-generated method stub
-		
-	}
 
 }

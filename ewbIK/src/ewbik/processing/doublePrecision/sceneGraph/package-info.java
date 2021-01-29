@@ -7,7 +7,7 @@
  * to the format this library uses internally. 
  */
 /**
- * @author rufsketch1
+ * @author Eron Gjoni
  *
  */
 package ewbik.processing.doublePrecision.sceneGraph;

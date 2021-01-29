@@ -19,19 +19,21 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 package ewbik.processing.doublePrecision;
 import IK.doubleIK.AbstractArmature;
+import IK.doubleIK.AbstractBone;
 import IK.doubleIK.AbstractBone.frameType;
-import sceneGraph.*;
 import processing.core.PApplet;
+import processing.core.PGraphics;
 import processing.core.PMatrix;
 import ewbik.processing.doublePrecision.sceneGraph.DVector;
 import ewbik.processing.doublePrecision.sceneGraph.dAxes;
-import sceneGraph.math.doubleV.SGVec_3d;
+import math.doubleV.AbstractAxes;
+import math.doubleV.Vec3d;
 
 
 /**
  * Note, this class is a concrete implementation of the abstract class AbstractArmature. Please refer to the {@link AbstractArmature AbstractArmature docs.} 
  */	
-public class dArmature extends AbstractArmature{
+public class dArmature extends AbstractArmature {
 
 	public dArmature() {}
 	
@@ -40,16 +42,20 @@ public class dArmature extends AbstractArmature{
 	 * @param name A label for this armature.  
 	 */	
 	public dArmature(String name) {		
-		super(new dAxes(new DVector(0,0,0), new DVector(1,0,0), new DVector(0,1,0), new DVector(0,0,1), true, null), name);
+		super(new dAxes(), name);
+	}
+	
+	public dArmature(AbstractAxes inputOrigin, String name) {
+		super(inputOrigin, name);
 	}
 
 
 	@Override
-	protected  void initializeRootBone(AbstractArmature armature,SGVec_3d tipHeading,SGVec_3d rollHeading, String inputTag,
+	protected  void initializeRootBone(AbstractArmature armature,  Vec3d<?> tipHeading,  Vec3d<?> rollHeading, String inputTag,
 			double boneHeight, frameType coordinateType) {
-		this.rootBone = new dBone(this, 
-												dAxes.toDVector(tipHeading), 
-												dAxes.toDVector(rollHeading), 
+		this.rootBone = new dBone(armature, 
+												tipHeading, 
+												rollHeading, 
 												inputTag, 
 												boneHeight, 
 												coordinateType);	
@@ -62,15 +68,19 @@ public class dArmature extends AbstractArmature{
 	
 	@Override
 	public dBone getBoneTagged(String tag) {
-		return (dBone)boneMap.get(tag);	
+		return (dBone)tagBoneMap.get(tag);	
 	}
 	
-	public void drawMe(PApplet p, int color,  float pinSize) {
+	public void drawMe(PApplet p, int color, float pinSize) {
+		this.drawMe(p.g, color, pinSize);
+	}
+	
+	public void drawMe(PGraphics pg, int color,  float pinSize) {
 		PMatrix localMat = localAxes().getGlobalPMatrix();
-		p.applyMatrix(localMat);
-		p.pushMatrix(); 
-			getRootBone().drawMeAndChildren(p, color,  pinSize);
-		p.popMatrix();
+		pg.applyMatrix(localMat);
+		pg.pushMatrix(); 
+			getRootBone().drawMeAndChildren(pg, color,  pinSize);
+			pg.popMatrix();
 	}
 		
 	@Override 

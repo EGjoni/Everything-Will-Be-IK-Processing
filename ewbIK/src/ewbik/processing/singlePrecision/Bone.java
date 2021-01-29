@@ -146,7 +146,16 @@ public class Bone extends AbstractBone {
 	protected void generateAxes( Vec3f<?> origin,  Vec3f<?> x,  Vec3f<?> y,  Vec3f<?> z) {
 		this.localAxes = new Axes(origin, x, y, z);
 	}
+	
+	public PVector getBase() {
+		SGVec_3f base = (SGVec_3f) super.getBase_();
+		return new PVector(base.x, base.y, base.z);
+	}
 
+	public PVector getTip() { 		
+		SGVec_3f tip  = (SGVec_3f) super.getTip_();
+		return new PVector(tip.x, tip.y, tip.z);
+	}
 
 	@Override
 	protected IKPin createAndReturnPinOnAxes(AbstractAxes on) {

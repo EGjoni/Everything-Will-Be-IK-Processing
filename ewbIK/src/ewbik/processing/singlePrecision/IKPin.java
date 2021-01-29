@@ -33,6 +33,11 @@ public class IKPin extends AbstractIKPin{
 	public void translateBy(PVector v) {
 		 super.translateBy_(Axes.toSGVec(v));
 	}
+	
+	
+	public Axes getAxes()  {
+		return (Axes) axes;
+	}
 
 
 

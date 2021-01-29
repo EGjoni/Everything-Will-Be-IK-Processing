@@ -18,17 +18,18 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
 package ewbik.processing.singlePrecision.sceneGraph;
+
 import math.floatV.*;
 import math.floatV.AbstractAxes;
 import math.floatV.CartesianAxes;
 import math.floatV.SGVec_3f;
 import math.floatV.Vec3f;
 import math.floatV.sgRayf;
-import processing.core.PApplet;
 import processing.core.PGraphics;
 import processing.core.PMatrix;
 import processing.core.PMatrix3D;
 import processing.core.PVector;
+
 
 /*
  * This class is a reference implementation showing how to extend AbstractAxes. 
@@ -170,6 +171,12 @@ public class Axes extends CartesianAxes {
 			);		
 	}
 	
+	public void translateByLocal(PVector translate){
+		super.translateByLocal(
+				toSGVec(translate)
+			);
+	}
+	
 	public void translateByGlobal(PVector translate){
 		super.translateByGlobal(
 				toSGVec(translate)
@@ -268,6 +275,7 @@ public class Axes extends CartesianAxes {
 	}
 	
 	public PMatrix getGlobalPMatrix() {
+		this.updateGlobal();
 		updateMatrix(getGlobalMBasis(), outMatGlobal);
 		float[][] m = outMatGlobal;
 		PMatrix result = new PMatrix3D(
@@ -280,19 +288,32 @@ public class Axes extends CartesianAxes {
 	
 	
 	public void drawMe(PGraphics pg, float size) {
-		PMatrix previous = pg.getMatrix();
+		pg.noStroke();
 		updateGlobal();
-		pg.resetMatrix();
-		if(renderMode == 1) pg.stroke(pg.color(0,255,0));
-		else pg.stroke(pg.color(0,0,0,0)); 
+		pg.pushMatrix();
+		pg.setMatrix(getGlobalPMatrix());
+		if(renderMode == 1) pg.fill(0,255,0);
+		else pg.fill(0,0,0,255); 
+		pg.pushMatrix();
+		pg.translate(size/2f, 0, 0);
+		pg.box(size, size/10f,  size/10f);
+		pg.popMatrix();			
 		drawRay(pg, x_().getRayScaledTo(size));
-		if(renderMode == 1) pg.stroke(pg.color(255,0, 0));
-		else pg.stroke(pg.color(0,0,0,0)); 
-		drawRay(pg, y_().getRayScaledTo(size));
-		if(renderMode == 1) pg.stroke(pg.color(0, 0, 255));
-		else pg.stroke(pg.color(0,0,0,0)); 
-		drawRay(pg, z_().getRayScaledTo(size));
-		pg.applyMatrix(previous);
+		if(renderMode == 1) pg.fill(255,0, 0);
+		else pg.fill(0,0,0,255);
+		pg.pushMatrix();
+		pg.translate(0, size/2f, 0);
+		pg.box(size/10f, size, size/10f);
+		pg.popMatrix();
+		//drawRay(pg, y_().getRayScaledTo(size));
+		if(renderMode == 1) pg.fill(0, 0, 255);
+		else pg.fill(0,0,0,255); 
+		pg.pushMatrix();
+		pg.translate(0, 0, size/2f);
+		pg.box(size/10f, size/10f, size);
+		pg.popMatrix();
+		pg.popMatrix();
+		//pg.applyMatrix(previous);
 	}
 	
 	public static void drawRay(PGraphics p, sgRayf r) {

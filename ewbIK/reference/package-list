@@ -9,7 +9,5 @@ ewbik.processing.doublePrecision.sceneGraph
 ewbik.processing.singlePrecision
 ewbik.processing.singlePrecision.sceneGraph
 exceptions
-math
 math.doubleV
 math.floatV
-numerical

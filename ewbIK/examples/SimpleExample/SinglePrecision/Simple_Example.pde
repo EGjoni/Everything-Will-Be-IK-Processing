@@ -1,12 +1,15 @@
-import ewbik.processing.doublePrecision.*;
-import ewbik.processing.doublePrecision.sceneGraph.*;
-import math.doubleV.Vec3d;
+import ewbik.processing.singlePrecision.*;
+import ewbik.processing.singlePrecision.sceneGraph.*;
+import processing.core.PApplet;
+import processing.core.PVector;
+import processing.event.MouseEvent;
+import math.floatV.Vec3f;
 import java.util.ArrayList;
 import java.io.File;
 String delim = File.separator;
 
-dArmature simpleArmature;
-dBone  rootBone, initialBone, 
+Armature simpleArmature;
+Bone  rootBone, initialBone, 
 secondBone, thirdBone, 
 fourthBone, fifthBone, 
 bFourthBone, bFifthBone, 
@@ -14,29 +17,29 @@ bSixthBone;
 
 UI ui;
 
-ArrayList<dIKPin> pins = new ArrayList();
-dAxes worldAxes;
+ArrayList<IKPin> pins = new ArrayList<IKPin>();
+Axes worldAxes;
 
-dIKPin activePin; 
+IKPin activePin; 
 
 public void setup() {
 	size(1200, 900, P3D);
 	ui =new UI(false);
-	worldAxes = new dAxes(); 
-	simpleArmature = new dArmature("example");
+	worldAxes = new Axes(); 
+	simpleArmature = new Armature("example");
 	//attach the armature to the world axes (not necessary, just convenient)
 	simpleArmature.localAxes().setParent(worldAxes);
 
 	//specify that we want the solver to run 10 iteration whenever we call it.  
 	simpleArmature.setDefaultIterations(10);
 	//specify the maximum amount any bone is allowed to rotate per iteration (slower convergence, nicer results) 
-	simpleArmature.setDefaultDampening(10d);		
+	simpleArmature.setDefaultDampening(10f);		
 	//benchmark performance
 	simpleArmature.setPerformanceMonitor(true);
 
 	//translate everything down to where the user can see it, 
 	//and rotate it 180 degrees about the z-axis so it's not upside down. 
-	worldAxes.translateTo(new DVector(0, 150, 0));
+	worldAxes.translateTo(new PVector(0, 150, 0));
 	simpleArmature.localAxes().rotateAboutZ(PI, true);
 
 	//Add some bones to the armature
@@ -57,12 +60,12 @@ public void setup() {
 public void draw() {		
 	if(mousePressed) {
 		ui.mouse.z = (float) activePin.getAxes().origin_().z;
-		activePin.translateTo(new DVector(ui.mouse.x, ui.mouse.y, activePin.getLocation_().z));	
+		activePin.translateTo(new PVector(ui.mouse.x, ui.mouse.y, activePin.getLocation_().z));	
 		simpleArmature.IKSolver(simpleArmature.getRootBone());
 	} else {
 		worldAxes.rotateAboutY(PI/500f, true);
 	}    
-	ui.drawScene(0.5f, 10f, null, simpleArmature, null, activePin, null,  false);       
+	ui.drawScene(0.5f, 30f, null, simpleArmature, null, activePin, null,  false);       
 }
 
 PVector  mouse = new PVector(0,0,0);
@@ -97,23 +100,23 @@ public void initializeBones() {
 	rootBone = simpleArmature.getRootBone();		
 	rootBone.localAxes().markDirty();
 	rootBone.localAxes().updateGlobal();
-	initialBone = new dBone(rootBone, "initial", 74d);
-	secondBone = new dBone(initialBone, "nextBone", 86d);
-	thirdBone = new dBone(secondBone, "anotherBone", 98d); 
-	fourthBone = new dBone(thirdBone, "oneMoreBone", 70d);
-	fifthBone = new dBone(fourthBone, "fifthBone", 80d);  
+	initialBone = new Bone(rootBone, "initial", 74f);
+	secondBone = new Bone(initialBone, "nextBone", 86f);
+	thirdBone = new Bone(secondBone, "anotherBone", 98f); 
+	fourthBone = new Bone(thirdBone, "oneMoreBone", 70f);
+	fifthBone = new Bone(fourthBone, "fifthBone", 80f);  
 
-	bFourthBone = new dBone(thirdBone, "branchBone", 80d);
-	bFifthBone = new dBone(bFourthBone, "nextBranch", 70d);
-	bSixthBone = new dBone(bFifthBone, "leaf", 80d); 
+	bFourthBone = new Bone(thirdBone, "branchBone", 80f);
+	bFifthBone = new Bone(bFourthBone, "nextBranch", 70f);
+	bSixthBone = new Bone(bFifthBone, "leaf", 80f); 
 
-	secondBone.rotAboutFrameZ(.4d);
-	thirdBone.rotAboutFrameZ(.4d);
+	secondBone.rotAboutFrameZ(.4f);
+	thirdBone.rotAboutFrameZ(.4f);
 
-	bFourthBone.rotAboutFrameZ(-.5d);
-	bFifthBone.rotAboutFrameZ(-1d);
-	bSixthBone.rotAboutFrameZ(-.2d);
-	initialBone.rotAboutFrameX(.01d);	
+	bFourthBone.rotAboutFrameZ(-.5f);
+	bFifthBone.rotAboutFrameZ(-1f);
+	bSixthBone.rotAboutFrameZ(-.2f);
+	initialBone.rotAboutFrameX(.01f);	
 }
 
 public void updatePinList() {
@@ -121,14 +124,14 @@ public void updatePinList() {
 	recursivelyAddToPinnedList(pins, simpleArmature.getRootBone());
 }
 
-public void recursivelyAddToPinnedList(ArrayList<dIKPin> pins, dBone descendedFrom) {
-	ArrayList<dBone> pinnedChildren = (ArrayList<dBone>) descendedFrom.getMostImmediatelyPinnedDescendants(); 
-	for(dBone b : pinnedChildren) {
+public void recursivelyAddToPinnedList(ArrayList<IKPin> pins, Bone descendedFrom) {
+	ArrayList<Bone> pinnedChildren = (ArrayList<Bone>) descendedFrom.getMostImmediatelyPinnedDescendants(); 
+	for(Bone b : pinnedChildren) {
 		pins.add(b.getIKPin());
 	}
-	for(dBone b : pinnedChildren) {
-		ArrayList<dBone> children = b.getChildren(); 
-		for(dBone b2 : children) {
+	for(Bone b : pinnedChildren) {
+		ArrayList<Bone> children = b.getChildren(); 
+		for(Bone b2 : children) {
 			recursivelyAddToPinnedList(pins, b2);
 		}
 	}

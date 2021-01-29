@@ -5,20 +5,20 @@ import java.util.ArrayList;
 import java.io.File;
 String delim = File.separator;
 
+float zoomScalar = 7f/height;
+float orthoHeight = height;
+float orthoWidth = width;
+
 dArmature simpleArmature;
 dBone  rootBone, initialBone, 
-secondBone, thirdBone, 
-fourthBone, fifthBone, 
-bFourthBone, bFifthBone, 
-bSixthBone;
-
+secondBone, thirdBone; 
+	
 UI ui;
-boolean multipassAllowed=true;
-float zoomScalar = 350f/height;
 
-ArrayList<dIKPin> pins = new ArrayList();
 dAxes worldAxes;
-dIKPin activePin; 
+ArrayList<dIKPin> pins = new ArrayList<dIKPin>();
+public static dIKPin activePin; 
+public boolean multipassAllowed = true;
 
 public void setup() {
 	size(1200, 900, P3D);
@@ -48,8 +48,7 @@ public void setup() {
 	simpleArmature.setPerformanceMonitor(true);
 	
 	initializeBones(); 		
-	setBoneConstraints();
-	
+	setBoneConstraints();	
 	
 	updatePinList();
 	
@@ -64,14 +63,11 @@ public void initializeBones() {
 	secondBone = new dBone(initialBone, "secondBone", 86f);
 	thirdBone = new dBone(secondBone, "thirdBone", 98f); 
 	
-	initialBone.rotAboutFrameX(.01f);
-	
+	initialBone.rotAboutFrameX(.01f);		
 	//pin the root
-	rootBone.enablePin();
-			
+	rootBone.enablePin();				
 	//intermediary pin a few bones up the chain. 
-	thirdBone.enablePin();
-	
+	thirdBone.enablePin();		
 	//determine how much precedence each of this pin's axes get 
 	//in relation to other axes on other pins being considered by the solver.
 	//this line state that the solver should care about this bone's X and Y headings 
@@ -80,8 +76,7 @@ public void initializeBones() {
 	thirdBone.getIKPin().setTargetPriorities(5f, 5f,0f);
 }
 
-public void setBoneConstraints() {    		
-
+public void setBoneConstraints() {
 	dKusudama firstConstraint = new dKusudama(initialBone);
 	firstConstraint.addLimitConeAtIndex(0, new DVector(.5, 1f, 0f), 0.5f);
 	firstConstraint.addLimitConeAtIndex(1, new DVector(-.5f, 1f, 0f), 0.7f);
@@ -124,12 +119,6 @@ public void draw() {
 	zoomScalar = 350f/height;
 	ui.drawScene(zoomScalar, 20f, null, simpleArmature, null, activePin, null, false);
 }
-
-
-
-
-
-
 public void mouseWheel(MouseEvent event) {
 	float e = event.getCount();
 	if(event.isShiftDown()) {

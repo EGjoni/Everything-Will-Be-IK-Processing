@@ -12,22 +12,6 @@ public void setup() {
   setupVisualizationParams(simpleArmature);
   //USER CODE GOES BELOW THIS LINE: 
 
-  Bone rootBone = simpleArmature.getRootBone();
-	Bone initialBone = new Bone(rootBone, "initial", 74f);
-  Bone secondBone = new Bone(initialBone, "nextBone", 76f);
-  Bone thirdBone = new Bone(secondBone, "anotherBone", 65f); 
-  Bone fourthBone = new Bone(thirdBone, "oneMoreBone", 70f);
-  Bone fifthBone = new Bone(fourthBone, "fifthBone", 60f);	
-  
-  rootBone.enablePin();
-  fifthBone.enablePin();
-
-  ui.updatePinList(simpleArmature);
-  simpleArmature.setPerformanceMonitor(true);
-  IKPin fithBonePin = fifthBone.getIKPin();
-  fithBonePin.translateTo(new PVector(200, 100, 0));
-  fithBonePin.rotateAboutZ(PI/2f);
-  simpleArmature.IKSolver(rootBone);
   
 }
 

@@ -13,6 +13,7 @@ UI ui;
 public void setup() {
 	size(1200, 900, P3D);
 	ui = new UI(false);
+	String path = sketchPath()+File.separator;
 	loadedArmature = EWBKIO.LoadArmature_doublePrecision(path+ui.pathUp+delim+"armatures"+delim+"Humanoid.arm");
 	worldAxes = (dAxes) loadedArmature.localAxes().getParentAxes(); 
 	if(worldAxes == null) { 

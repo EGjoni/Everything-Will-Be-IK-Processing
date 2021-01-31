@@ -12,11 +12,8 @@ Axes worldAxes;
 
 public void setup() {
 	size(1200, 900, P3D);
-String path = sketchPath()+delim;
-println(path);
-	ui =new UI(false);
-
-	
+  String path = sketchPath()+delim;
+	ui =new UI(false);	
 	loadedArmature = EWBKIO.LoadArmature_singlePrecision(path+ui.pathUp+delim+"armatures"+delim+"Humanoid.arm");
 	worldAxes = (Axes) loadedArmature.localAxes().getParentAxes(); 
 	if(worldAxes == null) { 

@@ -296,7 +296,7 @@ class UI {
     //attach the armature to the world axes (not necessary, just convenient for display purposes)
     toVisualize.localAxes().setParent(worldAxes);
     //translate everything down to where the user can see it, and rotate it 180 degrees about the z-axis so it's not upside down. 
-    worldAxes.translateTo(new DVector(0, 50, 0));
+    worldAxes.translateTo(new DVector(0, 150, 0));
     worldAxes.rotateAboutZ(PI, true);
   }
   

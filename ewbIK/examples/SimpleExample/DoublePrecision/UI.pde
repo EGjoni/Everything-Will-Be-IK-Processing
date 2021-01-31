@@ -1,4 +1,5 @@
 class UI {
+  String delim = File.separator;
 	PGraphics display, stencil;
 	PShader blurshader;
 	public boolean multipass = false; 
@@ -262,13 +263,52 @@ class UI {
 	float orthoHeight, orthoWidth;
 
 	public void setCamera(PGraphics pg, float zoomScalar) {
-		pg.clear();
-		orthoHeight = height*zoomScalar;
-		orthoWidth = ((float)width/(float)height) * orthoHeight; 
-		mouse.x =  (mouseX - (width/2f)) * (orthoWidth/width); mouse.y = (mouseY - (height/2f)) *  (orthoHeight/height);
-		camera(cameraPosition, lookAt, up, pg);
-		pg.ortho(-orthoWidth/2f, orthoWidth/2f, -orthoHeight/2f, orthoHeight/2f, -1000, 1000); 
-	}
+    pg.clear();
+    if(activePin == null) activePin = pins.get(pins.size()-1);
+    ui.mouse.z = (float) activePin.getAxes().origin_().z;
+    orthoHeight = height*zoomScalar;
+    orthoWidth = ((float)width/(float)height) * orthoHeight; 
+    mouse.x =  (mouseX - (width/2f)) * (orthoWidth/width); mouse.y = (mouseY - (height/2f)) *  (orthoHeight/height);
+    camera(cameraPosition, lookAt, up, pg);
+    pg.ortho(-orthoWidth/2f, orthoWidth/2f, -orthoHeight/2f, orthoHeight/2f, -1000, 1000); 
+  }
+   
+  public void mouseWheelFunctions(MouseEvent event) {
+    float e = event.getCount();
+    if(event.isShiftDown()) 
+      activePin.getAxes().rotateAboutZ(e/TAU, true);
+    else if (event.isControlDown()) 
+      activePin.getAxes().rotateAboutX(e/TAU, true);
+    else 
+      activePin.getAxes().rotateAboutY(e/TAU, true);
+    activePin.solveIKForThisAndChildren();    
+  }
+  
+  public void keyboardFunctions() {
+    if (key == CODED) {
+    if (keyCode == DOWN) activePin = pins.get((pins.indexOf(activePin)+1)%pins.size());  
+    else if (keyCode == UP) activePin = pins.get((pins.size()-1)-(((pins.size()-1)-(pins.indexOf(activePin)-1))% pins.size())); 
+    }
+  }
+  
+ public void initWorldFor(dArmature toVisualize) {
+    worldAxes = new dAxes(); 
+    //attach the armature to the world axes (not necessary, just convenient for display purposes)
+    toVisualize.localAxes().setParent(worldAxes);
+    //translate everything down to where the user can see it, and rotate it 180 degrees about the z-axis so it's not upside down. 
+    worldAxes.translateTo(new DVector(0, 150, 0));
+    worldAxes.rotateAboutZ(PI, true);
+  }
+  
+  public void updatePinList(dArmature forArm) {
+    pins.clear();
+    recursivelyAddToPinnedList(pins, forArm.getRootBone());
+  }
+  public void recursivelyAddToPinnedList(ArrayList<dIKPin> pins, dBone descendedFrom) {
+    ArrayList<dBone> pinnedChildren = (ArrayList<dBone>) descendedFrom.getMostImmediatelyPinnedDescendants(); 
+    for(dBone b : pinnedChildren) pins.add(b.getIKPin());
+    for(dBone b : pinnedChildren) for(dBone b2 : b.getChildren())  recursivelyAddToPinnedList(pins, b2);
+  }
 	
 	/**
 	 * @return the draw surface this class is currently operating on. 

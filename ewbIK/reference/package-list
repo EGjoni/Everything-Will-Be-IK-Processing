@@ -1,13 +1,10 @@
-IK
 IK.doubleIK
 IK.floatIK
 asj
-data
 ewbik.processing
 ewbik.processing.doublePrecision
 ewbik.processing.doublePrecision.sceneGraph
 ewbik.processing.singlePrecision
 ewbik.processing.singlePrecision.sceneGraph
-exceptions
 math.doubleV
 math.floatV

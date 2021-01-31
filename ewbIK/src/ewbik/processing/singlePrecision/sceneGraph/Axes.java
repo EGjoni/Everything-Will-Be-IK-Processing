@@ -195,6 +195,16 @@ public class Axes extends CartesianAxes {
 			);		
 	}
 	
+	public void rotateAboutX(float radians) {
+		super.rotateAboutX(radians, true);
+	}	
+	public void rotateAboutY(float radians) {
+		super.rotateAboutY(radians, true);
+	}
+	public void rotateAboutZ(float radians) {
+		super.rotateAboutZ(radians, true);
+	}
+	
 	public PVector getOrigin() {
 		return toPVector(origin_());
 	}

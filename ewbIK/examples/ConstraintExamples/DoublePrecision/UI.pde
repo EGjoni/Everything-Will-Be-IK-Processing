@@ -1,26 +1,27 @@
 class UI {
-	PGraphics display, stencil;
-	PShader blurshader;
-	public boolean multipass = false; 
-	String pathUp = ".."+delim+".."+delim+".."+delim+".."+delim+"library"+delim;
+  String delim = File.separator;
+  PGraphics display, stencil;
+  PShader blurshader;
+  public boolean multipass = false; 
+  String pathUp = ".."+delim+".."+delim+".."+delim+"library"+delim;
 
-	public UI(boolean multipassAllowed) {
-		currentDrawSurface = g; 
-		if(multipassAllowed) {
-			stencil = createGraphics(width, height, P3D);
-			display = createGraphics(width, height, P3D);
-			stencil.noSmooth();
-			display.smooth(8);
-			blurshader = loadShader(pathUp+"shaders"+delim+"blur-sep.glsl");
-			blurshader.set("blurSize", 20);
-			blurshader.set("sigma", 9f);
-			multipass = true;  			
-		}
-		Kusudama.kusudamaShader = loadShader(pathUp+"shaders"+delim+"kusudama.glsl", pathUp+"shaders"+delim+"kusudama_vert.glsl");
-		Kusudama.kusudamaStencil = loadShader(pathUp+"shaders"+delim+"kusudama_stencil.glsl", pathUp+"shaders"+delim+"kusudama_vert.glsl");		
-	}	
+  public UI(boolean multipassAllowed) {
+    currentDrawSurface = g; 
+    if(multipassAllowed) {
+      stencil = createGraphics(width, height, P3D);
+      display = createGraphics(width, height, P3D);
+      stencil.noSmooth();
+      display.smooth(8);
+      blurshader = loadShader(pathUp+"shaders"+delim+"blur-sep.glsl");
+      blurshader.set("blurSize", 20);
+      blurshader.set("sigma", 9f);
+      multipass = true;        
+    }
+    dKusudama.kusudamaShader = loadShader(pathUp+"shaders"+delim+"kusudama.glsl", pathUp+"shaders"+delim+"kusudama_vert.glsl");
+    dKusudama.kusudamaStencil = loadShader(pathUp+"shaders"+delim+"kusudama_stencil.glsl", pathUp+"shaders"+delim+"kusudama_vert.glsl");    
+  }  
 
-	  public void drawBoneInfo(PGraphics pg, Bone bone, int idx) {
+  public void drawBoneInfo(PGraphics pg, dBone bone, int idx) {
     if(bone.isPinned()) {
       pg.strokeWeight(10); 
       pg.stroke(255,0,0); 
@@ -29,7 +30,7 @@ class UI {
 
     String boneAngles = "";
     try {
-      float[] angleArr = bone.getXYZAngle();
+      double[] angleArr = bone.getXYZAngle();
       boneAngles += " D ( " + degrees((float)angleArr[0]) + ",   " + degrees((float)angleArr[1]) + ",   " + degrees((float)angleArr[2]) + "  )";
       pg.fill(0);
       pg.text(boneAngles, (-width/2) +10,  (-height/2) + (10*idx)); 
@@ -76,26 +77,42 @@ class UI {
   public void point(PGraphics pg, PVector p) {
     pg.point(p.x, p.y, p.z);
   }
-  
-  public void drawPins(PGraphics pg, IKPin activePin, 
+
+  public void printXY(PGraphics pg, DVector pd) {
+    PVector p = pd.toPVec();
+    System.out.println(pg.screenX(p.x, p.y, p.z)
+        +", " + pg.screenY(p.x, p.y, p.z));
+  }
+  public void line(PGraphics pg, DVector p1, DVector p2) {
+    PVector p1f = p1.toPVec();
+    PVector p2f = p2.toPVec(); 
+    pg.line(p1f.x, p1f.y, p1f.z, p2f.x, p2f.y, p2f.z);
+  }
+
+  public void point(PGraphics pg, DVector pd) {
+    PVector p = pd.toPVec();
+    pg.point(p.x, p.y, p.z);
+  }  
+
+  public void drawPins(PGraphics pg, dIKPin activePin, 
       float zoomScalar, float drawSize,
-      boolean cubeMode, Axes cubeAxes) {
+      boolean cubeMode, dAxes cubeAxes) {
 
     if(activePin != null) {
-      Axes ellipseAx = cubeMode ? cubeAxes : (Axes) activePin.getAxes();
-      PVector pinLoc =  screenOf(pg, ellipseAx.origin(), zoomScalar) ;
-      PVector pinX = screenOf(pg, Axes.toPVector(ellipseAx.x_().getScaledTo(drawSize)), zoomScalar);
-      PVector pinY = screenOf(pg, Axes.toPVector(ellipseAx.y_().getScaledTo(drawSize)), zoomScalar);
-      PVector pinZ = screenOf(pg, Axes.toPVector(ellipseAx.z_().getScaledTo(drawSize)), zoomScalar);
+      dAxes ellipseAx = cubeMode ? cubeAxes : (dAxes) activePin.getAxes();
+      PVector pinLoc =  screenOf(pg, ellipseAx.origin_(), zoomScalar) ;
+      PVector pinX = screenOf(pg, ellipseAx.x_().getScaledTo(drawSize), zoomScalar);
+      PVector pinY = screenOf(pg, ellipseAx.y_().getScaledTo(drawSize), zoomScalar);
+      PVector pinZ = screenOf(pg, ellipseAx.z_().getScaledTo(drawSize), zoomScalar);
       pg.fill(255,255,255, 150);
       pg.stroke(255, 0, 255);
       float totalpriorities = (float)(activePin.getXPriority() + activePin.getYPriority() + activePin.getZPriority()); 
       pg.ellipse(pinLoc.x, pinLoc.y, zoomScalar*50, zoomScalar*50);
 
-      PVector effectorO = screenOf(pg, Axes.toPVector(activePin.forBone().localAxes().origin_()), zoomScalar);
-      PVector effectorX = screenOf(pg, Axes.toPVector(activePin.forBone().localAxes().x_().getScaledTo(drawSize)), zoomScalar);
-      PVector effectorY = screenOf(pg, Axes.toPVector(activePin.forBone().localAxes().y_().getScaledTo(drawSize)), zoomScalar);
-      PVector effectorZ = screenOf(pg, Axes.toPVector(activePin.forBone().localAxes().z_().getScaledTo(drawSize)), zoomScalar);
+      PVector effectorO = screenOf(pg, activePin.forBone().localAxes().origin_(), zoomScalar);
+      PVector effectorX = screenOf(pg, activePin.forBone().localAxes().x_().getScaledTo(drawSize), zoomScalar);
+      PVector effectorY = screenOf(pg, activePin.forBone().localAxes().y_().getScaledTo(drawSize), zoomScalar);
+      PVector effectorZ = screenOf(pg, activePin.forBone().localAxes().z_().getScaledTo(drawSize), zoomScalar);
       pg.stroke(255,255,255,150);
 
       if(!cubeMode) {
@@ -113,7 +130,7 @@ class UI {
       }
     }
   }
-
+  
   public void drawPinEffectorHints(PGraphics pg, 
       PVector pinLoc, 
       PVector pinX, PVector pinY, PVector pinZ, 
@@ -134,31 +151,37 @@ class UI {
 
   }
 
-  public void drawPass(int mode, float drawSize, Runnable preArmatureDraw, PGraphics buffer, Armature armature) {
-    Kusudama.renderMode = mode;
-    Bone.renderMode = mode;
-    Axes.renderMode = mode;
+  public void drawPass(int mode, float drawSize, Runnable preArmatureDraw, PGraphics buffer, dArmature armature) {
+    dKusudama.renderMode = mode;
+    dBone.renderMode = mode;
+    dAxes.renderMode = mode;
     if(preArmatureDraw != null)
       preArmatureDraw.run();
     armature.drawMe( buffer, 100, drawSize);
   }  
 
-  
   public  PVector screenOf(PGraphics pg, PVector pt, float zoomScalar) {
     return new PVector(
         (pg.screenX((float)pt.x, (float)pt.y, (float)pt.z)*zoomScalar) - orthoWidth/2f,
         (pg.screenY((float)pt.x, (float)pt.y, (float)pt.z)*zoomScalar)- orthoHeight/2f);
   }
 
+  public<V extends Vec3d<?>>  PVector screenOf(PGraphics pg, V pt, float zoomScalar) {
+    return new PVector(
+        (pg.screenX((float)pt.x, (float)pt.y, (float)pt.z)*zoomScalar) - orthoWidth/2f,
+        (pg.screenY((float)pt.x, (float)pt.y, (float)pt.z)*zoomScalar)- orthoHeight/2f);
+  }
+
+
   private PGraphics currentDrawSurface = null;
   
-  public void drawScene(float zoomScalar, float drawSize, 
+  public void drawScene(float zoomScalar, float drawSize,
       Runnable additionalDraw, 
-      Armature armature, 
+      dArmature armature, 
       String usageInstructions,
-      IKPin activePin, Axes cubeAxes, boolean cubeEnabled) {
+      dIKPin activePin, dAxes cubeAxes, boolean cubeEnabled) {
     if(multipass) {
-      Kusudama.enableMultiPass(true);
+      dKusudama.enableMultiPass(true);
       currentDrawSurface = stencil;
       
       stencil.beginDraw();
@@ -187,8 +210,8 @@ class UI {
       drawInstructions(g, usageInstructions, zoomScalar); 
       drawPins(g, activePin, drawSize, zoomScalar, cubeEnabled, cubeAxes);
       drawInstructions(g, usageInstructions, zoomScalar); 
-    }  else {
-      Kusudama.enableMultiPass(false);
+    }  else {      
+      dKusudama.enableMultiPass(false);
       currentDrawSurface = g;
       setSceneAndCamera(g, zoomScalar);
       background(80, 150, 190);
@@ -241,11 +264,50 @@ class UI {
 
   public void setCamera(PGraphics pg, float zoomScalar) {
     pg.clear();
+    if(activePin == null) activePin = pins.get(pins.size()-1);
+    ui.mouse.z = (float) activePin.getAxes().origin_().z;
     orthoHeight = height*zoomScalar;
     orthoWidth = ((float)width/(float)height) * orthoHeight; 
     mouse.x =  (mouseX - (width/2f)) * (orthoWidth/width); mouse.y = (mouseY - (height/2f)) *  (orthoHeight/height);
     camera(cameraPosition, lookAt, up, pg);
     pg.ortho(-orthoWidth/2f, orthoWidth/2f, -orthoHeight/2f, orthoHeight/2f, -1000, 1000); 
+  }
+   
+  public void mouseWheelFunctions(MouseEvent event) {
+    float e = event.getCount();
+    if(event.isShiftDown()) 
+      activePin.getAxes().rotateAboutZ(e/TAU, true);
+    else if (event.isControlDown()) 
+      activePin.getAxes().rotateAboutX(e/TAU, true);
+    else 
+      activePin.getAxes().rotateAboutY(e/TAU, true);
+    activePin.solveIKForThisAndChildren();    
+  }
+  
+  public void keyboardFunctions() {
+    if (key == CODED) {
+    if (keyCode == DOWN) activePin = pins.get((pins.indexOf(activePin)+1)%pins.size());  
+    else if (keyCode == UP) activePin = pins.get((pins.size()-1)-(((pins.size()-1)-(pins.indexOf(activePin)-1))% pins.size())); 
+    }
+  }
+  
+  public void initWorldFor(dArmature toVisualize) {
+    worldAxes = new dAxes(); 
+    //attach the armature to the world axes (not necessary, just convenient for display purposes)
+    toVisualize.localAxes().setParent(worldAxes);
+    //translate everything down to where the user can see it, and rotate it 180 degrees about the z-axis so it's not upside down. 
+    worldAxes.translateTo(new DVector(0, 50, 0));
+    worldAxes.rotateAboutZ(PI, true);
+  }
+  
+  public void updatePinList(dArmature forArm) {
+    pins.clear();
+    recursivelyAddToPinnedList(pins, forArm.getRootBone());
+  }
+  public void recursivelyAddToPinnedList(ArrayList<dIKPin> pins, dBone descendedFrom) {
+    ArrayList<dBone> pinnedChildren = (ArrayList<dBone>) descendedFrom.getMostImmediatelyPinnedDescendants(); 
+    for(dBone b : pinnedChildren) pins.add(b.getIKPin());
+    for(dBone b : pinnedChildren) for(dBone b2 : b.getChildren())  recursivelyAddToPinnedList(pins, b2);
   }
   
   /**

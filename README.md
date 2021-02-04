@@ -157,13 +157,13 @@ simpleArmature.setDefaultDampening(0.001f);
 ```
   
     
-**2.** This has the desired effect, but also takes quite longer to solve. To make it snappier, we can increase the number of iterations the IK solver runs per call. The default is 10, but something like 300 should do the trick. 
+**2.** This has the desired effect, but also takes quite a few more iterations to solve, resulting in the chain's apparent sluggishness in catching up to your mouse. To make it snappier, we can increase the number of iterations the IK solver runs per call. The default is 10, but something like 300 should do the trick. 
 ```java
 simpleArmature.setDefaultIterations(300);
 ```
   
     
-**3.** That's much better. But do note that the greater the number of iterations you set, the higher the performance cost. It scales linearly, so if 30 iterations per call takes your processor 0.5ms, you can expect 300 iterations to take it 5ms. You're encouraged to play around with these settings and figure out the ones that work best for your usecase. You can enable the built in performance monitor to help you get a sense of the cost of the computation by setting.
+**3.** That's much better. But do note that the greater the number of iterations you set, the higher the performance cost. It scales linearly, so if 30 iterations per call takes your processor 0.1ms, you can expect 300 iterations to take it 1ms. You're encouraged to play around with these settings and figure out the ones that work best for your usecase. You can enable the built in performance monitor to help you get a sense of the cost of the computation by setting.
 ```java
 simpleArmature.setPerformanceMonitor(true);
 ``` 

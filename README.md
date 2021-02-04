@@ -169,8 +169,7 @@ simpleArmature.setPerformanceMonitor(true);
 ``` 
 The output will be printed to the processing console every second or so that you interact with the armature. 
 
-## Setting Constraints:
-<br/>
+## Setting Constraints:  
 **0.** While the above examples might be fun to play with, they are more or less trivial. What most people really want in an Inverse Kinematics library is one that can deal with the more realistic situation of joints that can only bend so much. In other words joint *constraints*. If you've shopped around for Inverse Kinematics libraries before, or maybe even tried to roll your own, you may have started to despair of ever finding one that handles these well. Don't worry. You can finally relax. Eveything Will be IK ... handles these wonderfully.
   
     

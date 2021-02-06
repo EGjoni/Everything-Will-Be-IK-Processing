@@ -57,11 +57,11 @@ public class KusudamaVisualizer_SinglePrecision extends PApplet{
 		simpleArmature.localAxes().rotateAboutZ(PI, true);
 
 		//specify that we want the solver to run 10 iteration whenever we call it.  
-		simpleArmature.setDefaultIterations(10);
+		simpleArmature.setDefaultIterations(100);
 		//specify the maximum amount any bone is allowed to rotate per iteration (slower convergence, nicer results) 
-		simpleArmature.setDefaultDampening(0.03f);
+		simpleArmature.setDefaultDampening(.001f);
 		//specify that the armature should avoid degenerate solutions. 
-		simpleArmature.setDefaultStabilizingPassCount(1);
+		simpleArmature.setDefaultStabilizingPassCount(0);
 		//benchmark performance
 		simpleArmature.setPerformanceMonitor(true);
 		

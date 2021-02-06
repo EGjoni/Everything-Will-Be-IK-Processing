@@ -1,23 +1,48 @@
-class UI {
+import IK.doubleIK.AbstractBone;
+import ewbik.processing.doublePrecision.dArmature;
+import ewbik.processing.doublePrecision.dBone;
+import ewbik.processing.doublePrecision.dIKPin;
+import ewbik.processing.doublePrecision.dKusudama;
+import ewbik.processing.doublePrecision.sceneGraph.DVector;
+import ewbik.processing.doublePrecision.sceneGraph.dAxes;
+import ewbik.processing.singlePrecision.Armature;
+import ewbik.processing.singlePrecision.Bone;
+import ewbik.processing.singlePrecision.IKPin;
+import ewbik.processing.singlePrecision.Kusudama;
+import ewbik.processing.singlePrecision.sceneGraph.Axes;
+import math.doubleV.Vec3d;
+import math.floatV.SGVec_3f;
+import processing.core.PApplet;
+import processing.core.PFont;
+import processing.core.PGraphics;
+import processing.core.PVector;
+import processing.opengl.PShader;
+
+public class UI {
+	PApplet pa; 
 	PGraphics display, stencil;
 	PShader blurshader;
 	public boolean multipass = false; 
-	String pathUp = ".."+delim+".."+delim+".."+delim+".."+delim+"library"+delim;
 
-	public UI(boolean multipassAllowed) {
-		currentDrawSurface = g; 
+	public UI(PApplet p, boolean multipassAllowed) {
+		pa = p;
+		currentDrawSurface = pa.g; 
 		if(multipassAllowed) {
-			stencil = createGraphics(width, height, P3D);
-			display = createGraphics(width, height, P3D);
+			stencil = pa.createGraphics(p.width, p.height, pa.P3D);
+			display = pa.createGraphics(p.width, p.height, pa.P3D);
 			stencil.noSmooth();
 			display.smooth(8);
-			blurshader = loadShader(pathUp+"shaders"+delim+"blur-sep.glsl");
+			System.out.println(p.sketchPath());
+			blurshader = pa.loadShader( "ewbIK/src/ewbik/processing/blur-sep.glsl");
 			blurshader.set("blurSize", 20);
 			blurshader.set("sigma", 9f);
 			multipass = true;  			
 		}
-		dKusudama.kusudamaShader = loadShader(pathUp+"shaders"+delim+"kusudama.glsl", pathUp+"shaders"+delim+"kusudama_vert.glsl");
-		dKusudama.kusudamaStencil = loadShader(pathUp+"shaders"+delim+"kusudama_stencil.glsl", pathUp+"shaders"+delim+"kusudama_vert.glsl");		
+		dKusudama.kusudamaShader = pa.loadShader("ewbIK/src/ewbik/processing/kusudama.glsl", "ewbIK/src/ewbik/processing/kusudama_vert.glsl");
+		dKusudama.kusudamaStencil = pa.loadShader("ewbIK/src/ewbik/processing/kusudama_stencil.glsl", "ewbIK/src/ewbik/processing/kusudama_vert.glsl");
+		Kusudama.kusudamaShader = dKusudama.kusudamaShader; 
+		Kusudama.kusudamaStencil = dKusudama.kusudamaStencil;
+		
 	}	
 
 	public void drawBoneInfo(PGraphics pg, dBone bone, int idx) {
@@ -30,9 +55,26 @@ class UI {
 		String boneAngles = "";
 		try {
 			double[] angleArr = bone.getXYZAngle();
-			boneAngles += " D ( " + degrees((float)angleArr[0]) + ",   " + degrees((float)angleArr[1]) + ",   " + degrees((float)angleArr[2]) + "  )";
+			boneAngles += " D ( " + pa.degrees((float)angleArr[0]) + ",   " + pa.degrees((float)angleArr[1]) + ",   " + pa.degrees((float)angleArr[2]) + "  )";
 			pg.fill(0);
-			pg.text(boneAngles, (-width/2) +10,  (-height/2) + (10*idx)); 
+			pg.text(boneAngles, (-pa.width/2) +10,  (-pa.height/2) + (10*idx)); 
+		} catch (Exception e) {
+		}        
+	}
+
+	public void drawBoneInfo(PGraphics pg, Bone bone, int idx) {
+		if(bone.isPinned()) {
+			pg.strokeWeight(10); 
+			pg.stroke(255,0,0); 
+			point(pg, bone.getPinLocation());
+		}
+
+		String boneAngles = "";
+		try {
+			float[] angleArr = bone.getXYZAngle();
+			boneAngles += " D ( " + pa.degrees((float)angleArr[0]) + ",   " + pa.degrees((float)angleArr[1]) + ",   " + pa.degrees((float)angleArr[2]) + "  )";
+			pg.fill(0);
+			pg.text(boneAngles, (-pa.width/2) +10,  (-pa.height/2) + (10*idx)); 
 		} catch (Exception e) {
 		}        
 	}
@@ -48,20 +90,20 @@ class UI {
 						+ "-Hold shift while using the mouse wheel to rotate the pin about its (blue) Z axis.\n"
 						+ "-Hold ctrl while using the mouse wheel to rotate the pin about its (green) X axis. \n" 
 						+ appended;
-		//pg.textMode(MODEL);
+		//pg.textMode(pa.MODEL);
 		if(pg.textFont == null)
 			pg.textSize(12);
 		else {
 			pg.textSize(12);
 		}
-		//PFont instructionFont = createFont(pg.textFont.getName(), 42);
+		//PFont instructionFont = pa.createFont(pg.textFont.getName(), 42);
 		pg.fill(0,0,0, 90);
 		float boxW = pg.textWidth(instructionText); 
 		float boxH = (pg.textAscent() + pg.textDescent()) * (instructionText.split("\n").length);
-		pg.rect((-width/2f)+30, (-height/2f)+15, boxW+25, boxH+40);
+		pg.rect((-pa.width/2f)+30, (-pa.height/2f)+15, boxW+25, boxH+40);
 		pg.fill(255, 255, 255, 255);
 		pg.emissive(255, 255, 255);
-		pg.text(instructionText, (-width/2f) + 50f, -height/2f + 40f);
+		pg.text(instructionText, (-pa.width/2f) + 50f, -pa.height/2f + 40f);
 		
 	}
 
@@ -130,6 +172,43 @@ class UI {
 		}
 	}
 	
+	public void drawPins(PGraphics pg, IKPin activePin, 
+			float zoomScalar, float drawSize,
+			boolean cubeMode, Axes cubeAxes) {
+
+		if(activePin != null) {
+			Axes ellipseAx = cubeMode ? cubeAxes : (Axes) activePin.getAxes();
+			PVector pinLoc =  screenOf(pg, ellipseAx.origin(), zoomScalar) ;
+			PVector pinX = screenOf(pg, Axes.toPVector(ellipseAx.x_().getScaledTo(drawSize)), zoomScalar);
+			PVector pinY = screenOf(pg, Axes.toPVector(ellipseAx.y_().getScaledTo(drawSize)), zoomScalar);
+			PVector pinZ = screenOf(pg, Axes.toPVector(ellipseAx.z_().getScaledTo(drawSize)), zoomScalar);
+			pg.fill(255,255,255, 150);
+			pg.stroke(255, 0, 255);
+			float totalpriorities = (float)(activePin.getXPriority() + activePin.getYPriority() + activePin.getZPriority()); 
+			pg.ellipse(pinLoc.x, pinLoc.y, zoomScalar*50, zoomScalar*50);
+
+			PVector effectorO = screenOf(pg, Axes.toPVector(activePin.forBone().localAxes().origin_()), zoomScalar);
+			PVector effectorX = screenOf(pg, Axes.toPVector(activePin.forBone().localAxes().x_().getScaledTo(drawSize)), zoomScalar);
+			PVector effectorY = screenOf(pg, Axes.toPVector(activePin.forBone().localAxes().y_().getScaledTo(drawSize)), zoomScalar);
+			PVector effectorZ = screenOf(pg, Axes.toPVector(activePin.forBone().localAxes().z_().getScaledTo(drawSize)), zoomScalar);
+			pg.stroke(255,255,255,150);
+
+			if(!cubeMode) {
+				float xPriority = (float) activePin.getXPriority();
+				float yPriority = (float) activePin.getYPriority();
+				float zPriority = (float) activePin.getZPriority();
+				drawPinEffectorHints(
+						pg,
+						pinLoc, 
+						pinX, pinY, pinZ, 
+						effectorO, 
+						effectorX, effectorY, effectorZ,
+						xPriority, yPriority, zPriority, totalpriorities
+						);
+			}
+		}
+	}
+
 	public void drawPinEffectorHints(PGraphics pg, 
 			PVector pinLoc, 
 			PVector pinX, PVector pinY, PVector pinZ, 
@@ -149,6 +228,15 @@ class UI {
 			pg.line(pinZ.x, pinZ.y, pinZ.z, effectorZ.x, effectorZ.y, effectorZ.z);
 
 	}
+
+	public void drawPass(int mode, float drawSize, Runnable preArmatureDraw, PGraphics buffer, Armature armature) {
+		Kusudama.renderMode = mode;
+		Bone.renderMode = mode;
+		Axes.renderMode = mode;
+		if(preArmatureDraw != null)
+			preArmatureDraw.run();
+		armature.drawMe( buffer, 100, drawSize);
+	}	
 
 	public void drawPass(int mode, float drawSize, Runnable preArmatureDraw, PGraphics buffer, dArmature armature) {
 		dKusudama.renderMode = mode;
@@ -197,31 +285,82 @@ class UI {
 				blurshader.set("horizontalPass", 1);  display.filter(blurshader);			
 			display.endDraw();
 
-			currentDrawSurface = g;
-			setCamera(g, zoomScalar);
-			background(80, 150, 190);
-			imageMode(CENTER);
-			image(display, 0, 0, orthoWidth, orthoHeight);			
-			resetMatrix();
-			drawPins(g, activePin, zoomScalar, drawSize, cubeEnabled, cubeAxes);
-			resetMatrix();	float cx =width; 	float cy =height;
-			ortho(-cx/2f, cx/2f,  -cy/2f, cy/2f, -1000, 1000);
-			drawInstructions(g, usageInstructions, zoomScalar); 
-			drawPins(g, activePin, drawSize, zoomScalar, cubeEnabled, cubeAxes);
-			drawInstructions(g, usageInstructions, zoomScalar); 
+			currentDrawSurface = pa.g;
+			setCamera(pa.g, zoomScalar);
+			pa.background(80, 150, 190);
+			pa.imageMode(pa.CENTER);
+			pa.image(display, 0, 0, orthoWidth, orthoHeight);			
+			pa.resetMatrix();
+			drawPins(pa.g, activePin, zoomScalar, drawSize, cubeEnabled, cubeAxes);
+			pa.resetMatrix();	float cx =pa.width; 	float cy =pa.height;
+			pa.ortho(-cx/2f, cx/2f,  -cy/2f, cy/2f, -1000, 1000);
+			drawInstructions(pa.g, usageInstructions, zoomScalar); 
+			drawPins(pa.g, activePin, drawSize, zoomScalar, cubeEnabled, cubeAxes);
+			drawInstructions(pa.g, usageInstructions, zoomScalar); 
 		}	else {			
 			dKusudama.enableMultiPass(false);
-			currentDrawSurface = g;
-			setSceneAndCamera(g, zoomScalar);
-			background(80, 150, 190);
-			drawPass(1, drawSize, additionalDraw, g, armature);
-			resetMatrix();
-			drawPins(g, activePin, zoomScalar, drawSize, cubeEnabled, cubeAxes);
-			resetMatrix();	float cx =width; 	float cy =height;
-			ortho(-cx/2f, cx/2f,  -cy/2f, cy/2f, -1000, 1000);
-			drawInstructions(g, usageInstructions, zoomScalar); 
+			currentDrawSurface = pa.g;
+			setSceneAndCamera(pa.g, zoomScalar);
+			pa.background(80, 150, 190);
+			drawPass(1, drawSize, additionalDraw, pa.g, armature);
+			pa.resetMatrix();
+			drawPins(pa.g, activePin, zoomScalar, drawSize, cubeEnabled, cubeAxes);
+			pa.resetMatrix();	float cx =pa.width; 	float cy =pa.height;
+			pa.ortho(-cx/2f, cx/2f,  -cy/2f, cy/2f, -1000, 1000);
+			drawInstructions(pa.g, usageInstructions, zoomScalar); 
 		}
 	}
+
+
+	public void drawScene(float zoomScalar, float drawSize, 
+			Runnable additionalDraw, 
+			Armature armature, 
+			String usageInstructions,
+			IKPin activePin, Axes cubeAxes, boolean cubeEnabled) {
+		if(multipass) {
+			Kusudama.enableMultiPass(true);
+			currentDrawSurface = stencil;
+			
+			stencil.beginDraw();
+				setCamera(stencil, zoomScalar);
+				drawPass(0, drawSize, additionalDraw, stencil, armature);  
+			stencil.endDraw();
+			
+			currentDrawSurface = display;
+			display.beginDraw();
+				setSceneAndCamera(display, zoomScalar);
+				drawPass(1, drawSize, additionalDraw, display, armature);		
+				blurshader.set("mask", stencil);
+				blurshader.set("horizontalPass", 0); display.filter(blurshader);
+				blurshader.set("horizontalPass", 1);  display.filter(blurshader);			
+			display.endDraw();
+
+			currentDrawSurface = pa.g;
+			setCamera(pa.g, zoomScalar);
+			pa.background(80, 150, 190);
+			pa.imageMode(pa.CENTER);
+			pa.image(display, 0, 0, orthoWidth, orthoHeight);			
+			pa.resetMatrix();
+			drawPins(pa.g, activePin, zoomScalar, drawSize, cubeEnabled, cubeAxes);
+			pa.resetMatrix();	float cx =pa.width; 	float cy =pa.height;
+			pa.ortho(-cx/2f, cx/2f,  -cy/2f, cy/2f, -1000, 1000);
+			drawInstructions(pa.g, usageInstructions, zoomScalar); 
+			drawPins(pa.g, activePin, drawSize, zoomScalar, cubeEnabled, cubeAxes);
+			drawInstructions(pa.g, usageInstructions, zoomScalar); 
+		}	else {
+			Kusudama.enableMultiPass(false);
+			currentDrawSurface = pa.g;
+			setSceneAndCamera(pa.g, zoomScalar);
+			pa.background(80, 150, 190);
+			drawPass(1, drawSize, additionalDraw, pa.g, armature);
+			pa.resetMatrix();
+			drawPins(pa.g, activePin, zoomScalar, drawSize, cubeEnabled, cubeAxes);
+			pa.resetMatrix();	float cx =pa.width; 	float cy =pa.height;
+			pa.ortho(-cx/2f, cx/2f,  -cy/2f, cy/2f, -1000, 1000);
+			drawInstructions(pa.g, usageInstructions, zoomScalar); 
+		}
+	}
+
 
 	PVector mouse = new PVector(0,0,0);				
 	PVector cameraPosition = new PVector(0, 0, 70); 
@@ -232,11 +371,11 @@ class UI {
 	public void toggleMultipass() {
 		multipass = !multipass;
 		if(stencil == null && multipass) {
-			stencil = createGraphics(1200, 900, P3D);
-			display = createGraphics(1200, 900, P3D);
+			stencil = pa.createGraphics(1200, 900, pa.P3D);
+			display = pa.createGraphics(1200, 900, pa.P3D);
 			stencil.noSmooth();
 			display.smooth(8);
-			blurshader = loadShader( "src/ewbik/processing/blur-sep.glsl");
+			blurshader = pa.loadShader( "src/ewbik/processing/blur-sep.glsl");
 			blurshader.set("blurSize", 20);
 			blurshader.set("sigma", 9f);
 		}
@@ -263,9 +402,9 @@ class UI {
 
 	public void setCamera(PGraphics pg, float zoomScalar) {
 		pg.clear();
-		orthoHeight = height*zoomScalar;
-		orthoWidth = ((float)width/(float)height) * orthoHeight; 
-		mouse.x =  (mouseX - (width/2f)) * (orthoWidth/width); mouse.y = (mouseY - (height/2f)) *  (orthoHeight/height);
+		orthoHeight = pa.height*zoomScalar;
+		orthoWidth = ((float)pa.width/(float)pa.height) * orthoHeight; 
+		mouse.x =  (pa.mouseX - (pa.width/2f)) * (orthoWidth/pa.width); mouse.y = (pa.mouseY - (pa.height/2f)) *  (orthoHeight/pa.height);
 		camera(cameraPosition, lookAt, up, pg);
 		pg.ortho(-orthoWidth/2f, orthoWidth/2f, -orthoHeight/2f, orthoHeight/2f, -1000, 1000); 
 	}

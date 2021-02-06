@@ -183,6 +183,16 @@ public class dAxes extends CartesianAxes {
 				(float)m[0][3], (float)m[1][3], (float)m[2][3], (float)m[3][3]);
 
 		return result;
+	}	
+	
+	public void rotateAboutX(float radians) {
+		super.rotateAboutX(radians, true);
+	}	
+	public void rotateAboutY(float radians) {
+		super.rotateAboutY(radians, true);
+	}
+	public void rotateAboutZ(float radians) {
+		super.rotateAboutZ(radians, true);
 	}
 
 	public void drawMe(PGraphics pg, float size) {

@@ -25,8 +25,7 @@ public class dIKPin extends AbstractIKPin{
 	//any conversion functions you modified in AxesExample and you should be good to go. 
 	public DVector getLocation() {
 		return (DVector) super.getLocation_();
-	}
-	
+	}	
 
 	public void translateTo(DVector v) {
 		 super.translateTo_(v);
@@ -35,6 +34,26 @@ public class dIKPin extends AbstractIKPin{
 	public void translateBy(DVector v) {
 		 super.translateBy_(v);
 	}
-
-
+	
+	/**rotate this pin about its X axis**/
+	public void rotateAboutX(double radians) {
+		axes.rotateAboutX(radians, true);
+	}	
+	/**rotate this pin about its X axis**/
+	public void rotateAboutY(double radians) {
+		axes.rotateAboutY(radians, true);
+	}
+	/**rotate this pin about its X axis**/
+	public void rotateAboutZ(double radians) {
+		axes.rotateAboutZ(radians, true);
+	}
+	@Override
+	public dAxes getAxes()  {
+		return (dAxes) axes;
+	}
+	
+	@Override
+	public dBone forBone() {
+		return (dBone)super.forBone();
+	}
 }

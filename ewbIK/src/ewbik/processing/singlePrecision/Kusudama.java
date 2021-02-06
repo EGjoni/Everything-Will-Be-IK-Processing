@@ -154,6 +154,8 @@ public class Kusudama extends AbstractKusudama {
 		p.stroke(25, 25,195); 
 		p.strokeWeight(4);
 		p.line(0f,  0f,  0f,  (float)yaw.x, (float)yaw.y, (float)yaw.z);
+		
+		limitingAxes().drawMe(p, pinSize*2);
 
 	}
 

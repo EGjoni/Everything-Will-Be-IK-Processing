@@ -273,12 +273,6 @@ public class DVector extends SGVec_3d{
 	}
 
 
-	@Deprecated
-	public DVector get() {
-		return copy();
-	}
-
-
 	/**
 	 * @param target
 	 */

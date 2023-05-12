@@ -74,7 +74,7 @@ public class Humanoid_Manual extends PApplet{
 		initializeBones(); 		
 		setBoneConstraints();
 		updatePinList();
-		humanArmature.updateArmatureSegments();
+		humanArmature.regenerateShadowSkeleton();
 		humanArmature.IKSolver(rootBone, 0.5d, 20, 1);
 
 		//Tell the Bone class that all bones should draw their kusudamas.

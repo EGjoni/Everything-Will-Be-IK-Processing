@@ -87,13 +87,13 @@ public class KusudamaVisualizer_DoublePrecision extends PApplet{
 		//pin the root
 		rootBone.enablePin();				
 		//intermediary pin a few bones up the chain. 
-		thirdBone.enablePin();		
+		secondBone.enablePin();		
 		//determine how much precedence each of this pin's axes get 
 		//in relation to other axes on other pins being considered by the solver.
 		//this line state that the solver should care about this bone's X and Y headings 
 		//aligning with its targets about 5 times as much as it cares about the X and Y headings of any other bones.  
 		//it also tells the solver to ignore the z heading entirely. 
-		thirdBone.getIKPin().setTargetPriorities(5f, 5f,0f);
+		secondBone.getIKPin().setTargetPriorities(5f, 5f,0f);
 	}
 
 	public void setBoneConstraints() {    		
@@ -104,6 +104,7 @@ public class KusudamaVisualizer_DoublePrecision extends PApplet{
 		firstConstraint.setAxialLimits(0.01f,0.03f);
 		firstConstraint.enable();
 		initialBone.addConstraint(firstConstraint);
+		firstConstraint.optimizeLimitingAxes();
 
 		dKusudama secondConstraint = new dKusudama(secondBone);
 		secondConstraint.addLimitConeAtIndex(0, new DVector(.5f, 1f, 0f),0.6f);
@@ -111,6 +112,7 @@ public class KusudamaVisualizer_DoublePrecision extends PApplet{
 		secondConstraint.setAxialLimits(0.1f,0.9f);
 		secondConstraint.enable();
 		secondBone.addConstraint(secondConstraint);
+		//secondConstraint.optimizeLimitingAxes();
 
 		dKusudama thirdConstraint = new dKusudama(thirdBone);
 		thirdConstraint.addLimitConeAtIndex(0, new DVector(.5f, 1f, 0f), 0.8f);
@@ -118,6 +120,7 @@ public class KusudamaVisualizer_DoublePrecision extends PApplet{
 		thirdConstraint.setAxialLimits(0.1f,0.3f);
 		thirdConstraint.enable();
 		thirdBone.addConstraint(thirdConstraint);
+		thirdConstraint.optimizeLimitingAxes();
 	}
 
 	public void draw() {		
@@ -131,7 +134,7 @@ public class KusudamaVisualizer_DoublePrecision extends PApplet{
 			
 			//run the IK solver on the armature.
 			simpleArmature.IKSolver(rootBone);
-			
+			//println(((dKusudama)secondBone.getConstraint()).getTwistRatio());
 		}else {
 			//rotate the world so the user can inspect the pose
 			worldAxes.rotateAboutY(PI/500f, true);

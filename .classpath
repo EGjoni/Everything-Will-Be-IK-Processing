@@ -2,7 +2,6 @@
 <classpath>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="src" path="ewbIK/src"/>
-	<classpathentry kind="lib" path="ewbIK/library/ewbIK.jar"/>
 	<classpathentry kind="lib" path="../../Downloads/processing-3.5.3/core/library/gluegen-rt-natives-linux-aarch64.jar"/>
 	<classpathentry kind="lib" path="../../Downloads/processing-3.5.3/core/library/gluegen-rt-natives-linux-amd64.jar"/>
 	<classpathentry kind="lib" path="../../Downloads/processing-3.5.3/core/library/jogl-all-natives-windows-i586.jar"/>
@@ -20,5 +19,8 @@
 	<classpathentry kind="lib" path="../../Downloads/processing-3.5.3/core/library/gluegen-rt.jar"/>
 	<classpathentry kind="lib" path="../../Downloads/processing-3.5.3/core/library/gluegen-rt-natives-linux-armv6hf.jar"/>
 	<classpathentry kind="lib" path="../../Downloads/processing-3.5.3/core/library/core.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ewbIK"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Everything-Will-Be-Affine"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/QScene"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

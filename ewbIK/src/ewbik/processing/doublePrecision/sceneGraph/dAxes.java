@@ -125,6 +125,20 @@ public class dAxes extends CartesianAxes {
 		return new dAxes(getGlobalMBasis(), this.getParentAxes());
 	}
 	
+	/**
+	 * Creates an exact copy of this Axes object. Attached to the same parent as this Axes object
+	 * @param slipAware
+	 * @return
+	 */
+	@Override
+	public dAxes attachedCopy(boolean slipAware) {
+		this.updateGlobal();
+		dAxes copy = new dAxes(getGlobalMBasis(), this.getParentAxes());  
+		copy.getLocalMBasis().adoptValues(this.localMBasis);
+		copy.markDirty();
+		return copy;
+	}
+	
 	double[][] outMatLocal = new double[4][4]; 
 	double[][] outMatGlobal = new double[4][4];
 

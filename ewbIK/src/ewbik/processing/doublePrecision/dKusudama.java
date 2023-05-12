@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import IK.doubleIK.AbstractKusudama;
 import IK.doubleIK.AbstractLimitCone;
 import ewbik.processing.doublePrecision.sceneGraph.*;
+import math.doubleV.AbstractAxes;
 import math.doubleV.MRotation;
 import math.doubleV.Rot;
 import math.doubleV.SGVec_3d;
@@ -81,26 +82,15 @@ public class dKusudama extends AbstractKusudama {
 		return new dLimitCone(newPoint, radius, this);		
 	}
 
-
-	/**
-	 * @return the limitingAxes of this KusudamaExample (these are just its parentBone's majorRotationAxes)
-	 */
-	@Override
-	public dAxes limitingAxes() {
-		//if(inverted) return inverseLimitingAxes; 
-		return (dAxes) limitingAxes;
-	}
-
 	public void drawMe(PGraphics p, int boneCol, float pinSize) {		
 		
 		updateShaderTexture();
 		
-		PMatrix localMat = limitingAxes().getLocalPMatrix();
+		PMatrix localMat = ((dAxes)twistOrientationAxes()).getLocalPMatrix();
 		p.applyMatrix(localMat);
 		float circumference = (float) (attachedTo().getBoneHeight()/2.5f); 
-		DVector min = new DVector(0d,0d,circumference);
-		DVector current = new DVector(0d, 0d, circumference); 
-		Rot minRot = new Rot(new DVector(0,1,0), minAxialAngle()); 
+		DVector min = new DVector(this.twistMinVec).setMag(circumference);
+		DVector current = new DVector(min); 
 		double absAngle =minAxialAngle+range;
 		Rot maxRot = new Rot(new DVector(0,1,0), absAngle); 
 
@@ -111,11 +101,28 @@ public class dKusudama extends AbstractKusudama {
 		p.fill(0, 150, 0, 120);
 		p.vertex(0,0,0);
 		for(double i=0; i<=pieces+(3*granularity); i++) {
-			MRotation interp = Rot.slerp(i*granularity, minRot.rotation, maxRot.rotation);
+			MRotation interp = new Rot(new DVector(0,1,0), i*granularity*range).rotation;//Rot.slerp(i*granularity, twistMinRot.rotation, twistMaxRot.rotation);
 			current = interp.applyTo(min);
 			p.vertex((float)current.x, (float)current.y, (float)(current.z));
 		}		
+		double twistRatio = getTwistRatio();
+		if(this.attachedTo().getTag().equals("secondBone")) {
+			//System.out.println("twistRat: " + twistRatio);
+			this.setAxialLimits(-1.1, 4.5);
+		}
+		MRotation interp = new Rot(new DVector(0,1,0), twistRatio*range).rotation;
+		DVector roll = interp.applyTo(min);		
 		p.endShape();
+		p.stroke(25, 25,195); 
+		p.strokeWeight(4);
+		p.line(0f,  0f,  0f,  (float)roll.x, (float)roll.y, (float)roll.z);
+		p.strokeWeight(2);
+		p.line(0f,  0f,  0f, 0f, 0f, 100f);
+		p.noStroke();
+		p.popMatrix();
+		p.pushMatrix();
+		localMat = ((dAxes)swingOrientationAxes()).getLocalPMatrix();
+		p.applyMatrix(localMat);
 		float r = p.red(System.identityHashCode(this));
 		float g = p.green(System.identityHashCode(this));
 		float b = p.blue(System.identityHashCode(this));
@@ -133,17 +140,7 @@ public class dKusudama extends AbstractKusudama {
 		p.sphereDetail(30);
 		p.sphere((float)attachedTo().getBoneHeight()/3.5f);
 		p.resetShader();
-		Rot alignRot = limitingAxes.getGlobalMBasis().getInverseRotation().applyTo(attachedTo().localAxes().getGlobalMBasis().rotation);
-
-
-		Rot[] decomposition = alignRot.getSwingTwist(new SGVec_3d(0,1,0));
-		double angle = decomposition[1].getAngle() * decomposition[1].getAxis().y;
-		Rot zRot = new Rot(new DVector(0,1,0), angle);
-		DVector yaw = new DVector(0, 0, circumference); 
-		yaw = zRot.applyToCopy(yaw);
-		p.stroke(25, 25,195); 
-		p.strokeWeight(4);
-		p.line(0f,  0f,  0f,  (float)yaw.x, (float)yaw.y, (float)yaw.z);
+		Rot alignRot = twistAxes.getGlobalMBasis().getInverseRotation().applyTo(attachedTo().localAxes().getGlobalMBasis().rotation);
 
 	}
 

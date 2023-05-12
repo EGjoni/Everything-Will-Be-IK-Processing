@@ -4,6 +4,8 @@ import ewbik.processing.doublePrecision.dIKPin;
 import ewbik.processing.doublePrecision.dKusudama;
 import ewbik.processing.doublePrecision.sceneGraph.DVector;
 import ewbik.processing.doublePrecision.sceneGraph.dAxes;
+import math.doubleV.AffineAxes;
+import math.doubleV.Rot;
 import processing.core.PApplet;
 import processing.core.PVector;
 import processing.event.MouseEvent;
@@ -39,13 +41,14 @@ public class ConstraintExample_DoublePrecision extends PApplet{
 		ui =new UI(this, false);
 		worldAxes = new dAxes(); 
 		simpleArmature = new dArmature("example");
+	
 		//attach the armature to the world axes (not necessary, just convenient)
 		simpleArmature.localAxes().setParent(worldAxes);
 		
 		//specify that we want the solver to run 10 iteration whenever we call it.  
 		simpleArmature.setDefaultIterations(10);
 		//specify the maximum amount any bone is allowed to rotate per iteration (slower convergence, nicer results) 
-		simpleArmature.setDefaultDampening(0.05d);		
+		simpleArmature.setDefaultDampening(Math.toRadians(5d));		
 		
 		//benchmark performance
 		simpleArmature.setPerformanceMonitor(true);

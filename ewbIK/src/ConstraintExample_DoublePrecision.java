@@ -12,8 +12,6 @@ import processing.event.MouseEvent;
 
 import java.util.ArrayList;
 
-import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
-
 public class ConstraintExample_DoublePrecision extends PApplet{
 	public static void main(String[] args) {
 		PApplet.main("ConstraintExample_DoublePrecision");
@@ -91,7 +89,7 @@ public class ConstraintExample_DoublePrecision extends PApplet{
 	        simpleArmature.IKSolver(simpleArmature.getRootBone());
 	    } else {
 	        worldAxes.rotateAboutY(PI/500d, true);
-	    }    
+	    }
 	   ui.drawScene(0.5f, 10f, null, simpleArmature, null, activePin, null,  false);       
 	}
 

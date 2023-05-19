@@ -38,7 +38,6 @@ import processing.core.PMatrix;
 import processing.core.PVector;
 import processing.opengl.PGraphicsOpenGL;
 import processing.opengl.PShader;
-import sun.text.resources.cldr.bo.FormatData_bo;
 
 
 /**
@@ -106,18 +105,14 @@ public class dKusudama extends AbstractKusudama {
 			p.vertex((float)current.x, (float)current.y, (float)(current.z));
 		}		
 		double twistRatio = getTwistRatio();
-		if(this.attachedTo().getTag().equals("secondBone")) {
-			//System.out.println("twistRat: " + twistRatio);
-			this.setAxialLimits(-1.1, 4.5);
-		}
 		MRotation interp = new Rot(new DVector(0,1,0), twistRatio*range).rotation;
 		DVector roll = interp.applyTo(min);		
 		p.endShape();
 		p.stroke(25, 25,195); 
 		p.strokeWeight(4);
 		p.line(0f,  0f,  0f,  (float)roll.x, (float)roll.y, (float)roll.z);
-		p.strokeWeight(2);
-		p.line(0f,  0f,  0f, 0f, 0f, 100f);
+		//p.strokeWeight(2);
+		//p.line(0f,  0f,  0f, 0f, 0f, 100f);
 		p.noStroke();
 		p.popMatrix();
 		p.pushMatrix();

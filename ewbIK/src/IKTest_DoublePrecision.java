@@ -46,9 +46,7 @@ public class IKTest_DoublePrecision extends PApplet{
   			if(mousePressed) {
   				activeBone.setPin(mouse);             
   				simpleArmature.IKSolver(
-  					rootBone, //the bone the solver should start from 
-  					0.1f, // dampening parameter (in radians), determines the maximum amount a bone can rotate per iteration step. 
-  					// keeping this value low will result in higher quality poses, but those poses will take more iterations to converge. 
+  					rootBone, //the bone the solver should start from
   					10, //inverse weighting helps prevent bones near the target from doing all of the work 
   					//so  you don't need to rely on small dampening factors mixed with high iteration counts 
   					//to get natural looking poses, but it makes armatures with multiple end effectors more unstable. 

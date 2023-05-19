@@ -114,7 +114,7 @@ vec4 colorAllowed(in vec3 normalDir,  in int coneCount, in float boundaryWidth) 
 		inCone = inCone == 0 ? -1 : inCone < 0 ? 0 : -3;
 		currentCondition = getAllowabilityCondition(currentCondition, inCone);
 	} else {
-		for(int i=0; i<coneCount-1; i+=3) {
+		for(int i=0; i<coneCount-1; i++) {
 			
 			int idx = i*3; 
 			vec4 cone1 = coneSequence[idx];
@@ -166,8 +166,8 @@ vec4 colorAllowed(in vec3 normalDir,  in int coneCount, in float boundaryWidth) 
 		bool latDraw = randBit(vec2(lat, lon));//mod(lat, 0.005) < 0.00499;
 		bool lonDraw = randBit(vec2(lon, lat));//mod(lon, 0.005) < 0.00499;
 			
-		if(randBit(vec2(lon, lat))) {		
-			result = vec4(0.0,0.0,0.0,0.0);	
+		if(randBit(vec2(lon, lat))) {
+			result = vec4(0.0,0.0,0.0,0.0);
 		}
 		////////
 		//END CODE FOR FANCY BLURRED TRANSPARENCY
@@ -176,7 +176,7 @@ vec4 colorAllowed(in vec3 normalDir,  in int coneCount, in float boundaryWidth) 
 	
 		float onTanBoundary = abs(currentCondition) == 2 ? 0.3 : 0.0; 
 		float onConeBoundary = abs(currentCondition) == 1 ? 0.3 : 0.0;	
-	
+
 		//return distCol;
 		result += vec4(0.0, onConeBoundary, onTanBoundary, 1.0);
 	} else {
@@ -201,8 +201,8 @@ void main() {
   vec3 lightCol = vec3(1.0,0.8,0.0);
   float gain = vertWorldNormal.z < 0 ? -0.3 : 0.5;
  colorAllowed.rgb = (colorAllowed.rgb + lightCol*(lightScalar + gain)) / 2.;
- vec4 specCol = vec4(1.0, 1.0, 0.6, colorAllowed.a);  
- colorAllowed = colorAllowed.g > 0.8 ? colorAllowed+specCol : colorAllowed;  	
+ vec4 specCol = vec4(1.0, 1.0, 0.6, colorAllowed.a);
+ colorAllowed = colorAllowed.g > 0.8 ? colorAllowed+specCol : colorAllowed;
   	
   gl_FragColor = colorAllowed;
 }

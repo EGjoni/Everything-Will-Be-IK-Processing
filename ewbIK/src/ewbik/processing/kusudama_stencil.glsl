@@ -115,16 +115,16 @@ vec4 colorAllowed(in vec3 normalDir,  in int coneCount, in float boundaryWidth) 
 		int inCone = isInCone(normalDir, cone, boundaryWidth);
 		inCone = inCone == 0 ? -1 : inCone < 0 ? 0 : -3;
 		currentCondition = getAllowabilityCondition(currentCondition, inCone);
-			
+
 	} else {
-		for(int i=0; i<coneCount-1; i+=3) {
+		for(int i=0; i<coneCount-1; i++) {
 			
 			int idx = i*3; 
 			vec4 cone1 = coneSequence[idx];
 			vec4 tangent1 = coneSequence[idx+1];			
 			vec4 tangent2 = coneSequence[idx+2];			
 			vec4 cone2 = coneSequence[idx+3];
-						
+
 				
 			int inCone1 = isInCone(normalDir, cone1, boundaryWidth);
 			
@@ -147,8 +147,8 @@ vec4 colorAllowed(in vec3 normalDir,  in int coneCount, in float boundaryWidth) 
 				bool visualize = false;
 				if( ! visualize ) {
 					bool inIntercone = isInInterConePath(normalDir, tangent1, cone1, tangent2, cone2);
-					int interconeCondition = inIntercone ? 0 : -3;// && (inTangent1 > 0 || inTangent2 > 0) ? -3 : 0; 
-					currentCondition = getAllowabilityCondition(currentCondition, interconeCondition);					
+					int interconeCondition = inIntercone ? 0 : -3;// && (inTangent1 > 0 || inTangent2 > 0) ? -3 : 0;
+					currentCondition = getAllowabilityCondition(currentCondition, interconeCondition);
 				} else { 
 					//visualization code, set visualize = true to get a sense of how the math works.	
 					vec4 intervec = drawInterConePathDisparity(normalDir, tangent1, cone1, tangent2, cone2);
@@ -162,7 +162,7 @@ vec4 colorAllowed(in vec3 normalDir,  in int coneCount, in float boundaryWidth) 
 	vec4 result = vertColor;
 	
 	if(currentCondition == -3) {
-		return result; 
+		return result;
 	} else { 
 		discard;
 	}

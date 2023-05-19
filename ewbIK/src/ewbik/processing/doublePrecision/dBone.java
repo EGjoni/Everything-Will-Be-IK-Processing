@@ -185,7 +185,7 @@ public class dBone extends AbstractBone {
 
 
 	public void drawMeAndChildren(PGraphics pg, int boneCol, float pinSize) {
-		
+		pg.pushMatrix();
 		if(this.constraints != null && drawKusudamas) {
 			pg.pushMatrix();
 			((dKusudama)constraints).drawMe(pg, boneCol, pinSize);
@@ -223,24 +223,11 @@ public class dBone extends AbstractBone {
 			pg.endShape();
 			pg.emissive(0,0,0);
 			
-
 		for(dBone b : getChildren()) {			
-			pg.pushMatrix();
 			b.drawMeAndChildren(pg, boneCol+10, pinSize);
-			pg.popMatrix();
 		}		
+		pg.popMatrix();
 
-
-
-		pg.strokeWeight(4f);
-		if(this.isPinned()) {
-			((dAxes)this.getIKPin().getAxes()).drawMe(pg, pinSize);
-		}
-
-		if(this.isPinned()) {
-			pg.strokeWeight(2f);
-			localAxes().drawMe(pg, pinSize);
-		}
 	}
 
 	/**

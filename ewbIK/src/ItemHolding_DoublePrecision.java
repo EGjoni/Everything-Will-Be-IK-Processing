@@ -27,7 +27,7 @@ public class ItemHolding_DoublePrecision extends PApplet{
 	}
 
 	public void settings(){
-		size(1200, 900, P3D);
+		size(1200, 900, P2D);
 	}
 
 	dArmature loadedArmature;
@@ -57,9 +57,9 @@ public class ItemHolding_DoublePrecision extends PApplet{
 		loadedArmature.setPerformanceMonitor(true); //print performance stats
 		
 		//Tell the Bone class that all bones should draw their kusudamas.
-		dBone.setDrawKusudamas(true);
+		dBone.setDrawKusudamas(false);
 		//Enable fancy multipass shading for translucent kusudamas. 
-		dKusudama.enableMultiPass(true);
+		//dKusudama.enableMultiPass(true);
 
 		/**
 		 * The armature we're loading is already posed such that its hands touch
@@ -75,8 +75,14 @@ public class ItemHolding_DoublePrecision extends PApplet{
 		 */
 		loadedArmature.getBoneTagged("left hand").getIKPin().getAxes().setParent(cubeAxes);
 		loadedArmature.getBoneTagged("right hand").getIKPin().getAxes().setParent(cubeAxes);
-		
-		
+		loadedArmature.getBoneTagged("right collar bone").getConstraint().setPainfulness(0.8d);
+		loadedArmature.getBoneTagged("left collar bone").getConstraint().setPainfulness(0.8d);
+		loadedArmature.getBoneTagged("left upper arm").getConstraint().setPainfulness(0.5d);
+		loadedArmature.getBoneTagged("right upper arm").getConstraint().setPainfulness(0.5d);
+		loadedArmature.setDefaultDampening(Math.toRadians(10d));
+		loadedArmature.setDefaultStabilizingPassCount(1);
+		loadedArmature.setDefaultIterations(30);
+		//ui.buildBoneList(loadedArmature.getBoneList());
 	}
 
 

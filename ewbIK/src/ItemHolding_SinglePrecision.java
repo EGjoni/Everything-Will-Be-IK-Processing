@@ -99,7 +99,7 @@ public class ItemHolding_SinglePrecision extends PApplet{
 
 	public void drawHoldCube() {
 		PGraphics currentDisplay = ui.getCurrentDrawSurface();
-		if(ui.display == currentDisplay) { 
+		if(ui.scene == currentDisplay) { 
 			currentDisplay.fill(60,60,60);
 			currentDisplay.strokeWeight(1);
 			currentDisplay.stroke(255);

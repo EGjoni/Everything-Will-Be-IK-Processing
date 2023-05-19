@@ -12,8 +12,6 @@ import ewbik.processing.singlePrecision.sceneGraph.Axes;
 
 import java.util.Collection;
 
-import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
-
 import data.EWBIKLoader;
 import data.EWBIKSaver;
 

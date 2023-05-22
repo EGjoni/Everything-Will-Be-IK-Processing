@@ -28,7 +28,7 @@ public class View3D extends GViewListener {
 	protected PVector mouse = new PVector(0,0,0);				
 	protected PVector cameraPosition = new PVector(0, 150, 500); 
 	protected PVector lookAt = new PVector(0, 150, 0);
-	protected PVector up = new PVector(0, 1, 0);
+	protected PVector up = new PVector(0, -1, 0);
 	
 
 	protected boolean pressedHere = false;

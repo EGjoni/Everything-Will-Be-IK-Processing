@@ -1,8 +1,10 @@
 import java.awt.Font;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+import java.util.HashMap;
 
 import IK.doubleIK.AbstractArmature;
 import IK.doubleIK.AbstractBone;
@@ -10,29 +12,17 @@ import IK.doubleIK.AbstractIKPin;
 import IK.doubleIK.AbstractKusudama;
 import IK.doubleIK.AbstractLimitCone;
 import ewbik.processing.doublePrecision.dBone;
+import ewbik.processing.doublePrecision.dIKPin;
 import ewbik.processing.doublePrecision.dKusudama;
-import g4p_controls.GAlign;
-import g4p_controls.GButton;
-import g4p_controls.GCScheme;
-import g4p_controls.GDropList;
-import g4p_controls.GEvent;
-import g4p_controls.GKnob;
-import g4p_controls.GLabel;
-import g4p_controls.GOption;
-import g4p_controls.GPanel;
-import g4p_controls.GSlider;
-import g4p_controls.GSlider2D;
-import g4p_controls.GSpinner;
-import g4p_controls.GTextField;
-import g4p_controls.GToggleGroup;
-import g4p_controls.GView;
+import g4p_controls.*;
 import math.Vec;
 import math.doubleV.AbstractAxes;
-import math.doubleV.Rot;
-import math.doubleV.SGVec_3d;
 import math.doubleV.Vec3d;
-import processing.core.PApplet;
+import math.doubleV.Rot;
+import math.doubleV.RotationOrder;
+import math.doubleV.SGVec_3d;
 import processing.opengl.PGraphics3D;
+import processing.core.*;
 
 public class G4PUI {
 	
@@ -52,37 +42,36 @@ public class G4PUI {
 	
 	
 	GSpinner boneHeight;
+	private ArrayList<? extends AbstractLimitCone> limitConeCollection;
 	ArrayList<AbstractBone> boneCollection = new ArrayList<>();
 	HashMap<String, AbstractBone> boneMap = new HashMap<String, AbstractBone>();
 	HashMap<AbstractBone, Integer> revBoneMap = new HashMap<AbstractBone, Integer>();
 	//HashMap<String, AbstractBone> childMap = new HashMap<String, AbstractBone>();
 	AbstractArmature armature;
-	
-	
-	
+	GPanel constraintProperties, targetProperties, childBonesGroup;
+	GPanel solverPanel;
+	GPanel addLimitCone;
+	GSpinner newLimitConeIndex;
+	GSlider2D coneOrientation;
+	GSlider coneSpread;
+	GKnob coneSpreadVisualizer;
 	GSlider zoomSlider;
+	GButton cancelAddCone, confirmAddCone;
 	GToggleGroup solverMode;
-	GOption perpetual, onInteraction, byIteration, byStep;
-	GPanel targetProperties;
+	GOption perpetual, onInteraction, byIteration, byStep; 
 	GPanel turntablePanel;// childBonesPanel;
 	GPanel addChildPanel;
 	GButton addConstraintBtn, addTargetBtn;
-	GSlider dampening, stiffness;
+	GSlider dampening, stiffness, painfulness; 
 	GSpinner iterations;
 	GKnob boneTwistVisualizer;
 	PApplet pa;
-	
-	
-	public Dialogs dialogs;
-	
 	public int solveMode = 1;
 	private GKnob turntableKnob;
 	public GPanel bonePanel;
-	private GDropList bonelist;
+	private GDropList bonelist, limitConeList;
 	private GTextField newBoneName;
-	GPanel solverPanel;
-	
-	
+
 	private GView view3DScene;
 	private GView view3DWidget;
 	public SceneView sceneView;
@@ -90,9 +79,8 @@ public class G4PUI {
 	private int fixCount = 0;
 	private GView debugView;
 	
-	HashMap<AbstractBone, PApplet> boneCWindowMap = new HashMap<>();
-	
-	
+
+	PApplet constraintWindow; 
 	
 	public G4PUI(PApplet p, Number zoom, boolean multipassEnabled, 
 			AbstractArmature armature, AbstractAxes worldAxes,
@@ -104,7 +92,6 @@ public class G4PUI {
 		this.zoom = (float)zoom;
 		this.updatePinList();
 		this.activePin = activePin;
-		this.dialogs = new Dialogs(this);
 		
 		view3DScene = new GView(pa, 300, 0, pa.width-300, pa.height, PApplet.P3D);
 		view3DWidget = new GView(pa, 300, 0, pa.width-300, pa.height, PApplet.P3D);
@@ -136,35 +123,37 @@ public class G4PUI {
 			addConstraintBtn.setEnabled(false);
 		} else {
 			addConstraintBtn.setEnabled(true);
+			addConstraintBtn.setLocalColorScheme(GCScheme.BLUE_SCHEME);
 			if (!hasConstraint){
-				addConstraintBtn.setLocalColorScheme(GCScheme.BLUE_SCHEME);
 				addConstraintBtn.setText("Add Constraint");
+				constraintProperties.setVisible(false);
 			} else {
-				addConstraintBtn.setLocalColorScheme(GCScheme.CYAN_SCHEME);
-				addConstraintBtn.setText("Edit Constraint");
+				addConstraintBtn.setVisible(false);		
+				constraintProperties.setVisible(true);
 			}
 		}
-		
-		
-		//constraintProperties.setVisible(hasConstraint);
-		addTargetBtn.setVisible(!hasTarget);
-		targetProperties.setVisible(hasTarget);
-		
+		addConstraintBtn.setVisible(!hasConstraint);
+		constraintProperties.setVisible(hasConstraint);
 		if(hasTarget) {
 			
 		}
 		if(hasConstraint) {
-			Dialogs.KusudamaDialog dialog = dialogs.getDialogFor((AbstractKusudama)selectedBone.getConstraint());
-			dialog.updateUI();
+			painfulness.setValue((float)selectedBone.getConstraint().getPainfulness());
+			limitConeCollection = ((AbstractKusudama)selectedBone.getConstraint()).getLimitCones();
+			String[] cones = new String[limitConeCollection.size()];
+			for(int i=0; i<limitConeCollection.size(); i++)
+				cones[i] = "Cone "+i;
+			limitConeList.setItems(cones, 0);
+			this.selectedCone = limitConeCollection.get(0);
+			limitConeList.setSelected(0);
+			coneSpread.setValue((float)this.selectedCone.getRadius());
 		} else {
 			updateTwistVisualizer(null);
 		}
 		
 		dampening.setValue((float)armature.getDampening());
 		stiffness.setValue((float)selectedBone.getStiffness());
-		
 		iterations.setValue(armature.getDefaultIterations());
-		
 	}
 
 	public void populateGUI() {
@@ -172,14 +161,11 @@ public class G4PUI {
 		GCScheme.changePaletteColor(GCScheme.CYAN_SCHEME, 3, pa.color(0,0,0,255));
 		this.selectedBone = armature.getRootBone();
 		
-		//ConstraintPanel_init();
-		TargetPanel_init();
+		ConstraintPanel_init();
 		ChildPanel_init();
 		BonePanel_init();
-		
 		SolverPanel_init();
-		
-		TargetPanel_init();
+		targetPanel_init();
 		
 		TurntablePanel_init();		
 		updateUI();
@@ -227,7 +213,34 @@ public class G4PUI {
 		}
 	}
 	
+	public void edit_conespread(GSlider spread, GEvent event) {
+		pa.println("conespread event: " + event.name() + " : " +  spread.getValueF());
+		float range = pa.PI - spread.getValueF();
+		range = pa.min(pa.max(range, 0.001f), pa.PI-.00001f);
+		float base = coneOrientation.getValueYF() + 2*pa.PI;
+		/**hack to fix weird z-index focus issue*/
+		this.selectedCone.setRadius(spread.getValueF());
+		this.selectedCone.getParentKusudama().optimizeLimitingAxes();
+	}
 	
+	public void limitCone_select(GDropList gd, GEvent event) {
+		this.selectedCone = limitConeCollection.get(gd.getSelectedIndex());
+		double lat = 0d;
+		Vec<?> cpoint = this.selectedCone.getControlPoint();
+		
+        double theta = Math.asin(cpoint.getYd());
+        double latitude = theta;
+       
+        double phi = Math.atan2(cpoint.getXd(), cpoint.getZd());
+        double longitude = phi;
+
+        if (longitude < 0) {
+            longitude += Math.PI*2d;
+        }
+		coneOrientation.setValueY((float)latitude);
+		coneOrientation.setValueX((float)longitude);
+		coneSpread.setValue((float)this.selectedCone.getRadius());
+	}
 	
 	public void addConstraint_click(GButton btn, GEvent envet) {
 		if(this.selectedBone.getConstraint() == null) {
@@ -237,13 +250,28 @@ public class G4PUI {
 			this.selectedBone.addConstraint(newConstraint);
 			newConstraint.optimizeLimitingAxes();
 			this.updateUI();
-		} else {
-			
 		}
 	}
 	
-	long lastUIUpdate = 0;
+	public void confirm_addCone(GButton btn, GEvent event) {
+		double defaultRad = 0.5d;
+		((AbstractKusudama)this.selectedBone.getConstraint()).addLimitConeAtIndex(
+				this.newLimitConeIndex.getValue(), null, -1d);
+		this.addLimitCone.setCollapsed(true);
+		//AbstractLimitCone selected = 
+		this.limitConeList.setSelected(this.newLimitConeIndex.getValue());
+		this.updateUI();
+	}
 	
+	
+	
+	long lastUIUpdate = 0;
+	private GSlider twistMin;
+	private GSlider twistRange;
+	private GDropList targetList;
+	private GDropList target_forEffector_selectlist;
+	private GDropList target_parentTransform_selectlst;
+	private ArrayList<AbstractBone> availableEffectorList;
 	
 	public float[] latLonToVec(float lat, float lon) {
 		float z = (float)Math.cos(lat) * (float)Math.cos(lon);
@@ -264,13 +292,41 @@ public class G4PUI {
 		pa.println("lat: "+latitude+", lon: "+ longitude);
 		return new float[] {(float)latitude, (float)longitude};
 	}
-
+	
+	public void reorient_cone(GSlider2D g2d, GEvent event) {
+		pa.println("reorient event: "+event.name());
+		if(this.selectedCone == null)
+			return;
+		
+		long current = System.currentTimeMillis();
+		long delta = current - lastUIUpdate;
+		if(event.equals(GEvent.RELEASED) || delta > 25) {
+			// Calculate Cartesian coordinates
+			float latitude = g2d.getValueYF();
+			float longitude = g2d.getValueXF();
+			pa.println("--lat: "+latitude+", lon: "+ longitude);
+			float[] toV1 = latLonToVec(latitude, longitude);
+			float[] ll1 = vecToLatLon(toV1[0], toV1[1], toV1[2]);
+			float[] toV2 = latLonToVec(ll1[0], ll1[1]);
+			float[] ll2 = vecToLatLon(toV2[0], toV2[1], toV2[2]);
+			
+			double z = Math.cos(latitude) * Math.cos(longitude);
+		    double x = Math.cos(latitude) * Math.sin(longitude);
+		    double y = Math.sin(latitude);
+	        this.selectedCone.setControlPoint(new SGVec_3d(x, y, z));
+	        this.edit_conespread(coneSpread, event);
+	        this.selectedCone.getParentKusudama().optimizeLimitingAxes();
+	        lastUIUpdate = current;
+		}
+		//if(event.equals(GEvent.RELEASED))
+			
+	}
 	
 	public void bone_select(GDropList gd, GEvent event) {
 		String selected = gd.getSelectedText();
 		AbstractBone toSelect = boneMap.get(selected);
 		if(this.selectedBone != toSelect) {
-			targetProperties.setCollapsed(true);
+			constraintProperties.setCollapsed(true);
 			this.selectedBone = toSelect;
 			updateUI();
 		}
@@ -355,7 +411,7 @@ public class G4PUI {
 	}
 	
 	public GPanel BonePanel_init() {
-		bonePanel = new GPanel(pa, 0, 0, 300, 600, "Bone Info");
+		bonePanel = new GPanel(pa, 0, 0, 300, 580, "Bone Info");
 		bonePanel.setCollapsed(false);
 		bonePanel.setCollapsible(false);
 		bonePanel.setDraggable(false);
@@ -378,9 +434,9 @@ public class G4PUI {
 		addConstraintBtn = new GButton(pa, 10, 200, 120, 30, "Add Constraint");
 		addConstraintBtn.addEventHandler(this, "addConstraint_click");
 		
-		bonePanel.addControls(bonelist, stiffness, stif, addChildPanel, addTargetBtn, targetProperties, addConstraintBtn);
+		bonePanel.addControls(bonelist, stiffness, stif, addChildPanel, addConstraintBtn, constraintProperties);
 		
-		boneTwistVisualizer = new GKnob(pa, bonePanel.getWidth()/2.5f, 70,  bonePanel.getWidth()/2.5f,  bonePanel.getWidth()/2, 1.0f);
+		boneTwistVisualizer = new GKnob(pa, 10, 60,  bonePanel.getWidth()/4f,  bonePanel.getWidth()/4f, 1.0f);
 		boneTwistVisualizer.setShowDecor(false, true, false, true);
 		boneTwistVisualizer.setEnabled(true);
 		boneTwistVisualizer.setTurnMode(GKnob.CTRL_ANGULAR);
@@ -454,9 +510,8 @@ public class G4PUI {
 		float base = 0;
 		float currentVal = 0.1f;
 		if(constraint != null && constraint.constrainsTwist()) {
-			Dialogs.KusudamaDialog kusuDialog = dialogs.getDialogFor((AbstractKusudama)selectedBone.getConstraint());
-			range = kusuDialog.twistRange.getValueF();
-			base = kusuDialog.twistMin.getValueF();
+			range = twistRange.getValueF();
+			base = twistMin.getValueF();
 			currentVal = (float) constraint.getTwistRatio();
 		}
 		
@@ -466,7 +521,7 @@ public class G4PUI {
 		//int baseBlue = GCScheme.getPalette(boneTwistVisualizer.getLocalColorScheme())[2];
 		//boneTwistVisualizer.setLocalColor(2, baseBlue);
 		
-		boneTwistVisualizer.setLimits(-pa.PI, pa.PI);
+		boneTwistVisualizer.setLimits(0, 1f);
 		boneTwistVisualizer.setValue(currentVal);
 		boneTwistVisualizer.setShowDecor(false, true, true, true);
 		boneTwistVisualizer.setShowArcOnly(true);
@@ -477,17 +532,153 @@ public class G4PUI {
 		boneTwistVisualizer.setTurnRange(pa.degrees(min), pa.degrees(max));
 	}
 	
+	private GPanel ConstraintPanel_init() {
+		constraintProperties = new GPanel(pa, 10, 170, 300, 400, "Constraint Properties");
+		constraintProperties.setLocalColorScheme(GCScheme.CYAN_SCHEME);
+		constraintProperties.setFont(new Font((String)null, 0, 16));
+		constraintProperties.setDraggable(false);
+		//constraintProperties.setDragArea(10, 50, 120, 30);
+		constraintProperties.setCollapsed(false);
+		constraintProperties.setVisible(false);
+		insertCloseButton(constraintProperties);
+		painfulness = new GSlider(pa, 80, constraintProperties.getHeight()-50, 70, 50, 12);
+		painfulness.setShowValue(true);
+		painfulness.setShowTicks(true);
+		painfulness.setLimits(0, 1f);
+		painfulness.setLocalColorScheme(GCScheme.CYAN_SCHEME);
+		painfulness.addEventHandler(this, "edit_painfulness");
+		
+		twistMin = new GSlider(pa, 10, 30, 140, 60, 12);
+		twistMin.setShowDecor(false, false, true, false);
+		twistMin.setLimits(-pa.PI/4, -pa.PI, pa.PI);
+		GLabel twm = new GLabel(pa, 160f, 30f, 100f, 65f, "Twist Minimum");
+		twistMin.addEventHandler(this, "edit_twistMin");
+		twm.setTextAlign(GAlign.LEFT, GAlign.CENTER);
+		twistRange = new GSlider(pa, 10, 80, 140, 60, 12);
+		twistRange.addEventHandler(this, "edit_twistRange");
+		twistRange.setShowDecor(false, false, true, false);
+		twistRange.setLimits(pa.PI/2, -pa.PI*2, pa.PI*2);
+		GLabel twr = new GLabel(pa, 160f, 80, 100, 65, "Twist Range");
+		twr.setTextAlign(GAlign.LEFT, GAlign.CENTER);
+		//GKnob twistVisual = new GKnob(pa, )
+		GLabel pain = new GLabel(pa, 0, constraintProperties.getHeight()-50, 75, 50);
+		pain.setText("Painfulness:");
+		pain.setTextAlign(GAlign.RIGHT, GAlign.CENTER);
+		GPanel conesPanel = conesPanel_init();
+		constraintProperties.addControls(painfulness, pain, conesPanel, twistMin, twistRange, twm, twr);
+		
+		return constraintProperties;
+	}
 	
-	public GPanel TargetPanel_init() {
+	public GPanel conesPanel_init() {
+		GPanel conesPanel = new GPanel(pa, 10, constraintProperties.getHeight()-250, constraintProperties.getWidth()-20, 200, "Limit Cones");
+		conesPanel.setCollapsible(false);
+		conesPanel.setLocalColorScheme(GCScheme.ORANGE_SCHEME);
+		conesPanel.setDraggable(false);
+		limitConeList = new GDropList(pa, 20, 25, 160, 70);	
+		limitConeList.setFont(new Font((String)null, 0, 14));
+		limitConeList.addEventHandler(this, "limitCone_select");
+		addLimitCone = new GPanel(pa, 185, 25, 100, 100, "Add Cone");
+		addLimitCone.setDraggable(false);
+		addLimitCone.setLocalColorScheme(GCScheme.PURPLE_SCHEME);
+		coneOrientation = new GSlider2D(pa, 10, 45, 200, 140);
+		coneOrientation.setLimitsX(-pa.PI*2, pa.PI*2);
+		coneOrientation.setLimitsY(pa.PI, -pa.PI);
+		coneOrientation.setValueX(0);
+		coneOrientation.setValueY(0);
+		coneOrientation.setAlpha(230);
+		GLabel lon = new GLabel(pa, 0, (coneOrientation.getHeight() + coneOrientation.getY()) - 5, coneOrientation.getWidth(), 40, "Longitude");
+		lon.setTextAlign(GAlign.CENTER, GAlign.TOP);
+		lon.setFont(new Font((String)null, 0, 14));
+		GLabel lat = new GLabel(pa, -8, coneOrientation.getHeight() + coneOrientation.getY(), coneOrientation.getHeight(), 40, "Latitute");
+		lat.setTextAlign(GAlign.CENTER, GAlign.TOP);
+		lat.setRotation(-pa.PI/2);
+		lat.setFont(new Font((String)null, 0, 14));
+		coneOrientation.addEventHandler(this, "reorient_cone");
+		conesPanel.addControl(coneOrientation);
+		float rightSection = conesPanel.getWidth() - coneOrientation.getWidth();
+		coneSpread = new GSlider(pa, conesPanel.getWidth() - 70, 180f, coneOrientation.getHeight(), 80f, 15f);//)rightSection  - 40, 50, 12);
+		coneSpread.setLimits(pa.PI/4, 0, pa.PI);
+		coneSpread.setShowDecor(false, false, true, false);
+		coneSpread.setRotation(-pa.PI/2);
+		coneSpread.addEventHandler(this, "edit_conespread");
+				
+		/*coneSpreadVisualizer = new GKnob(pa, rightSection + 15, 60, (rightSection/1.5f), (rightSection/1.5f), 0);
+		coneSpreadVisualizer.setLocalColorScheme(GCScheme.ORANGE_SCHEME);
+		coneSpreadVisualizer.setGripAmount(0.1f);
+		coneSpreadVisualizer.setShowDecor(true, false, false, true);
+		coneSpreadVisualizer.setEnabled(false);*/
+		GLabel sprd = new GLabel(pa, coneSpread.getX()+50, coneSpread.getY(), coneSpread.getWidth(), 20);
+		sprd.setText("Spread angle", GAlign.CENTER, GAlign.TOP);
+		sprd.setFont(new Font((String)null, 0, 12));
+		sprd.setRotation(-pa.PI/2);
+		
+		newLimitConeIndex = new GSpinner(pa, 50, 30, 35, 20);
+		GLabel newlc = new GLabel(pa, -50, 5, 45, 20);
+		newlc.setText("index");
+		newlc.setTextAlign(GAlign.RIGHT, GAlign.TOP);
+		newLimitConeIndex.addControl(newlc);
+		newLimitConeIndex.setLimits(1, 0, 16, 1);
+		cancelAddCone = new GButton(pa, 5, 60, 50, 30, "Cancel");
+		cancelAddCone.addEventHandler(this, "dialog_cancel");
+		confirmAddCone = new GButton(pa, 60, 60, 30, 30, "OK");
+		confirmAddCone.addEventHandler(this, "confirm_addCone");
+		addLimitCone.addControls(newLimitConeIndex, cancelAddCone, confirmAddCone);
+		addLimitCone.setCollapsed(true);
+		conesPanel.addControls(addLimitCone, limitConeList, coneSpread, /*coneSpreadVisualizer,*/ sprd, lon, lat);
+		
+		return conesPanel;
+	}
+	public GPanel targetPanel_init() {
 		addTargetBtn = new GButton(pa, 10, 85, 120, 30, "Add Target");
 		addTargetBtn.addEventHandler(this, "addTarget_click");
-		targetProperties = new GPanel(pa, 0, 85, 300, 80, "Target Properties");
+		targetList = new GDropList(pa, 20, 25, 160, 70);	
+		targetList.addEventHandler(this, "select_target");
+		targetList.setItems(new String[]{"None"}, 0);
+		target_forEffector_selectlist = new GDropList(pa, 20, 60, 160, 70);	
+		target_forEffector_selectlist.setItems(new String[]{"No Effector Selected"}, 0);
+		target_forEffector_selectlist.addEventHandler(this, "change_effector");
+		target_parentTransform_selectlst = new GDropList(pa, 20, 95, 160, 70);	
+		target_parentTransform_selectlst.setItems(new String[]{"World"}, 0);
+		
+		targetProperties = new GPanel(pa, 0, solverPanel.getY()+solverPanel.getHeight(), 300, 80, "Target Properties");
 		targetProperties.setLocalColorScheme(GCScheme.CYAN_SCHEME);
-		targetProperties.setDraggable(false);
-		targetProperties.setCollapsed(true);
-		targetProperties.setVisible(false);
-		insertCloseButton(targetProperties);
+		targetProperties.setDraggable(true);
+		targetProperties.setCollapsible(false);
+		targetProperties.addControls(addTargetBtn, targetList, target_forEffector_selectlist);
+		updateTargetSelectList();
+		updateForEffectorSelectList();
 		return targetProperties;
+	}
+	
+	public void updateTargetSelectList() {
+		ArrayList<String> pinNames = new ArrayList<>();
+		for(int i = 0; i<pins.size(); i++) {
+			AbstractIKPin pin = pins.get(i);
+			String pinname = "target for " + pin.forBone().getTag();
+			pinNames.add(pinname);
+		}
+		String[] pinnames = pinNames.toArray(String[]::new);
+		targetList.setItems(pinnames, 0);
+	}
+	
+	public void updateForEffectorSelectList() {
+		String[] bonestrArr = getBoneStringArr(armature.getRootBone(), 9999, true, boneMap, revBoneMap);
+		for(int i = 0; i < bonestrArr.length; i++) {
+			AbstractBone candidate = boneMap.get(bonestrArr[i]);
+			if(candidate.getIKPin() != null && candidate.getIKPin() != activePin) {
+				bonestrArr[i] += " (already pinned)";
+			}
+		}
+		target_forEffector_selectlist.setItems(bonestrArr, 0);
+	}
+	
+	public void select_target(GDropList dl, GEvent event) {
+		
+	}
+	
+	public void change_effector(GDropList dl, GEvent event) {
+		
 	}
 	
 	
@@ -497,7 +688,7 @@ public class G4PUI {
 		panel.addControl(closePanel);
 	}
 	public GPanel SolverPanel_init() {
-		solverPanel = new GPanel(pa, 0, 620, 300, 140, "Solver options");
+		solverPanel = new GPanel(pa, 0, 580, 300, 140, "Solver options");
 		solverPanel.setCollapsed(false);
 		solverPanel.setCollapsible(false);
 		solverPanel.setDraggable(false);

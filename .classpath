@@ -69,6 +69,6 @@
 	<classpathentry kind="lib" path="lib/lwjgl-platform-natives-windows.jar"/>
 	<classpathentry kind="lib" path="lib/mesh.jar"/>
 	<classpathentry kind="lib" path="lib/p-core.jar"/>
-	<classpathentry kind="lib" path="C:/Users/rufsk/git/Everything-Will-Be-IK-Processing/lib/G4P.jar"/>
+	<classpathentry kind="lib" path="lib/G4P.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

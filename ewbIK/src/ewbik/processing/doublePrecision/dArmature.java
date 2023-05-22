@@ -82,17 +82,6 @@ public class dArmature extends AbstractArmature {
 			pg.applyMatrix(localMat);
 			getRootBone().drawMeAndChildren(pg, color,  pinSize);
 			pg.strokeWeight(4f);
-			/*for(AbstractBone ab: bones) { 
-				dBone b = (dBone) ab;
-				if(b.isPinned()) {
-					((dAxes)b.getIKPin().getAxes()).drawMe(pg, pinSize);
-				}
-		
-				if(b.isPinned()) {
-					pg.strokeWeight(2f);
-					localAxes().drawMe(pg, pinSize);
-				}
-			}*/
 		pg.popMatrix();
 		
 	}

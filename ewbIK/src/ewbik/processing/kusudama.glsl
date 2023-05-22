@@ -27,6 +27,7 @@ uniform bool multiPass;
 varying vec3 vertWorldNormal;
 varying vec3 vertLightDir;
 varying vec4 vertWorldPos;
+uniform int frame;
 
 
 ///NOISE FUNCTIONS FOR FANCY TRANSPARENCY RENDERING
@@ -156,18 +157,14 @@ vec4 colorAllowed(in vec3 normalDir,  in int coneCount, in float boundaryWidth) 
 		//NOT OTHERWISE CONCEPTUALLY RELEVANT TO 
 		//TO VISUALIZATION
 		////////
-		
-		vec3 randDir = vec3(normalDir.x  * noise(normalDir.xy)/50.0,  normalDir.y  * noise(normalDir.yz)/50.0, normalDir.z  * noise(normalDir.zx)/50.0);
-		randDir = normalDir;
-		float zAdd = abs(vertWorldPos.z);
+		float modframe = .5*sin(frame/20.)+.6;
+		//vec3 randDir = vec3(normalDir.x  * noise(normalDir.xy*modframe)/50.0,  normalDir.y  * noise(normalDir.yz*modframe)/50.0, normalDir.z  * noise(normalDir.zx*modframe)/50.0);
+		vec3 randDir = normalDir;
 		float lon = atan(randDir.x/randDir.z) + 3.14159265/2.0;
 		float lat = atan(randDir.y/randDir.x) + 3.14159265/2.0;
 				
-		bool latDraw = randBit(vec2(lat, lon));//mod(lat, 0.005) < 0.00499;
-		bool lonDraw = randBit(vec2(lon, lat));//mod(lon, 0.005) < 0.00499;
-			
-		if(randBit(vec2(lon, lat))) {
-			result = vec4(0.0,0.0,0.0,0.0);
+		if(randBit(vec2(lat*modframe, lon*modframe))) {
+			result = vec4(0.0,0.0,0.0,0.);
 		}
 		////////
 		//END CODE FOR FANCY BLURRED TRANSPARENCY

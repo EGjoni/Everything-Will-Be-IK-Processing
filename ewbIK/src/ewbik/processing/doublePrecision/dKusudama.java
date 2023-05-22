@@ -47,8 +47,10 @@ public class dKusudama extends AbstractKusudama {
 	public static PShader kusudamaShader; 
 	public static PShader kusudamaStencil;
 	public static int renderMode = 1; 
+	public static int frame = 0;
 	protected static boolean multiPass = false;
-	public static PShader currentShader; 
+	public static PShader currentShader;
+	public static PShader twistShader; 
 
 	float[] coneSequence; 
 	int coneCount; 
@@ -90,14 +92,25 @@ public class dKusudama extends AbstractKusudama {
 		float circumference = (float) (attachedTo().getBoneHeight()/2.5f); 
 		DVector min = new DVector(this.twistMinVec).setMag(circumference);
 		DVector current = new DVector(min); 
-		double absAngle =minAxialAngle+range;
+		double absAngle = minAxialAngle+ range;
 		Rot maxRot = new Rot(new DVector(0,1,0), absAngle); 
 
 		double pieces = 20d; 
 		double granularity =1d/pieces;  
+		float r = p.red(System.identityHashCode(this));
+		float g = p.green(System.identityHashCode(this));
+		float b = p.blue(System.identityHashCode(this));
+		//dAxes twist = new dAxes();
+		//twist.drawMe(p, pinSize*120f);
+		p.shader(twistShader);
+		twistShader.set("modelViewInv", ((PGraphicsOpenGL)p).modelviewInv);
+		twistShader.set("frame", this.frame);
 		p.beginShape(PConstants.TRIANGLE_FAN);
 		p.noStroke();	
-		p.fill(0, 150, 0, 120);
+		if(renderMode == 0) 
+			p.fill(p.color(35,255,255,128)); 
+		else 
+			p.fill(p.color(0, 85, 0, 155));
 		p.vertex(0,0,0);
 		for(double i=0; i<=pieces+(3*granularity); i++) {
 			MRotation interp = new Rot(new DVector(0,1,0), i*granularity*range).rotation;//Rot.slerp(i*granularity, twistMinRot.rotation, twistMaxRot.rotation);
@@ -118,20 +131,19 @@ public class dKusudama extends AbstractKusudama {
 		p.pushMatrix();
 		localMat = ((dAxes)swingOrientationAxes()).getLocalPMatrix();
 		p.applyMatrix(localMat);
-		float r = p.red(System.identityHashCode(this));
-		float g = p.green(System.identityHashCode(this));
-		float b = p.blue(System.identityHashCode(this));
+		
 		p.fill(p.color(r,g,b));//p.color(255, 0, 255, 100));
 		p.textureMode(p.NORMAL);
 		p.shader(currentShader);
 		if(renderMode == 0) 
-			p.fill(p.color(r,g,b)); 
+			p.fill(p.color(55,255,255, 255)); 
 		else 
 			p.fill(p.color(200, 0, 200, 255));
 
 		currentShader.set("modelViewInv", ((PGraphicsOpenGL)p).modelviewInv);
 		currentShader.set("coneSequence", coneSequence, 4);
 		currentShader.set("coneCount", coneCount);
+		currentShader.set("frame", this.frame);
 		p.sphereDetail(30);
 		p.sphere((float)attachedTo().getBoneHeight()/3.5f);
 		p.resetShader();
@@ -173,10 +185,15 @@ public class dKusudama extends AbstractKusudama {
 				idx += 4; 
 			}
 		
-			if(renderMode == 0) 
-				currentShader = kusudamaStencil;				
-			else
-				currentShader = kusudamaShader;			
+			if(renderMode == 0) {
+				currentShader = kusudamaStencil;
+				if(twistShader != null)
+					twistShader.set("multiPass", false);
+			} else {
+				currentShader = kusudamaShader;	
+				if(twistShader != null)
+					twistShader.set("multiPass", multiPass);
+			}
 				
 	}
 
@@ -195,6 +212,7 @@ public class dKusudama extends AbstractKusudama {
 		if(multipass != multiPass) {
 			multiPass = multipass;
 			kusudamaShader.set("multiPass", multiPass);
+			twistShader.set("multiPass", multiPass);
 		}
 	}
 

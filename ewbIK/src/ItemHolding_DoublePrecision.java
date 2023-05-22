@@ -19,6 +19,7 @@ import processing.core.PApplet;
 import processing.core.PGraphics;
 import processing.core.PVector;
 import processing.event.MouseEvent;
+import processing.opengl.PGraphics3D;
 
 public class ItemHolding_DoublePrecision extends PApplet{
 
@@ -32,7 +33,7 @@ public class ItemHolding_DoublePrecision extends PApplet{
 
 	dArmature loadedArmature;
 	ArrayList<dIKPin> pins = new ArrayList<>();
-	UI ui;
+	G4PUI guiView;
 
 	dIKPin activePin; 
 	dAxes worldAxes, cubeAxes;
@@ -41,7 +42,7 @@ public class ItemHolding_DoublePrecision extends PApplet{
 	boolean cubeMode = true;
 	
 	public void setup() {
-		ui =new UI(this, true);
+		//ui =new UI(this, true);
 		String path = sketchPath()+File.separator;
 		loadedArmature = EWBKIO.LoadArmature_doublePrecision(path+"Humanoid_Holding_Item.arm");
 		worldAxes = (dAxes) loadedArmature.localAxes().getParentAxes(); 
@@ -82,13 +83,19 @@ public class ItemHolding_DoublePrecision extends PApplet{
 		loadedArmature.setDefaultDampening(Math.toRadians(10d));
 		loadedArmature.setDefaultStabilizingPassCount(1);
 		loadedArmature.setDefaultIterations(30);
+		guiView = new G4PUI(this, zoomScalar, true, loadedArmature, worldAxes, (buffer, mode) -> drawArmature(buffer, mode), null);
 		//ui.buildBoneList(loadedArmature.getBoneList());
 	}
 
 
 	public void draw() {
-		
-		if(mousePressed) {
+		if(guiView.solveMode == guiView.PERPETUAL) {
+			loadedArmature.IKSolver(loadedArmature.getRootBone());
+		} else if(guiView.solveMode == guiView.INTERACTION && guiView.doSolve) {
+			loadedArmature.IKSolver(loadedArmature.getRootBone());
+		}
+	
+		/*if(mousePressed) {
 			if(cubeMode) { 
 				cubeAxes.translateTo(new DVector(ui.mouse.x, ui.mouse.y,cubeAxes.origin_().z));
 			} else { 
@@ -101,24 +108,23 @@ public class ItemHolding_DoublePrecision extends PApplet{
 		String additionalInstructions = "Hit the 'C' key to select or deselect the cube";  
 		//decrease the numerator to increase the zoom. 
 		zoomScalar = 200f/height;        
-		ui.drawScene(zoomScalar, 10f, ()->drawHoldCube(), loadedArmature, additionalInstructions, activePin, cubeAxes, cubeMode);
+		ui.drawScene(zoomScalar, 10f, ()->drawHoldCube(), loadedArmature, additionalInstructions, activePin, cubeAxes, cubeMode);*/
 	}
-
-	public void drawHoldCube() {
-		PGraphics currentDisplay = ui.getCurrentDrawSurface();
-		if(ui.display == currentDisplay) { 
-			currentDisplay.fill(60,60,60);
-			currentDisplay.strokeWeight(1);
-			currentDisplay.stroke(255);
+	
+	public void drawArmature(PGraphics3D buff, int mode) {
+		if(mode == guiView.STENCIL) { 
+			buff.fill(0,0,0,255);
+			buff.emissive(0);
+			buff.noStroke();
 		} else {
-			currentDisplay.fill(0,0,0,255);
-			currentDisplay.emissive(0);
-			currentDisplay.noStroke();
+			buff.fill(60,60,60);
+			buff.strokeWeight(1);
+			buff.stroke(255);
 		}
-		currentDisplay.pushMatrix();
-		currentDisplay.applyMatrix(cubeAxes.getGlobalPMatrix());
-		currentDisplay.box(40, 20, 20);
-		currentDisplay.popMatrix();		
+		buff.pushMatrix();
+		buff.applyMatrix(cubeAxes.getGlobalPMatrix());
+		buff.box(40, 20, 20);
+		buff.popMatrix();	
 	}
 	
 	public void mouseWheel(MouseEvent event) {

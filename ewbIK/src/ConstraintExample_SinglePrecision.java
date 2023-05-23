@@ -8,8 +8,6 @@ import processing.event.MouseEvent;
 
 import java.util.ArrayList;
 
-import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
-
 public class ConstraintExample_SinglePrecision extends PApplet{
 	public static void main(String[] args) {
 		PApplet.main("ConstraintExample_SinglePrecision");

@@ -255,7 +255,7 @@ public class UI {
 
 	public<V extends Vec3d<?>>  PVector screenOf(PGraphics pg, V pt, float zoomScalar) {
 		return new PVector(
-				(pg.screenX((float)pt.x, (float)pt.y, (float)pt.z)*zoomScalar) - orthoWidth/2f,
+				(pg.screenX((float)pt.x, (float)pt.y, (float)pt.z)*zoomScalar)- orthoWidth/2f,
 				(pg.screenY((float)pt.x, (float)pt.y, (float)pt.z)*zoomScalar)- orthoHeight/2f);
 	}
 

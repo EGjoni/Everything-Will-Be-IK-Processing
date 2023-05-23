@@ -14,7 +14,7 @@ varying vec4 vertWorldPos;
 
 uniform vec4 coneSequence[30]; //this shader can display up to 10 cones (represented by 30 4d vectors)  
 uniform int coneCount; 
-
+uniform int frame;
 
 bool isInInterConePath(in vec3 normalDir, in vec4 tangent1, in vec4 cone1, in vec4 tangent2, in vec4 cone2) {			
 	vec3 c1xc2 = cross(cone1.xyz, cone2.xyz);		
@@ -115,16 +115,16 @@ vec4 colorAllowed(in vec3 normalDir,  in int coneCount, in float boundaryWidth) 
 		int inCone = isInCone(normalDir, cone, boundaryWidth);
 		inCone = inCone == 0 ? -1 : inCone < 0 ? 0 : -3;
 		currentCondition = getAllowabilityCondition(currentCondition, inCone);
-			
+
 	} else {
-		for(int i=0; i<coneCount-1; i+=3) {
+		for(int i=0; i<coneCount-1; i++) {
 			
 			int idx = i*3; 
 			vec4 cone1 = coneSequence[idx];
 			vec4 tangent1 = coneSequence[idx+1];			
 			vec4 tangent2 = coneSequence[idx+2];			
 			vec4 cone2 = coneSequence[idx+3];
-						
+
 				
 			int inCone1 = isInCone(normalDir, cone1, boundaryWidth);
 			
@@ -147,8 +147,8 @@ vec4 colorAllowed(in vec3 normalDir,  in int coneCount, in float boundaryWidth) 
 				bool visualize = false;
 				if( ! visualize ) {
 					bool inIntercone = isInInterConePath(normalDir, tangent1, cone1, tangent2, cone2);
-					int interconeCondition = inIntercone ? 0 : -3;// && (inTangent1 > 0 || inTangent2 > 0) ? -3 : 0; 
-					currentCondition = getAllowabilityCondition(currentCondition, interconeCondition);					
+					int interconeCondition = inIntercone ? 0 : -3;// && (inTangent1 > 0 || inTangent2 > 0) ? -3 : 0;
+					currentCondition = getAllowabilityCondition(currentCondition, interconeCondition);
 				} else { 
 					//visualization code, set visualize = true to get a sense of how the math works.	
 					vec4 intervec = drawInterConePathDisparity(normalDir, tangent1, cone1, tangent2, cone2);
@@ -161,8 +161,14 @@ vec4 colorAllowed(in vec3 normalDir,  in int coneCount, in float boundaryWidth) 
 	
 	vec4 result = vertColor;
 	
-	if(currentCondition == -3) {
-		return result; 
+	if(currentCondition == -3
+	|| currentCondition == -2
+	|| currentCondition == -1
+	//|| currentCondition == 0
+	|| currentCondition == 1
+	//|| currentCondition == 2
+	) {
+		return result;
 	} else { 
 		discard;
 	}
@@ -176,9 +182,10 @@ void main() {
   vec3 normalDir = normalize(vertNormal);
   vec4 colorAllowed = colorAllowed(normalDir, coneCount, 0.02);   	
   if(vertWorldNormal.z < 0.0) {
-  	colorAllowed.rgb /= 2.0;
+  	colorAllowed.gb /= 2.0;
   }
   vec4 scvertWorldPos = vertWorldPos; 
+  scvertWorldPos.a += sin(frame)*0.0000000000001;
   scvertWorldPos.z += 0.5; 
   scvertWorldPos.z /= -2.0;
   gl_FragColor = colorAllowed;//vec4(scvertWorldPos.z, scvertWorldPos.z, scvertWorldPos.z, 1.0); ;

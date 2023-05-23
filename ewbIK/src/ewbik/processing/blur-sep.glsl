@@ -45,21 +45,24 @@ bool isWorthy(vec4 center, vec4 contender) {
 
 void main() {  
 
+	vec4 baseMask = texture2D(mask, vertTexCoord.st);
+	float msigma = sigma * baseMask.r;
     float numBlurPixelsPerSide = float(blurSize / 2); 
     vec2 blurMultiplyVec = 0 < horizontalPass ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
 
     // Incremental Gaussian Coefficent Calculation (See GPU Gems 3 pp. 877 - 889)
     vec3 incrementalGaussian;
-    incrementalGaussian.x = 1.0 / (sqrt(2.0 * pi) * sigma);
-    incrementalGaussian.y = exp(-0.5 / (sigma * sigma));
+    incrementalGaussian.x = 1.0 / (sqrt(2.0 * pi) * msigma);
+    incrementalGaussian.y = exp(-0.5 / (msigma * msigma));
     incrementalGaussian.z = incrementalGaussian.y * incrementalGaussian.y;
 
     vec4 avgValue = vec4(0.0, 0.0, 0.0, 0.0);
+    vec4 base = vec4(0.0, 0.0, 0.0, 0.0);
     float coefficientSum = 0.0;
 
     // Take the central sample first...
     avgValue = texture2D(texture, vertTexCoord.st);
-    vec4 baseMask = texture2D(mask, vertTexCoord.st);
+    base = avgValue;
     if(!isZero(baseMask.rgb)) {
         avgValue *= avgValue;
         avgValue = avgValue * incrementalGaussian.x;
@@ -105,5 +108,5 @@ void main() {
         avgValue = sqrt(avgValue); 
     }
 
-  gl_FragColor = avgValue;
+  gl_FragColor = mix(vec4(base.rgb,1.), avgValue, base.a);
 }

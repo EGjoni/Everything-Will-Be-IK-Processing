@@ -24,6 +24,7 @@ import IK.doubleIK.AbstractBone.frameType;
 import processing.core.PApplet;
 import processing.core.PGraphics;
 import processing.core.PMatrix;
+import processing.opengl.PGraphics3D;
 import ewbik.processing.doublePrecision.sceneGraph.DVector;
 import ewbik.processing.doublePrecision.sceneGraph.dAxes;
 import math.doubleV.AbstractAxes;
@@ -76,13 +77,34 @@ public class dArmature extends AbstractArmature {
 	}
 	
 	public void drawMe(PGraphics pg, int color,  float pinSize) {
-		PMatrix localMat = localAxes().getGlobalPMatrix();
-		pg.applyMatrix(localMat);
+		PMatrix localMat = ((dAxes)localAxes().getParentAxes()).getGlobalPMatrix();
 		pg.pushMatrix(); 
+			pg.applyMatrix(localMat);
 			getRootBone().drawMeAndChildren(pg, color,  pinSize);
-			pg.popMatrix();
-	}
+			pg.strokeWeight(4f);
+		pg.popMatrix();
 		
+	}
+	
+	public void drawWidgets(PGraphics3D pg, float pinSize) {
+		//PMatrix localMat = ((dAxes)localAxes().getParentAxes()).getGlobalPMatrix();
+		//pg.pushMatrix(); 
+		//pg.applyMatrix(localMat);
+			pg.strokeWeight(4f);
+			for(AbstractBone ab: bones) { 
+				dBone b = (dBone) ab;
+				if(b.isPinned()) {
+					((dAxes)b.getIKPin().getAxes()).drawMe(pg, pinSize);
+				}
+		
+				if(b.isPinned()) {
+					pg.strokeWeight(2f);
+					localAxes().drawMe(pg, pinSize);
+				}
+			}
+		//pg.popMatrix();
+	}
+	
 	@Override 
 	public dAxes localAxes() {
 		return (dAxes) super.localAxes();
@@ -91,6 +113,5 @@ public class dArmature extends AbstractArmature {
 	public void setPerformanceMonitor(boolean state) {
 		super.setPerformanceMonitor(state);
 	}
-
 	
 }

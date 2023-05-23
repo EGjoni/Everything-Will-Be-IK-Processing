@@ -67,7 +67,7 @@ public class Humanoid_Manual extends PApplet{
 		humanArmature.setDefaultIterations(15);
 		humanArmature.setDefaultDampening(0.05d);
 
-		humanArmature.setDefaultStabilizingPassCount(1);
+		humanArmature.setDefaultStabilizingPassCount(0);
 		humanArmature.setPerformanceMonitor(true);
 		orthoHeight = height;
 		orthoWidth = width;
@@ -75,7 +75,7 @@ public class Humanoid_Manual extends PApplet{
 		setBoneConstraints();
 		updatePinList();
 		humanArmature.regenerateShadowSkeleton();
-		humanArmature.IKSolver(rootBone, 0.5d, 20, 1);
+		humanArmature.IKSolver(rootBone, 20, 1);
 
 		//Tell the Bone class that all bones should draw their kusudamas.
 		dBone.setDrawKusudamas(true);
@@ -149,14 +149,14 @@ public class Humanoid_Manual extends PApplet{
 		r_collar_joint.addLimitConeAtIndex(0, new DVector(1.0, 0.4, 0), 0.7);
 		r_collar_joint.setAxialLimits(-0.3d, 1d);
 		r_collar_joint.optimizeLimitingAxes();
-		r_collar_joint.setPainfullness(0.1d);
+		r_collar_joint.setPainfulness(0.8d);
 
 		dKusudama r_shoulder = new dKusudama(r_upper_arm); 
 		r_shoulder.addLimitConeAtIndex(0, new DVector(1, .9, 0.5), 1f);
 		r_shoulder.addLimitConeAtIndex(1, new DVector(1, 1, 0.5), 1f);
 		r_shoulder.setAxialLimits(-1.7d, 1.7d);
 		r_shoulder.optimizeLimitingAxes();
-		r_shoulder.setPainfullness(0.05d);
+		r_shoulder.setPainfulness(0.05d);
 
 		dKusudama r_elbow = new dKusudama(r_lower_arm);
 		r_elbow.addLimitConeAtIndex(0, new DVector(0, -1, 0.1), 0.025);
@@ -174,14 +174,14 @@ public class Humanoid_Manual extends PApplet{
 		l_collar_joint.addLimitConeAtIndex(0, new DVector(-1.0, 0.4, 0), 0.7);
 		l_collar_joint.setAxialLimits(-0.7d, 1d);
 		l_collar_joint.optimizeLimitingAxes();
-		l_collar_joint.setPainfullness(0.1d);
+		l_collar_joint.setPainfulness(0.8d);
 
 		dKusudama l_shoulder = new dKusudama(l_upper_arm); 
 		l_shoulder.addLimitConeAtIndex(0, new DVector(-1, .9, 0.5), 1f);
 		l_shoulder.addLimitConeAtIndex(1, new DVector(-1, 1, 0.5), 1f);
 		l_shoulder.setAxialLimits(-.3d, 1.7d);
 		l_shoulder.optimizeLimitingAxes();
-		l_shoulder.setPainfullness(0.05d);
+		l_shoulder.setPainfulness(0.05d);
 
 		dKusudama l_elbow = new dKusudama(l_lower_arm);
 		l_elbow.addLimitConeAtIndex(0, new DVector(0, -1, 0.1), 0.025);

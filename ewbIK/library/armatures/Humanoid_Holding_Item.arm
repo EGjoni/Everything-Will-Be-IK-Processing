@@ -10,7 +10,7 @@
   "kusudamas": [
     {
       "limitAxes": "549115539-dAxes",
-      "painfulness": 0,
+      "painfulness": 0.5
       "identityHash": "1707386078-dKusudama",
       "limitCones": ["1697899364-dLimitCone"],
       "minAxialAngle": -0.17453292519943295,
@@ -32,7 +32,7 @@
     },
     {
       "limitAxes": "1732297837-dAxes",
-      "painfulness": 0,
+      "painfulness": 0.5
       "identityHash": "524285115-dKusudama",
       "limitCones": ["599313328-dLimitCone"],
       "minAxialAngle": -0.17453292519943295,
@@ -43,7 +43,7 @@
     },
     {
       "limitAxes": "228212540-dAxes",
-      "painfulness": 0,
+      "painfulness": 0.5
       "identityHash": "1302819278-dKusudama",
       "limitCones": ["67417462-dLimitCone"],
       "minAxialAngle": -0.17453292519943295,
@@ -54,7 +54,7 @@
     },
     {
       "limitAxes": "893900186-dAxes",
-      "painfulness": 0,
+      "painfulness": 0.5
       "identityHash": "478565887-dKusudama",
       "limitCones": ["348648077-dLimitCone"],
       "minAxialAngle": -0.17453292519943295,
@@ -65,7 +65,7 @@
     },
     {
       "limitAxes": "773155237-dAxes",
-      "painfulness": 0,
+      "painfulness": 0.5
       "identityHash": "226871028-dKusudama",
       "limitCones": ["1877416549-dLimitCone"],
       "minAxialAngle": 0.001,
@@ -76,7 +76,7 @@
     },
     {
       "limitAxes": "1920826138-dAxes",
-      "painfulness": 0,
+      "painfulness": 0.5
       "identityHash": "1444198203-dKusudama",
       "limitCones": [
         "1389899038-dLimitCone",
@@ -90,7 +90,7 @@
     },
     {
       "limitAxes": "1081076715-dAxes",
-      "painfulness": 0,
+      "painfulness": 0.5
       "identityHash": "1272098483-dKusudama",
       "limitCones": ["635672874-dLimitCone"],
       "minAxialAngle": -0.17453292519943295,
@@ -101,7 +101,7 @@
     },
     {
       "limitAxes": "2012160658-dAxes",
-      "painfulness": 0,
+      "painfulness": 0.5
       "identityHash": "761126637-dKusudama",
       "limitCones": ["389529261-dLimitCone"],
       "minAxialAngle": -0.17453292519943295,
@@ -126,7 +126,7 @@
     },
     {
       "limitAxes": "130834196-dAxes",
-      "painfulness": 0,
+      "painfulness": 0.5
       "identityHash": "867208277-dKusudama",
       "limitCones": [
         "1441634814-dLimitCone",
@@ -140,7 +140,7 @@
     },
     {
       "limitAxes": "2072328717-dAxes",
-      "painfulness": 0,
+      "painfulness": 0.5
       "identityHash": "1270400049-dKusudama",
       "limitCones": [
         "1565262534-dLimitCone",
@@ -154,7 +154,7 @@
     },
     {
       "limitAxes": "1259281785-dAxes",
-      "painfulness": 0,
+      "painfulness": 0.5
       "identityHash": "1642226240-dKusudama",
       "limitCones": ["236668033-dLimitCone"],
       "minAxialAngle": -0.17453292519943295,
@@ -165,7 +165,7 @@
     },
     {
       "limitAxes": "1339194081-dAxes",
-      "painfulness": 0,
+      "painfulness": 0.5
       "identityHash": "368943522-dKusudama",
       "limitCones": [
         "615875851-dLimitCone",

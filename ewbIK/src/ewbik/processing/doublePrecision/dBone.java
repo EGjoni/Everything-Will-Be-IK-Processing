@@ -184,7 +184,7 @@ public class dBone extends AbstractBone {
 	}
 
 
-	public void drawMeAndChildren(PGraphics pg, int boneCol, float pinSize) {
+	public void drawMeAndChildren(PGraphics pg, int boneCol, float pinSize, AbstractBone currentlySelected) {
 		pg.pushMatrix();
 		if(this.constraints != null && drawKusudamas) {
 			pg.pushMatrix();
@@ -198,8 +198,14 @@ public class dBone extends AbstractBone {
 
 		
 			pg.beginShape(PConstants.TRIANGLE_FAN);
-			if(renderMode == 1) {
-				pg.fill(pg.color(0, 255-boneCol, boneCol));
+			if(renderMode == 1) { 
+				if(this != currentlySelected) {
+					pg.emissive(0,0,0);
+					pg.fill(pg.color(0, 255-boneCol, boneCol));
+				} else {
+					pg.emissive(100,100,100);
+					pg.fill(pg.color(180, 255-boneCol, boneCol));
+				}
 			} else {
 				pg.fill(pg.color(0, 0, 0));
 			}
@@ -224,7 +230,7 @@ public class dBone extends AbstractBone {
 			pg.emissive(0,0,0);
 			
 		for(dBone b : getChildren()) {			
-			b.drawMeAndChildren(pg, boneCol+10, pinSize);
+			b.drawMeAndChildren(pg, boneCol+10, pinSize, currentlySelected);
 		}		
 		pg.popMatrix();
 

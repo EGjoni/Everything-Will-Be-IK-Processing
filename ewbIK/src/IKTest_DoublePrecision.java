@@ -149,7 +149,7 @@ public class IKTest_DoublePrecision extends PApplet{
   			for(Object b : boneList) {
   				drawdBoneInfo(((dBone)b));
   			}   		
-  		simpleArmature.drawMe(this, 100, 30f);
+  		simpleArmature.drawMe(this, 100, 30f, null);
       }
       
       public void drawdBoneInfo(dBone bone) {

@@ -25,7 +25,7 @@ public class WidgetView extends View3D {
 	
 	
 	public void mouseDragged() {
-		if(this.pressedHere) {
+		if(ui.eventOwner() == this) {
 			dIKPin activePin = (dIKPin) ui.activePin;
 			dAxes actvePinAxes = activePin.getAxes();
 			DVector translation = (DVector) actvePinAxes.getGlobalMBasis().translate;
@@ -33,13 +33,12 @@ public class WidgetView extends View3D {
 			PVector screen = screenOf((PGraphics3D)this.getGraphics(), pTrans, 1f);
 			PVector unproject = getUnProjectedPointOnPlane((PGraphics3D)this.getGraphics(), this.mouseX(), this.mouseY(), pTrans);
 			activePin.translateTo(new DVector(unproject));
-			ui.doSolve = true;
+			ui.requestSolve();
 		}
 	}
 	
 	public void mouseReleased() {
 		super.mouseReleased();
-		ui.doSolve = false;
 	}
 
 	public void update() {
@@ -50,7 +49,7 @@ public class WidgetView extends View3D {
 		this.setCamera(v, (float)ui.zoom, 1);
 		if(predrawCall != null)
 			predrawCall.accept(v, ui.WIDGET_3D);
-		((dArmature)ui.armature).drawWidgets(v, ui.zoom*30);
+		((dArmature)ui.armature).drawWidgets(v, ui.zoom*15, ui.selectedBone);
 		v.endDraw();
 	}
 }

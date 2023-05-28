@@ -22,6 +22,8 @@ import IK.doubleIK.AbstractArmature;
 import math.Vec;
 import math.doubleV.AbstractAxes;
 import math.doubleV.AbstractBasis;
+import math.doubleV.AffineAxes;
+import math.doubleV.AffineBasis;
 import math.doubleV.CartesianAxes;
 import math.doubleV.Rot;
 import math.doubleV.SGVec_3d;
@@ -53,6 +55,7 @@ public class dAxes extends CartesianAxes {
 
 	public dAxes(AbstractBasis b, AbstractAxes parent) {
 		super(b, parent);
+		//super(b, false, parent); affine version
 	}
 
 	/**
@@ -67,13 +70,14 @@ public class dAxes extends CartesianAxes {
 			Vec3d<?> inX, 
 			Vec3d<?> inY, 
 			Vec3d<?> inZ,
-			CartesianAxes parent) {
+			AffineAxes parent) {
 
 		super(
 				origin,
 				inX, 
 				inY,
 				inZ,
+				//false, //affine version
 				parent
 				);
 	}
@@ -92,12 +96,15 @@ public class dAxes extends CartesianAxes {
 				new DVector(1,0,0), 
 				new DVector(0,1,0),
 				new DVector(0,0,1),
-				(CartesianAxes)null
+				//false, //affine version
+				(AffineAxes)null
 				);
 	}
 
-	public dAxes(DVector origin, DVector inX, DVector inY, DVector inZ, AbstractAxes parent) {
-		super(origin, inX, inY, inZ, parent);
+	public dAxes(DVector origin, DVector inX, DVector inY, DVector inZ, AffineAxes parent) {
+		super(origin, inX, inY, inZ, 
+				//false, //affine version
+				parent);
 	}
 
 	/*conversion functions. Replace these with functions that convert to and from your 

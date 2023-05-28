@@ -244,7 +244,7 @@ public class UI {
 		dAxes.renderMode = mode;
 		if(preArmatureDraw != null)
 			preArmatureDraw.run();
-		armature.drawMe( buffer, 100, drawSize);
+		armature.drawMe( buffer, 100, drawSize, null);
 	}	
 
 	public  PVector screenOf(PGraphics pg, PVector pt, float zoomScalar) {

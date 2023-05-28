@@ -1,9 +1,14 @@
 import java.awt.Font;
+import java.awt.Rectangle;
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+
+import javax.print.attribute.standard.OutputDeviceAssigned;
+
 import java.util.HashMap;
 
 import IK.doubleIK.AbstractArmature;
@@ -11,6 +16,8 @@ import IK.doubleIK.AbstractBone;
 import IK.doubleIK.AbstractIKPin;
 import IK.doubleIK.AbstractKusudama;
 import IK.doubleIK.AbstractLimitCone;
+import data.EWBIKSaver;
+import ewbik.processing.EWBKIO;
 import ewbik.processing.doublePrecision.dBone;
 import ewbik.processing.doublePrecision.dIKPin;
 import ewbik.processing.doublePrecision.dKusudama;
@@ -23,6 +30,7 @@ import math.doubleV.RotationOrder;
 import math.doubleV.SGVec_3d;
 import processing.opengl.PGraphics3D;
 import processing.core.*;
+import processing.event.MouseEvent;
 
 public class G4PUI {
 	
@@ -39,7 +47,8 @@ public class G4PUI {
 	ArrayList<AbstractIKPin> pins = new ArrayList<>();
 	boolean doSolve = false;
 	float zoom;
-	
+	protected PVector cameraPosition = new PVector(0, 100, 200); 
+	protected PVector lookAt = new PVector(0, 150, 0);
 	
 	GSpinner boneHeight;
 	private ArrayList<? extends AbstractLimitCone> limitConeCollection;
@@ -56,7 +65,7 @@ public class G4PUI {
 	GSlider coneSpread;
 	GKnob coneSpreadVisualizer;
 	GSlider zoomSlider;
-	GButton cancelAddCone, confirmAddCone;
+	GButton confirmAddCone;
 	GToggleGroup solverMode;
 	GOption perpetual, onInteraction, byIteration, byStep; 
 	GPanel turntablePanel;// childBonesPanel;
@@ -78,24 +87,31 @@ public class G4PUI {
 	public WidgetView widgetView;
 	private int fixCount = 0;
 	private GView debugView;
-	
 
 	PApplet constraintWindow; 
 	
-	public G4PUI(PApplet p, Number zoom, boolean multipassEnabled, 
+	private Object eventOwner; 
+	
+	public G4PUI(PApplet p, boolean multipassEnabled, 
 			AbstractArmature armature, AbstractAxes worldAxes,
 			BiConsumer<PGraphics3D, Integer> drawScene, BiConsumer<PGraphics3D, Integer> drawWidgets) {
 		super();
 		this.armature = armature;
 		this.pa = p;
 		this.worldAxes = worldAxes;
-		this.zoom = (float)zoom;
+		this.zoom = pa.PI/2f;
+		try {
+			this.lastOpenedDir = pa.loadStrings("lastDir.txt")[0];
+		} catch (Exception e) {
+			this.lastOpenedDir = pa.sketchPath();
+		}
+		
 		this.updatePinList();
 		this.activePin = activePin;
 		
 		view3DScene = new GView(pa, 300, 0, pa.width-300, pa.height, PApplet.P3D);
 		view3DWidget = new GView(pa, 300, 0, pa.width-300, pa.height, PApplet.P3D);
-		view3DWidget.setAlpha(255);
+		view3DWidget.setAlpha(155);
 		sceneView = new SceneView(pa, this, drawScene, multipassEnabled);
 		widgetView = new WidgetView(pa, this, drawWidgets);
 		view3DScene.addListener(sceneView);
@@ -138,8 +154,9 @@ public class G4PUI {
 			
 		}
 		if(hasConstraint) {
+			AbstractKusudama k =  ((AbstractKusudama)selectedBone.getConstraint());
 			painfulness.setValue((float)selectedBone.getConstraint().getPainfulness());
-			limitConeCollection = ((AbstractKusudama)selectedBone.getConstraint()).getLimitCones();
+			limitConeCollection =k.getLimitCones();
 			String[] cones = new String[limitConeCollection.size()];
 			for(int i=0; i<limitConeCollection.size(); i++)
 				cones[i] = "Cone "+i;
@@ -147,13 +164,16 @@ public class G4PUI {
 			this.selectedCone = limitConeCollection.get(0);
 			limitConeList.setSelected(0);
 			coneSpread.setValue((float)this.selectedCone.getRadius());
-		} else {
-			updateTwistVisualizer(null);
-		}
-		
+			twistMin.setValue((float)k.minAxialAngle());
+			twistRange.setValue((float)k.maxAxialAngle());
+		} 
+		updateTwistVisualizer(null);
 		dampening.setValue((float)armature.getDampening());
 		stiffness.setValue((float)selectedBone.getStiffness());
 		iterations.setValue(armature.getDefaultIterations());
+		updateTransformsList();
+		updatePinList();
+		updateTargetPanel();
 	}
 
 	public void populateGUI() {
@@ -168,6 +188,7 @@ public class G4PUI {
 		targetPanel_init();
 		
 		TurntablePanel_init();		
+		updateTransformsList();
 		updateUI();
 	}
 	
@@ -200,10 +221,13 @@ public class G4PUI {
 			AbstractBone newB = this.selectedBone.getClass().getDeclaredConstructor(AbstractBone.class, String.class, double.class).newInstance(this.selectedBone, nameAttempt, this.boneHeight.getValue());
 			this.selectedBone = newB;
 			updateUI();
-		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-				| NoSuchMethodException | SecurityException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		updateForEffectorSelectList();
+		updateTargetSelectList();
+		updateTransformsList();
+		target_forEffector_selectlist.setSelected(revBoneMap.get(this.selectedBone));
 	}
 	
 	public void edit_painfulness(GSlider pain, GEvent event) {
@@ -258,7 +282,6 @@ public class G4PUI {
 		((AbstractKusudama)this.selectedBone.getConstraint()).addLimitConeAtIndex(
 				this.newLimitConeIndex.getValue(), null, -1d);
 		this.addLimitCone.setCollapsed(true);
-		//AbstractLimitCone selected = 
 		this.limitConeList.setSelected(this.newLimitConeIndex.getValue());
 		this.updateUI();
 	}
@@ -272,6 +295,16 @@ public class G4PUI {
 	private GDropList target_forEffector_selectlist;
 	private GDropList target_parentTransform_selectlst;
 	private ArrayList<AbstractBone> availableEffectorList;
+	private GSlider weight;
+	private GSlider x_priority;
+	private GSlider y_priority;
+	private GSlider z_priority;
+	private HashMap<String, AbstractAxes> extraTransforms;
+	private GSlider depthFalloff;
+	private HashMap <String, AbstractAxes>transformsMap;
+	private HashMap<AbstractAxes, Integer> indexedTransformMap = new HashMap<>();
+	private String lastOpenedDir;
+	private int nextProgress;
 	
 	public float[] latLonToVec(float lat, float lon) {
 		float z = (float)Math.cos(lat) * (float)Math.cos(lon);
@@ -329,6 +362,7 @@ public class G4PUI {
 			constraintProperties.setCollapsed(true);
 			this.selectedBone = toSelect;
 			updateUI();
+			target_forEffector_selectlist.setSelected(revBoneMap.get(this.selectedBone));
 		}
 	}
 	
@@ -350,7 +384,23 @@ public class G4PUI {
 	}
 	
 	public void addTarget_click(GButton btn, GEvent event) {
-		pa.println("clicked");
+		String bstr = target_forEffector_selectlist.getSelectedText();
+ 		AbstractBone b = boneMap.get(bstr);
+ 		updateForEffectorSelectList();
+ 		if(b == null || b.getIKPin() != null) {
+ 			G4P.showMessage(pa, "The effector you selected already has a target. It can't have two.", "No luck", G4P.ERROR_MESSAGE);
+ 		} else {
+ 			b.enablePin_(b.localAxes().origin_());
+ 			this.updatePinList();
+ 			int newidx = this.pins.indexOf(this.activePin);
+ 			updateTargetSelectList();
+ 			this.targetList.setSelected(newidx);
+ 			select_target(this.targetList, GEvent.CHANGED); 			
+ 			updateForEffectorSelectList();
+ 			updateTransformsList();
+ 			armature.regenerateShadowSkeleton();
+ 			this.dialog_cancel(btn, event);
+ 		}
 	}
 	
 	
@@ -370,7 +420,7 @@ public class G4PUI {
 		String[] result;
 		boneStrings = getBoneStringList(startFrom, 0, maxDepth, inclusive, trackMap);
 		if(boneStrings.size() == 0) boneStrings.add("None");
-		result = boneStrings.toArray(String[]::new);
+		result = boneStrings.toArray(new String[0]);
 		for(int i=0; i<result.length; i++) {
 			AbstractBone b = trackMap.get(result[i]);
 			revtrackMap.put(b, i);
@@ -405,20 +455,15 @@ public class G4PUI {
 		return boneStrings;
  	}
 	
-	public void mouseReleased() {
-		this.widgetView.mouseReleased();
-		this.sceneView.mouseReleased();
-	}
-	
 	public GPanel BonePanel_init() {
-		bonePanel = new GPanel(pa, 0, 0, 300, 580, "Bone Info");
+		bonePanel = new GPanel(pa, 0,  pa.height-520, 300, 520, "Bone Info");
 		bonePanel.setCollapsed(false);
 		bonePanel.setCollapsible(false);
 		bonePanel.setDraggable(false);
 		bonePanel.setOpaque(true);
 		bonePanel.setLocalColorScheme(GCScheme.BLUE_SCHEME, false);
 		  
-		bonelist = new GDropList(pa, 100, 20, 200, 400, 20, 20);		
+		bonelist = new GDropList(pa, 100, 20, 200, 150, 8, 20);		
 		bonelist.addEventHandler(this, "bone_select");
 		bonelist.setLocalColorScheme(GCScheme.PURPLE_SCHEME, true);
 		stiffness = new GSlider(pa, 220, 40, 70, 50, 12);
@@ -454,8 +499,6 @@ public class G4PUI {
 		addChildPanel.setFont(new Font((String)null, 0, 14));
 		GButton confirmAddChild = new GButton(pa, 260, 35, 30, 30, "OK");
 		confirmAddChild.addEventHandler(this, "add_child");
-		GButton cancelAddChild = new GButton(pa, 205, 35, 50, 30, "Cancel");
-		cancelAddChild.addEventHandler(this, "dialog_cancel");		
 		newBoneName = new GTextField(pa, 0,40, 150, 20);
 		newBoneName.tag = "boneName";
 		newBoneName.setPromptText("Bone Name");		
@@ -468,7 +511,7 @@ public class G4PUI {
 		addChildPanel.addControl(newBoneName);
 		addChildPanel.addControl(boneHeight);
 		addChildPanel.addControl(confirmAddChild);
-		addChildPanel.addControl(cancelAddChild);
+		insertCloseButton(addChildPanel, confirmAddChild);
 		return addChildPanel;
 	}
 	
@@ -533,32 +576,32 @@ public class G4PUI {
 	}
 	
 	private GPanel ConstraintPanel_init() {
-		constraintProperties = new GPanel(pa, 10, 170, 300, 400, "Constraint Properties");
+		constraintProperties = new GPanel(pa, 10, 170, 300, 350, "Constraint Properties");
 		constraintProperties.setLocalColorScheme(GCScheme.CYAN_SCHEME);
 		constraintProperties.setFont(new Font((String)null, 0, 16));
 		constraintProperties.setDraggable(false);
 		//constraintProperties.setDragArea(10, 50, 120, 30);
 		constraintProperties.setCollapsed(false);
 		constraintProperties.setVisible(false);
-		insertCloseButton(constraintProperties);
-		painfulness = new GSlider(pa, 80, constraintProperties.getHeight()-50, 70, 50, 12);
+		insertCloseButton(constraintProperties, null);
+		painfulness = new GSlider(pa, 80, constraintProperties.getHeight()-50, 75, 50, 12);
 		painfulness.setShowValue(true);
 		painfulness.setShowTicks(true);
 		painfulness.setLimits(0, 1f);
 		painfulness.setLocalColorScheme(GCScheme.CYAN_SCHEME);
 		painfulness.addEventHandler(this, "edit_painfulness");
 		
-		twistMin = new GSlider(pa, 10, 30, 140, 60, 12);
+		twistMin = new GSlider(pa, 10, 10, 140, 60, 12);
 		twistMin.setShowDecor(false, false, true, false);
 		twistMin.setLimits(-pa.PI/4, -pa.PI, pa.PI);
-		GLabel twm = new GLabel(pa, 160f, 30f, 100f, 65f, "Twist Minimum");
+		GLabel twm = new GLabel(pa, 160f, 10f, 100f, 65f, "Twist Minimum");
 		twistMin.addEventHandler(this, "edit_twistMin");
 		twm.setTextAlign(GAlign.LEFT, GAlign.CENTER);
-		twistRange = new GSlider(pa, 10, 80, 140, 60, 12);
+		twistRange = new GSlider(pa, 10, 50, 140, 60, 12);
 		twistRange.addEventHandler(this, "edit_twistRange");
 		twistRange.setShowDecor(false, false, true, false);
 		twistRange.setLimits(pa.PI/2, -pa.PI*2, pa.PI*2);
-		GLabel twr = new GLabel(pa, 160f, 80, 100, 65, "Twist Range");
+		GLabel twr = new GLabel(pa, 160f, 50, 100, 65, "Twist Range");
 		twr.setTextAlign(GAlign.LEFT, GAlign.CENTER);
 		//GKnob twistVisual = new GKnob(pa, )
 		GLabel pain = new GLabel(pa, 0, constraintProperties.getHeight()-50, 75, 50);
@@ -575,10 +618,10 @@ public class G4PUI {
 		conesPanel.setCollapsible(false);
 		conesPanel.setLocalColorScheme(GCScheme.ORANGE_SCHEME);
 		conesPanel.setDraggable(false);
-		limitConeList = new GDropList(pa, 20, 25, 160, 70);	
+		limitConeList = new GDropList(pa, 100, 25, 160, 70);	
 		limitConeList.setFont(new Font((String)null, 0, 14));
 		limitConeList.addEventHandler(this, "limitCone_select");
-		addLimitCone = new GPanel(pa, 185, 25, 100, 100, "Add Cone");
+		addLimitCone = new GPanel(pa, 10, 25, 100, 100, "Add Cone");
 		addLimitCone.setDraggable(false);
 		addLimitCone.setLocalColorScheme(GCScheme.PURPLE_SCHEME);
 		coneOrientation = new GSlider2D(pa, 10, 45, 200, 140);
@@ -597,7 +640,7 @@ public class G4PUI {
 		coneOrientation.addEventHandler(this, "reorient_cone");
 		conesPanel.addControl(coneOrientation);
 		float rightSection = conesPanel.getWidth() - coneOrientation.getWidth();
-		coneSpread = new GSlider(pa, conesPanel.getWidth() - 70, 180f, coneOrientation.getHeight(), 80f, 15f);//)rightSection  - 40, 50, 12);
+		coneSpread = new GSlider(pa, conesPanel.getWidth() - 70, 185f, coneOrientation.getHeight(), 80f, 15f);//)rightSection  - 40, 50, 12);
 		coneSpread.setLimits(pa.PI/4, 0, pa.PI);
 		coneSpread.setShowDecor(false, false, true, false);
 		coneSpread.setRotation(-pa.PI/2);
@@ -619,76 +662,279 @@ public class G4PUI {
 		newlc.setTextAlign(GAlign.RIGHT, GAlign.TOP);
 		newLimitConeIndex.addControl(newlc);
 		newLimitConeIndex.setLimits(1, 0, 16, 1);
-		cancelAddCone = new GButton(pa, 5, 60, 50, 30, "Cancel");
-		cancelAddCone.addEventHandler(this, "dialog_cancel");
 		confirmAddCone = new GButton(pa, 60, 60, 30, 30, "OK");
 		confirmAddCone.addEventHandler(this, "confirm_addCone");
-		addLimitCone.addControls(newLimitConeIndex, cancelAddCone, confirmAddCone);
+		addLimitCone.addControls(newLimitConeIndex, confirmAddCone);
 		addLimitCone.setCollapsed(true);
 		conesPanel.addControls(addLimitCone, limitConeList, coneSpread, /*coneSpreadVisualizer,*/ sprd, lon, lat);
-		
+		insertCloseButton(addLimitCone, confirmAddCone);
 		return conesPanel;
 	}
 	public GPanel targetPanel_init() {
-		addTargetBtn = new GButton(pa, 10, 85, 120, 30, "Add Target");
-		addTargetBtn.addEventHandler(this, "addTarget_click");
-		targetList = new GDropList(pa, 20, 25, 160, 70);	
-		targetList.addEventHandler(this, "select_target");
-		targetList.setItems(new String[]{"None"}, 0);
-		target_forEffector_selectlist = new GDropList(pa, 20, 60, 160, 70);	
+		GPanel addTargetPanel = new GPanel(pa, 2, 20, 250, 80, "Add Target");
+		addTargetPanel.setLocalColorScheme(GCScheme.RED_SCHEME);
+		
+		addTargetPanel.setCollapsed(true);
+		target_forEffector_selectlist = new GDropList(pa, 5, 20, 230, 400, 20, 20);	
 		target_forEffector_selectlist.setItems(new String[]{"No Effector Selected"}, 0);
 		target_forEffector_selectlist.addEventHandler(this, "change_effector");
-		target_parentTransform_selectlst = new GDropList(pa, 20, 95, 160, 70);	
-		target_parentTransform_selectlst.setItems(new String[]{"World"}, 0);
 		
-		targetProperties = new GPanel(pa, 0, solverPanel.getY()+solverPanel.getHeight(), 300, 80, "Target Properties");
-		targetProperties.setLocalColorScheme(GCScheme.CYAN_SCHEME);
-		targetProperties.setDraggable(true);
+		targetList = new GDropList(pa, 95, 20, 200, 400, 20, 20);	
+		targetList.addEventHandler(this, "select_target");
+		targetList.setItems(new String[]{"None"}, 0);
+		
+		target_parentTransform_selectlst = new GDropList(pa,  145, 50, 150, 80);	
+		target_parentTransform_selectlst.setItems(new String[]{"World"}, 0);
+		target_parentTransform_selectlst.addEventHandler(this, "set_target_parent");
+		GLabel par = new GLabel(pa, -150, 0, 150, 20);
+		par.setText("Parent Transform: ");
+		par.setTextAlign(GAlign.RIGHT, GAlign.NORTH);
+		target_parentTransform_selectlst.addControl(par);
+		
+		addTargetBtn = new GButton(pa, addTargetPanel.getWidth()-32, addTargetPanel.getHeight()-32, 30, 30, "OK");
+		addTargetBtn.addEventHandler(this, "dialog_cancel");
+		addTargetBtn.addEventHandler(this, "addTarget_click");
+		
+		
+		targetProperties = new GPanel(pa, 0, solverPanel.getY()+solverPanel.getHeight(), 300, 135, "Target Properties");
+		targetProperties.setLocalColorScheme(GCScheme.GOLD_SCHEME);
+		targetProperties.setDraggable(false);
 		targetProperties.setCollapsible(false);
-		targetProperties.addControls(addTargetBtn, targetList, target_forEffector_selectlist);
+		targetProperties.addControls(targetList, target_parentTransform_selectlst, addTargetPanel);
+		addTargetPanel.addControls(target_forEffector_selectlist, addTargetBtn);
+		
+		insertCloseButton(addTargetPanel, addTargetBtn);
+		
+		GDropList tps = target_parentTransform_selectlst;
+		weight = new GSlider(pa, tps.getX() + 50, tps.getY() + 25, 100, 20, 12);
+		weight.addEventHandler(this, "target_weight_change");		
+		 x_priority = new GSlider(pa, 0,0, 80, 20, 12);
+		 x_priority.setLimits(0.5f, 0f, 5f );
+		 y_priority = new GSlider(pa, 0,0, 80, 20, 12);
+		 y_priority.setLimits(0.5f, 0f, 5f );
+		 z_priority = new GSlider(pa, 0,0, 80, 20, 12);
+		 z_priority.setLimits(0.5f, 0f, 5f );
+		 depthFalloff = new GSlider(pa, 0, tps.getY() + 25, 100, 20, 12);
+		 depthFalloff.addEventHandler(this, "depth_falloff_change");
+		 x_priority.addEventHandler(this, "target_dir_priority_change");
+		 y_priority.addEventHandler(this, "target_dir_priority_change");
+		 z_priority.addEventHandler(this, "target_dir_priority_change");
+		 targetProperties.addControl(weight);
+		 
+		 insertLeftOf(depthFalloff, weight);
+		 depthFalloff.moveTo(depthFalloff.getX()-50, depthFalloff.getY());
+		addLeftLabel("depth falloff", depthFalloff, 0);
+		 
+		 insertBelow(z_priority, weight);
+		 insertLeftOf(y_priority, z_priority);
+		 insertLeftOf(x_priority, y_priority);
+		 
+		 addLeftLabel("weight", weight, 0);
+		 addUnderLabel("x priority", x_priority, -80);
+		 addUnderLabel("y priority", y_priority, -80);
+		 addUnderLabel("z priority", z_priority, -80);	 
+		
 		updateTargetSelectList();
 		updateForEffectorSelectList();
 		return targetProperties;
 	}
 	
+	public void set_target_parent(GDropList parList, GEvent event) {
+		this.activePin.getAxes().setParent(transformsMap.get(parList.getSelectedText()));
+	}
+	
+	public void depth_falloff_change(GSlider depth, GEvent event) {
+		if(event.equals(GEvent.RELEASED)) {
+			this.activePin.setDepthFalloff(depth.getValueF());
+			armature.regenerateShadowSkeleton();
+		}
+	}
+	
+	public void updateTransformsList() {		
+		String[] bonestrArr = getBoneStringArr(armature.getRootBone(), 9999, true, boneMap, revBoneMap);
+		transformsMap = new HashMap<>(); 
+		//HashMap<AbstractAxes, String> inverseTransformsMap = new HashMap<>();
+		indexedTransformMap = new HashMap<>();
+		
+		ArrayList<String> parstrings = new ArrayList<>();
+		parstrings.add("World");
+		transformsMap.put("World", this.worldAxes);
+		indexedTransformMap.put(this.worldAxes, parstrings.size());
+		parstrings.add("Armature");
+		transformsMap.put("Armature", this.armature.localAxes());
+		indexedTransformMap.put(this.armature.localAxes(), parstrings.size());
+		if(this.extraTransforms != null) {
+			for(String s : this.extraTransforms.keySet()) {
+				AbstractAxes val = this.extraTransforms.get(s);
+				parstrings.add(s);
+				transformsMap.put(s, val);
+				indexedTransformMap.put(val,  parstrings.size());
+			}
+		}		
+		for(int i = 0; i < bonestrArr.length; i++) {
+			AbstractBone candidate = boneMap.get(bonestrArr[i]);
+			String base = bonestrArr[i];
+			transformsMap.put(base, candidate.localAxes());
+			parstrings.add(base);
+			indexedTransformMap.put(candidate.localAxes(), parstrings.size());
+			if(candidate.getIKPin() != null && candidate.getIKPin() != activePin) {
+				String targS = "targ of "+base;
+				parstrings.add(targS);
+				transformsMap.put(targS, candidate.getIKPin().getAxes());
+				indexedTransformMap.put(candidate.getIKPin().getAxes(),  parstrings.size());
+			}
+		}
+		int selected = parstrings.indexOf(target_parentTransform_selectlst.getSelectedText());
+		String[] result = parstrings.toArray(new String[0]);
+		target_parentTransform_selectlst.setItems(result, selected);
+	}
+	
+	public void target_weight_change(GSlider gw, GEvent event) {
+		if(this.activePin != null) {
+			this.activePin.setPinWeight(gw.getValueF());
+			this.armature.updateShadowSkelRateInfo();
+		}
+	}
+	
+	public void target_dir_priority_change(GSlider gs, GEvent event) {
+		if(this.activePin != null) {
+			double xPriority = gs == x_priority ? gs.getValueF() : this.activePin.getXPriority();
+			double yPriority = gs == y_priority ? gs.getValueF() : this.activePin.getYPriority();
+			double zPriority = gs == z_priority ? gs.getValueF() : this.activePin.getZPriority();
+			this.activePin.setTargetPriorities(xPriority, yPriority, zPriority);
+			this.armature.updateShadowSkelRateInfo();
+		}
+	}
+	
+	/**
+	 * place  @param elem below @param under/ 
+	 * @return @param elem for chaining
+	 */
+	public GAbstractControl insertBelow(GAbstractControl elem, GAbstractControl under) {
+		float x = under.getX();
+		float y = under.getY();
+		float height = under.getHeight();
+		GAbstractControl par = under.getParent();
+		par.addControl(elem);
+		elem.moveTo(x, y+height+2);
+		return elem;
+	}
+	
+	/**
+	 * place  @param elem above @param above
+	 * @return @param elem for chaining
+	 */
+	public GAbstractControl insertAbove(GAbstractControl elem, GAbstractControl above) {
+		float x = above.getX();
+		float y = above.getY();
+		GAbstractControl par = above.getParent();
+		par.addControl(elem);
+		elem.moveTo(x, y-elem.getHeight() -2);
+		return elem;
+	}
+	
+	/**
+	 * place  @param elem left of @param leftof
+	 * @return @param elem for chaining
+	 */
+	public GAbstractControl insertLeftOf(GAbstractControl elem, GAbstractControl leftof) {
+		float x = leftof.getX();
+		float y = leftof.getY();
+		GAbstractControl par = leftof.getParent();
+		par.addControl(elem);
+		elem.moveTo(x - elem.getWidth()-2, y);
+		return elem;
+	}
+	
+	/**
+	 * place  @param elem right of @param rightof
+	 * @return @param elem for chaining
+	 */
+	public GAbstractControl insertRightOf(GAbstractControl elem, GAbstractControl rightof) {
+		float x = rightof.getX();
+		float y = rightof.getY();
+		GAbstractControl par = rightof.getParent();
+		par.addControl(elem);
+		elem.moveTo(x + rightof.getWidth()+2, y);
+		return elem;
+	}
+	
+	public void addLeftLabel(String text, GAbstractControl elem, float offY) {
+		float x = elem.getX();
+		float y = elem.getY();
+		GLabel lbl = new GLabel(pa, x - 200, y + offY, 200, 25, text+": ");
+		elem.getParent().addControl(lbl);
+		lbl.setTextAlign(GAlign.RIGHT, GAlign.TOP);
+	}
+	
+	public void addUnderLabel(String text, GAbstractControl elem, float offY) {
+		float x = elem.getX();
+		float y = elem.getY();
+		GLabel lbl = new GLabel(pa, x, y, elem.getWidth(), y+30 +offY, text+": ");
+		elem.getParent().addControl(lbl);
+		//lbl.setTextAlign(GAlign.CENTER, GAlign.TOP);
+	}
+	
 	public void updateTargetSelectList() {
+		String[] pinnames = getTargetNames();
+		targetList.setItems(pinnames, 0);
+	}
+	
+	public String[] getTargetNames() {
 		ArrayList<String> pinNames = new ArrayList<>();
 		for(int i = 0; i<pins.size(); i++) {
 			AbstractIKPin pin = pins.get(i);
-			String pinname = "target for " + pin.forBone().getTag();
+			String pinname = pin.forBone().getTag()+"'s target";
 			pinNames.add(pinname);
 		}
-		String[] pinnames = pinNames.toArray(String[]::new);
-		targetList.setItems(pinnames, 0);
+		String[] pinnames = pinNames.toArray(new String[0]);
+		return pinnames;
 	}
 	
 	public void updateForEffectorSelectList() {
 		String[] bonestrArr = getBoneStringArr(armature.getRootBone(), 9999, true, boneMap, revBoneMap);
 		for(int i = 0; i < bonestrArr.length; i++) {
 			AbstractBone candidate = boneMap.get(bonestrArr[i]);
-			if(candidate.getIKPin() != null && candidate.getIKPin() != activePin) {
+			if(candidate.getIKPin() != null) {
 				bonestrArr[i] += " (already pinned)";
+				boneMap.put(bonestrArr[i], candidate);
 			}
 		}
 		target_forEffector_selectlist.setItems(bonestrArr, 0);
 	}
 	
 	public void select_target(GDropList dl, GEvent event) {
-		
+		this.activePin = this.pins.get(dl.getSelectedIndex());
+		updateTargetPanel();
 	}
 	
-	public void change_effector(GDropList dl, GEvent event) {
-		
+	public void updateTargetPanel() {
+		updateTransformsList();		
+		weight.setValue((float)this.activePin.getPinWeight());
+		depthFalloff.setValue((float)this.activePin.getDepthFalloff());
+		x_priority.setValue((float)this.activePin.getXPriority());
+		y_priority.setValue((float)this.activePin.getYPriority());
+		z_priority.setValue((float)this.activePin.getZPriority());
+		AbstractAxes parAxes = this.activePin.getAxes().getParentAxes();
+		int a =0;
+		int paridx = (int) indexedTransformMap.get(parAxes);
+		target_parentTransform_selectlst.setSelected(paridx);
 	}
-	
-	
-	public void insertCloseButton (GPanel panel) {
-		GButton closePanel = new GButton(pa, panel.getWidth()-60, panel.getHeight()-40, 50, 30, "Close");
+	public void insertCloseButton (GPanel panel, GAbstractControl leftOf) {
+		float sansLeft = 0;
+		float y = panel.getHeight()-45;
+		float height = 30;
+		if(leftOf != null) {
+			sansLeft = leftOf.getWidth();
+			y = leftOf.getY();
+			height = leftOf.getHeight();
+		}
+		GButton closePanel = new GButton(pa, (panel.getWidth()- sansLeft)-60, y, 50, height, "Close");
 		closePanel.addEventHandler(this, "dialog_cancel");
 		panel.addControl(closePanel);
 	}
 	public GPanel SolverPanel_init() {
-		solverPanel = new GPanel(pa, 0, 580, 300, 140, "Solver options");
+		solverPanel = new GPanel(pa, 0, 140, 300, 100, "Solver options");
 		solverPanel.setCollapsed(false);
 		solverPanel.setCollapsible(false);
 		solverPanel.setDraggable(false);
@@ -718,12 +964,12 @@ public class G4PUI {
 		dampening.setLimits(0, pa.PI/2);
 		dampening.addEventHandler(this, "set_dampening");
 		dampening.setLocalColorScheme(GCScheme.CYAN_SCHEME);
-		iterations = new GSpinner(pa, 230, 80, 50, 25, 1f);
+		iterations = new GSpinner(pa, 220, 70, 50, 25, 1f);
 		iterations.setLimits(10, 0, 1000, 1);
 		iterations.addEventHandler(this, "set_iterations");
-		GLabel itr = new GLabel(pa, -60, 5, 60, 10);
+		GLabel itr = new GLabel(pa, -85, 5, 75, 10);
 		itr.setText("Iterations: ");
-		itr.setTextAlign(GAlign.EAST, GAlign.NORTH);
+		itr.setTextAlign(GAlign.RIGHT, GAlign.NORTH);
 		iterations.addControl(itr);
 		
 		solverPanel.addControls(modelbl,perpetual,onInteraction,byIteration,byStep,dampening, dmp, iterations);
@@ -732,12 +978,13 @@ public class G4PUI {
 
 	
 	public GPanel TurntablePanel_init() {
-		turntablePanel = new GPanel(pa, 20, 780, 200, 140, "Turntable");
-		turntableKnob = new GKnob(pa, 60f, 20f, 80f, 80f, 1.0f);
+		turntablePanel = new GPanel(pa, 0, 0, 300, 140, "Turntable");
+		turntableKnob = new GKnob(pa, 100f, 20f, 80f, 80f, 1.0f);
 		turntableKnob.setTurnRange(0, 360);
 		turntableKnob.setTurnMode(GKnob.CTRL_ANGULAR);
 		turntableKnob.setShowArcOnly(true);
 		turntablePanel.setCollapsible(false);
+		turntablePanel.setDraggable(false);
 		turntablePanel.addEventHandler(this, "panel_cancel");
 		turntableKnob.setIncludeOverBezel(false);
 		turntableKnob.setShowTrack(true);
@@ -746,12 +993,78 @@ public class G4PUI {
 		turntablePanel.addControl(turntableKnob);
 		
 		zoomSlider = new GSlider(pa, turntablePanel.getWidth() - 40, turntablePanel.getHeight()-10, turntablePanel.getHeight()-30, 60, 12f);
-		zoomSlider.setLimits(zoom, 0.25f, 0.8f*pa.PI);
+		zoomSlider.setLimits(zoom, 0.05f, 0.8f*pa.PI);
 		zoomSlider.setRotation(-pa.PI/2f);
 		zoomSlider.setShowDecor(false, false, true, true);
 		turntablePanel.addControl(zoomSlider);
 		zoomSlider.addEventHandler(this, "edit_zoom");
+		
+		GButton savebtn = new GButton(pa, 0, 0, 50, 30, "Save");
+		insertLeftOf(savebtn, turntableKnob);
+		savebtn.moveTo(savebtn.getX()-30, savebtn.getY()+10);
+		GButton loadbtn = new GButton(pa, 0, 0, 50, 30, "Load");
+		insertBelow(loadbtn, savebtn);
+		loadbtn.moveTo(loadbtn.getX(), loadbtn.getY() + 20);
+		savebtn.addEventHandler(this, "save_armature");
+		loadbtn.addEventHandler(this, "load_armature");
 		return turntablePanel;
+	}
+	public void save_armature(GButton save, GEvent event ) {
+		String  outDir;
+		if(lastOpenedDir != null) {
+			outDir = G4P.selectOutput("Save", lastOpenedDir);
+		} else {
+			outDir = G4P.selectOutput("Save");
+		}
+		if(outDir != null) {
+			int lastsep = outDir.lastIndexOf(File.pathSeparator);
+			lastOpenedDir = lastsep == -1 ? outDir : outDir.substring(0, lastsep);
+			pa.saveStrings("lastDir.txt", new String[] {lastOpenedDir});
+			if(!outDir.endsWith(".arm")) {
+				outDir += ".arm";
+			}
+		}
+		EWBIKSaver newSaver = new EWBIKSaver();
+		newSaver.saveArmature(armature, outDir); 
+	}
+	public void load_armature(GButton save, GEvent event ) {
+		String inDir;
+		if(lastOpenedDir != null)
+			inDir = G4P.selectInput("Input Dialog", "arm", "EWB-IK Armature files", lastOpenedDir);
+		else 
+			inDir = G4P.selectInput("Input Dialog", "arm", "EWB-IK Armature files");
+		 
+		try {
+			if(inDir != null) {
+				int lastsep = inDir.lastIndexOf(File.pathSeparator);
+				lastOpenedDir = lastsep == -1 ? inDir : inDir.substring(0, lastsep);
+				pa.saveStrings("lastDir.txt", new String[] {lastOpenedDir});
+			}
+			this.armature =  EWBKIO.LoadArmature_doublePrecision(inDir);
+			armature.localAxes().setRelativeToParent(worldAxes);
+			Vec<?> origin = armature.localAxes().getGlobalMBasis().getOrigin();
+			lookAt.set(origin.getXf(), origin.getYf(), origin.getZf());
+			armature.regenerateShadowSkeleton(true);
+			selectedBone = armature.getRootBone();
+			armature.localAxes().setRelativeToParent(worldAxes);
+			this.updatePinList();
+			this.activePin = this.pins.get(0);
+			this.updateTransformsList();
+			for(AbstractIKPin pin : pins) {
+				if(indexedTransformMap.get(pin.getAxes().getParentAxes()) == null) {
+					pin.getAxes().setRelativeToParent(this.worldAxes);
+				}				
+			}
+			this.updateTargetSelectList();
+			this.updateForEffectorSelectList();
+			this.updateTargetPanel();
+			this.updateUI();
+		} catch (Exception e) {
+			e.printStackTrace();
+			if(inDir != null) {
+				G4P.showMessage(pa, "BAD FILE. Boo.", "Nope" , G4P.ERROR_MESSAGE);
+			}
+		}
 	}
 	
 	public void edit_zoom(GSlider zoom, GEvent event) {
@@ -771,11 +1084,23 @@ public class G4PUI {
 		}
 	}
 	
+	public void incrementSelectedPin() {
+		int currentPinIndex =(pins.indexOf(activePin) + 1) % pins.size();
+		activePin  = pins.get(currentPinIndex);
+	}
+	
+	public void decrementSelectedPin() {
+		int idx = pins.indexOf(activePin);
+		int currentPinIndex =  (pins.size()-1) -(((pins.size()-1) - (idx - 1)) % pins.size());
+		activePin  = pins.get(currentPinIndex);
+	}
+	
 	public void recursivelyAddToPinnedList(ArrayList<AbstractIKPin> pins, AbstractBone descendedFrom) {
 		ArrayList<AbstractBone> pinnedChildren = (ArrayList<AbstractBone>) descendedFrom.getMostImmediatelyPinnedDescendants(); 
 		for(AbstractBone b : pinnedChildren) {
 			pins.add(b.getIKPin());
-			if(b.getIKPin().getAxes().getParentAxes() == null)
+			AbstractAxes parAx = b.getIKPin().getAxes().getParentAxes();
+			if(parAx == null || indexedTransformMap.get(parAx) == null) 
 				b.getIKPin().getAxes().setRelativeToParent(worldAxes);
 		}
 		for(AbstractBone b : pinnedChildren) {
@@ -785,4 +1110,74 @@ public class G4PUI {
 			}
 		}
 	}
+	
+	public void mousePressed(MouseEvent event) {
+		pa.println("pressss");
+	}
+	public void mouseWheel(MouseEvent event) {
+		float e = event.getCount();
+		if(event.isShiftDown()) {
+			activePin.getAxes().rotateAboutZ(e/pa.TAU, true);
+		}else if (event.isControlDown()) {
+			activePin.getAxes().rotateAboutX(e/pa.TAU, true);
+		}  else {
+			activePin.getAxes().rotateAboutY(e/pa.TAU, true);
+		}
+		doSolve = true;
+	}
+	
+	public void keyPressed() {
+		if (pa.key == pa.CODED) {
+			if (pa.keyCode == pa.DOWN) {
+				incrementSelectedPin();
+			} else if (pa.keyCode == pa.UP) {
+				decrementSelectedPin();
+			} else if(pa.keyCode == pa.RIGHT) {
+				nextProgress = 1;
+			} else if(pa.keyCode == pa.LEFT) {
+				nextProgress = -1;
+			}
+		} else {
+			if(pa.key == 'c') {
+				doSolve = true;
+			} else if (pa.key == 'r') {
+				reloadShaders();
+			} else if (pa.key == 's') {
+				//guiView.sceneView.stencil.save("stenciltest.png");
+			}
+		}
+	}
+	
+	public void mouseReleased() {
+		this.widgetView.mouseReleased();
+		this.sceneView.mouseReleased();
+		this.eventOwner = null;
+	}
+	
+	public void setEventOwner(Object o) {
+		this.eventOwner = o;
+	}
+	public void releaseEventOwnership() {
+		this.eventOwner = null;
+	}
+	public Object eventOwner() {
+		return this.eventOwner;
+	}
+	
+	/**returns true if a request to run the solver on the next frame is pending**/
+	public boolean doSolve() {
+		if(solveMode == this.PERPETUAL) 
+			return true; 
+		else {
+			boolean toReturn = doSolve;
+			doSolve = false;
+			return toReturn;
+		}			
+	}
+	public void requestSolve() {
+		if(solveMode == INTERACTION) {
+			this.doSolve = true;
+		}
+	}
+
 }

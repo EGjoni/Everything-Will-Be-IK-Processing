@@ -25,9 +25,7 @@ public class View3D extends GViewListener {
 	//protected double zoom = 1d;
 	
 	protected float orthoHeight, orthoWidth;
-	protected PVector mouse = new PVector(0,0,0);				
-	protected PVector cameraPosition = new PVector(0, 150, 500); 
-	protected PVector lookAt = new PVector(0, 150, 0);
+	protected PVector mouse = new PVector(0,0,0);					
 	protected PVector up = new PVector(0, -1, 0);
 	
 
@@ -42,15 +40,15 @@ public class View3D extends GViewListener {
 	
 	public void mouseEntered() {
 		if(!this.isMousePressed()) {
-			this.pressedHere = false;
+			ui.setEventOwner(this);
 		}
 	}
 	public void mousePressed() {
-		this.pressedHere = true;
+		ui.setEventOwner(this);
 	}
 	
 	public void mouseReleased() {
-		this.pressedHere = false;
+		ui.releaseEventOwnership();
 	}
 	
 	public void camera(PVector cp, PVector so, PVector up, PGraphics pg) {
@@ -79,8 +77,8 @@ public class View3D extends GViewListener {
 		//pg.ortho(-pg.width/(2f/zoomScalar), pg.width/(2f/zoomScalar), -pg.height/(2f/zoomScalar), pg.height/(2f/zoomScalar), -1000f, 1000f);
 		float cameraZ = (pg.height/2f) / pa.tan(zoomScalar/2f);
 		pg.perspective(zoomScalar, (float)pg.width/(float)pg.height, 
-	            cameraZ/10f, cameraZ*10f);
-		camera(cameraPosition, lookAt, up, pg);
+	            cameraZ/100f, cameraZ*10f);
+		camera(ui.cameraPosition, ui.lookAt, up, pg);
 		
 		mouse.x =  (pg.modelX(this.mouseX(), this.mouseY(), 20f));// - (pg.width/2f)) * (orthoWidth/pg.width); mouse.y = (this.mouseY() - (pg.height/2f)) *  (orthoHeight/pg.height);
 		mouse.y = (pg.modelY(this.mouseX(), this.mouseY(), 20f));
@@ -93,7 +91,7 @@ public class View3D extends GViewListener {
 	  PVector getUnProjectedPointOnPlane(PGraphics3D pg, float screen_x, float screen_y, PVector planePosition) {
 
 	  PVector f = planePosition.copy(); // Position of the floor
-	  PVector n = PVector.sub(cameraPosition, lookAt);
+	  PVector n = PVector.sub(ui.cameraPosition, ui.lookAt);
 	  n = n.normalize();/// The direction of the floor ( normal vector )
 	  PVector w = unProject(pg, screen_x, screen_y, -1.0f); // 3 -dimensional coordinate corresponding to a point on the screen
 	  PVector e = getEyePosition(pg); // Viewpoint position

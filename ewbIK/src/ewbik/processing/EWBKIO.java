@@ -40,6 +40,7 @@ public final class EWBKIO {
 	 * @return the dArmature, or null if the file does not specify an armature
 	 */
 	public static dArmature LoadArmature_doublePrecision(String path) {
+		
 		EWBIKLoader newLoader = new EWBIKLoader(); 
 		newLoader.setMode(EWBIKLoader.DOUBLE);
 		Collection<dArmature> dArmatureList =

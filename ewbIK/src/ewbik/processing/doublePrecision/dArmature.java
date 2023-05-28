@@ -72,21 +72,21 @@ public class dArmature extends AbstractArmature {
 		return (dBone)tagBoneMap.get(tag);	
 	}
 	
-	public void drawMe(PApplet p, int color, float pinSize) {
-		this.drawMe(p.g, color, pinSize);
+	public void drawMe(PApplet p, int color, float pinSize, AbstractBone currentlySelected) {
+		this.drawMe(p.g, color, pinSize, currentlySelected);
 	}
 	
-	public void drawMe(PGraphics pg, int color,  float pinSize) {
-		PMatrix localMat = ((dAxes)localAxes().getParentAxes()).getGlobalPMatrix();
+	public void drawMe(PGraphics pg, int color,  float pinSize, AbstractBone currentlySelected) {
+		PMatrix thismat = ((dAxes)localAxes()).getGlobalPMatrix();
 		pg.pushMatrix(); 
-			pg.applyMatrix(localMat);
-			getRootBone().drawMeAndChildren(pg, color,  pinSize);
+			pg.applyMatrix(thismat);
+				getRootBone().drawMeAndChildren(pg, color,  pinSize, currentlySelected);
 			pg.strokeWeight(4f);
 		pg.popMatrix();
 		
 	}
 	
-	public void drawWidgets(PGraphics3D pg, float pinSize) {
+	public void drawWidgets(PGraphics3D pg, float pinSize, AbstractBone currentlySelected) {
 		//PMatrix localMat = ((dAxes)localAxes().getParentAxes()).getGlobalPMatrix();
 		//pg.pushMatrix(); 
 		//pg.applyMatrix(localMat);
@@ -95,6 +95,9 @@ public class dArmature extends AbstractArmature {
 				dBone b = (dBone) ab;
 				if(b.isPinned()) {
 					((dAxes)b.getIKPin().getAxes()).drawMe(pg, pinSize);
+				}
+				if(b == currentlySelected) {
+					b.localAxes().drawMe(pg, pinSize*.5f);
 				}
 		
 				if(b.isPinned()) {

@@ -43,7 +43,7 @@ public class SceneView extends View3D {
 			setCamera(stencil, (float)ui.zoom, ui.STENCIL);
 			if(predrawCall != null)
 				predrawCall.accept(stencil, ui.STENCIL);
-			((dArmature)ui.armature).drawMe(stencil, 100, ui.zoom);
+			((dArmature)ui.armature).drawMe(stencil, 100, ui.zoom, ui.selectedBone);
 			stencil.endDraw();
 		} else {
 			dKusudama.enableMultiPass(false);
@@ -56,7 +56,7 @@ public class SceneView extends View3D {
 		v.background(80, 150, 190);
 		if(predrawCall != null)
 			predrawCall.accept(v, ui.RENDER);
-		((dArmature)ui.armature).drawMe(v, 100, ui.zoom);
+		((dArmature)ui.armature).drawMe(v, 100, ui.zoom, ui.selectedBone);
 		if(multipass) {
 			blurshader.set("mask", stencil);
 			blurshader.set("horizontalPass", 0); v.filter(blurshader);

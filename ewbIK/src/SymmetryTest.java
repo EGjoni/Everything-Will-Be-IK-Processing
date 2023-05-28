@@ -2,6 +2,7 @@ import processing.core.*;
 import processing.event.MouseEvent;
 import processing.opengl.PGraphics3D;
 import processing.opengl.PShader;
+import ewbik.processing.EWBKIO;
 import ewbik.processing.doublePrecision.*;
 import ewbik.processing.doublePrecision.sceneGraph.*;
 import g4p_controls.GEvent;
@@ -10,6 +11,7 @@ import g4p_controls.GView;
 import math.doubleV.Vec3d;
 import math.floatV.Vec3f;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -17,10 +19,10 @@ import IK.doubleIK.AbstractBone;
 import IK.doubleIK.AbstractIKPin;
 import data.EWBIKSaver;
 
-public class springTest extends PApplet {
+public class SymmetryTest extends PApplet {
 	
 	public static void main(String[] args) {
-		PApplet.main("springTest");
+		PApplet.main("SymmetryTest");
 	}
 
 	public void settings(){
@@ -46,17 +48,13 @@ public class springTest extends PApplet {
 	int nextProgress = 0;
 
 	public void setup() {
-		//Create global axes so we can easily manipulate the whole scene. (not necessary, just convenient)  
 		worldAxes = new dAxes(); 
-		//Create an armature
-		simpleArmature = new dArmature("example");
-		simpleArmature.localAxes().setParent(worldAxes);//attach the armature to the world axes (not necessary, just convenient for ui)
-		simpleArmature.setDefaultIterations(10); //specify that we want the solver to run 10 iteration whenever we call it.  		
-		simpleArmature.setDefaultDampening(Math.toRadians(20d)); //specify the maximum amount any bone is allowed to rotate per iteration (lower values mean slower convergence, but nicer results) 
-		simpleArmature.setDefaultStabilizingPassCount(1); //specify that the solver should doublecheck to avoid degenerate solutions. 
-		simpleArmature.setPerformanceMonitor(true);	//benchmark performance
-		initializeBones(); 	//make some bones
-		setBoneConstraints(); //put some cones around the bones to bound how bones can roam
+		//load an armature
+		String path = sketchPath()+File.separator;
+		simpleArmature = EWBKIO.LoadArmature_doublePrecision(path+"weightless.arm");
+		//simpleArmature.localAxes().scaleXBy(-1d);
+		simpleArmature.localAxes().setRelativeToParent(this.worldAxes); // set it relative to our custom world axes for ui convenience
+		//surgery(); //amputate the left arm, make a clone in the mirrorverse, steal its right arm then graft it back on to our dude.
 		dBone.setDrawKusudamas(true); 	//Tell the Bone class that all bones should draw their kusudama constraints.
 		ui = new G4PUI(this, multipassAllowed, simpleArmature, worldAxes, null, null); //initialize UI stuff
 	}
@@ -73,15 +71,15 @@ public class springTest extends PApplet {
 			ui.armature.IKSolver(ui.activePin.forBone());
 	}
 	
-	public void initializeBones() {
-		rootBone = simpleArmature.getRootBone();
-		rootBone.setBoneHeight(20f);
-		initialBone = new dBone(rootBone, "initial", 74f);
-		secondBone = new dBone(initialBone, "secondBone", 86f);
-		thirdBone = new dBone(secondBone, "thirdBone", 98f); 
-		initialBone.rotAboutFrameX(.01f);		
-		rootBone.enablePin();	
-		thirdBone.enablePin();	
+	public void surgery() {
+		dBone rCollar = simpleArmature.getBoneTagged("right collar bone");
+		dBone lCollar = simpleArmature.getBoneTagged("left collar bone");
+		lCollar.deleteBone();
+		String path = sketchPath()+File.separator;
+		dArmature cloneDude = EWBKIO.LoadArmature_doublePrecision(path+"Humanoid2.arm");
+		dBone clone_rCollar = cloneDude.getBoneTagged("right collar bone");
+		//cloneDude.localAxes().scaleXBy(-1d);
+		
 	}
 
 	public void setBoneConstraints() {    		
